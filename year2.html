@@ -3,27 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Year 2: Teacher Dashboard & Learning Insights</title>
+  <title>Year 2: Refined Measurement — How AI Makes Decisions</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    .dash-header {
-      background: linear-gradient(135deg, #2D1B69, var(--purple));
+    /* ── Page Header ── */
+    .y2-header {
+      background: linear-gradient(135deg, #1A1A2E 0%, #2D1B69 45%, #7435B2 100%);
       color: white;
-      padding: 24px 20px;
+      padding: 32px 20px 40px;
+      position: relative;
+      overflow: hidden;
     }
-    .dash-header h2 { color: white; margin-bottom: 4px; }
-    .dash-header p  { color: rgba(255,255,255,0.75); font-size: 0.88rem; }
+    .y2-header::before {
+      content: '';
+      position: absolute;
+      top: -60%; left: -20%;
+      width: 160%; height: 200%;
+      background: radial-gradient(circle at 65% 35%, rgba(155,93,212,0.35) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .y2-header-inner { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; }
+    .y2-header h1  { color: white; margin-bottom: 8px; }
+    .y2-header .sub { color: rgba(255,255,255,0.75); font-size: 0.92rem; margin-bottom: 20px; }
+    .y2-refined-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 5px 14px; border-radius: var(--r-full);
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em;
+      text-transform: uppercase; margin-bottom: 14px;
+    }
+    .header-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 4px;
+    }
+    @media (min-width: 480px) {
+      .header-stats { grid-template-columns: repeat(4, 1fr); }
+    }
+    .hstat {
+      background: rgba(255,255,255,0.11);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: var(--r-md);
+      padding: 12px 14px;
+      text-align: center;
+    }
+    .hstat-num { font-size: 1.6rem; font-weight: 900; color: white; line-height: 1; }
+    .hstat-lbl { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: rgba(255,255,255,0.55); margin-top: 4px; }
+
+    /* ── Sticky Tab Bar ── */
     .tab-bar {
       display: flex;
       background: white;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 2px solid var(--border);
+      position: sticky;
+      top: 57px;
+      z-index: 95;
       overflow-x: auto;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
     }
     .tab-bar::-webkit-scrollbar { display: none; }
     .tab-btn {
-      padding: 12px 18px;
+      padding: 13px 18px;
       font-size: 0.85rem;
       font-weight: 700;
       color: var(--text-muted);
@@ -33,15 +77,219 @@
       cursor: pointer;
       white-space: nowrap;
       transition: var(--t-fast);
+      margin-bottom: -2px;
     }
-    .tab-btn.active { color: var(--purple); border-bottom-color: var(--purple); }
-    .tab-panel { display: none; padding: 20px 16px 80px; }
+    .tab-btn:hover { color: var(--purple); background: var(--y2-bg); }
+    .tab-btn.active { color: var(--purple); border-bottom-color: var(--purple); background: var(--y2-bg); }
+
+    /* ── Tab Panels ── */
+    .tab-panel { display: none; padding: 24px 16px 80px; max-width: 960px; margin: 0 auto; animation: fadeUp 0.25s ease; }
     .tab-panel.active { display: block; }
-    .lesson-bar { margin-bottom: 6px; }
-    .lesson-bar-label {
-      display: flex; justify-content: space-between;
-      font-size: 0.82rem; margin-bottom: 4px;
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
+
+    /* ── Section Titles ── */
+    .section-title {
+      font-weight: 800; font-size: 1rem;
+      margin: 24px 0 12px;
+      display: flex; align-items: center; gap: 8px;
+      color: var(--text);
+    }
+    .section-title:first-child { margin-top: 0; }
+    .section-subtitle {
+      font-size: 0.85rem; color: var(--text-muted);
+      margin-top: -8px; margin-bottom: 14px; line-height: 1.5;
+    }
+
+    /* ── Pillars Overview Cards ── */
+    .pillar-card {
+      border-radius: var(--r-lg);
+      padding: 20px;
+      border-left: 5px solid;
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 12px;
+      display: flex; gap: 14px; align-items: flex-start;
+    }
+    .pillar-icon { font-size: 2rem; flex-shrink: 0; line-height: 1; }
+    .pillar-title { font-weight: 800; font-size: 1rem; margin-bottom: 4px; }
+    .pillar-desc { font-size: 0.85rem; color: var(--text-2); line-height: 1.5; }
+    .pillar-p1 { border-left-color: #7435B2; }
+    .pillar-p1 .pillar-title { color: #7435B2; }
+    .pillar-p2 { border-left-color: #0094CA; }
+    .pillar-p2 .pillar-title { color: #0094CA; }
+    .pillar-p3 { border-left-color: #27AE60; }
+    .pillar-p3 .pillar-title { color: #27AE60; }
+
+    /* ── What's New vs Y1 ── */
+    .compare-strip {
+      display: flex; gap: 8px; align-items: flex-start;
+      padding: 10px 12px;
+      border-radius: var(--r-sm);
+      margin-bottom: 8px;
+      font-size: 0.84rem;
+    }
+    .compare-strip.y1-side { background: #EBF5FF; }
+    .compare-strip.y2-side { background: var(--y2-bg); }
+    .compare-strip .cs-label {
+      font-size: 0.67rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 2px 7px; border-radius: var(--r-full); flex-shrink: 0; margin-top: 1px;
+    }
+    .y1-side .cs-label { background: var(--y1); color: white; }
+    .y2-side .cs-label { background: var(--y2); color: white; }
+    .compare-strip .cs-text { color: var(--text-2); line-height: 1.45; }
+
+    /* ── Assessment Upgrade Cards ── */
+    .upgrade-card {
+      background: var(--surface);
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .upgrade-header {
+      padding: 12px 16px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-2);
+    }
+    .upgrade-lesson-tag {
+      font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
+      padding: 3px 10px; border-radius: var(--r-full);
+      background: var(--y2-bg); color: var(--purple);
+    }
+    .upgrade-type-tag {
+      font-size: 0.72rem; font-weight: 700;
+      padding: 2px 8px; border-radius: var(--r-full);
+      border: 1.5px solid var(--border); color: var(--text-muted);
+    }
+    .upgrade-body { padding: 16px; }
+    .y1-was {
+      background: #EBF5FF;
+      border-radius: var(--r-sm);
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      font-size: 0.82rem;
+      color: #1A4A6E;
+    }
+    .y1-was-lbl { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--y1); margin-bottom: 4px; }
+    .y2-now {
+      background: var(--y2-bg);
+      border-radius: var(--r-sm);
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      font-size: 0.88rem;
+      color: var(--text);
+      font-weight: 600;
+      line-height: 1.45;
+    }
+    .y2-now-lbl { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--purple); margin-bottom: 5px; }
+
+    /* ── MC Question Choices ── */
+    .q-choices { display: flex; flex-direction: column; gap: 7px; margin-top: 10px; }
+    .q-choice {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 13px;
+      border-radius: var(--r-md);
+      border: 2px solid var(--border);
+      background: var(--surface);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: var(--t-fast);
+    }
+    .q-choice:hover { border-color: var(--purple); background: var(--y2-bg); }
+    .q-choice.correct { border-color: var(--success); background: var(--success-bg); }
+    .q-choice .q-letter {
+      min-width: 26px; height: 26px; border-radius: 50%;
+      background: var(--surface-2);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.78rem; flex-shrink: 0;
+    }
+    .q-choice.correct .q-letter { background: var(--success); color: white; }
+
+    /* ── Open Response Rubric ── */
+    .rubric-box {
+      background: #FFFBF0;
+      border: 1.5px solid #F0D080;
+      border-radius: var(--r-md);
+      padding: 14px;
+      margin-top: 12px;
+    }
+    .rubric-lbl { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #B8860B; margin-bottom: 10px; }
+    .rubric-row {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid #F0D080;
+      font-size: 0.83rem;
+    }
+    .rubric-row:last-child { border-bottom: none; }
+    .rubric-pts {
+      min-width: 28px; height: 24px;
+      background: #F5A623; color: white;
+      border-radius: var(--r-full);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; font-weight: 800; flex-shrink: 0;
+    }
+    .rubric-total {
+      margin-top: 10px; padding-top: 8px;
+      border-top: 2px solid #F0D080;
+      font-weight: 800; font-size: 0.85rem;
+      text-align: right; color: #7A5800;
+    }
+
+    /* ── Vocabulary Tracker ── */
+    .vocab-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .vocab-row:last-child { border-bottom: none; }
+    .vocab-term { font-weight: 700; font-size: 0.88rem; min-width: 150px; }
+    .vocab-bar-wrap { flex: 1; }
+    .vocab-pct-lbl { font-size: 0.78rem; font-weight: 800; min-width: 38px; text-align: right; }
+    .vocab-flag {
+      font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
+      padding: 2px 7px; border-radius: var(--r-full);
+      background: var(--danger-bg); color: var(--danger);
+    }
+
+    /* ── Formative Cycle Diagram ── */
+    .cycle-diagram {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0;
+      padding: 20px 0;
+    }
+    .cycle-step {
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      min-width: 72px;
+    }
+    .cycle-bubble {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--purple), var(--purple-light));
+      color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.78rem; font-weight: 800; text-align: center;
+      line-height: 1.2; padding: 4px;
+      box-shadow: var(--shadow-sm);
+    }
+    .cycle-label { font-size: 0.68rem; font-weight: 700; color: var(--text-muted); text-align: center; }
+    .cycle-arrow {
+      font-size: 1.3rem; color: var(--purple-light);
+      margin: 0 2px;
+      align-self: center;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 479px) {
+      .cycle-arrow.wrap-hide { display: none; }
+    }
+
+    /* ── Dashboard Insight Cards ── */
     .insight-card {
       border-radius: var(--r-md);
       padding: 14px 16px;
@@ -52,80 +300,187 @@
     .insight-card.warning { background: var(--warning-bg); border-color: var(--warning); }
     .insight-card.info    { background: var(--y1-bg);      border-color: var(--y1); }
     .insight-card.action  { background: var(--y2-bg);      border-color: var(--y2); }
-    .insight-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 2px; }
-    .insight-body  { font-size: 0.82rem; color: var(--text-2); }
-    .student-row {
-      display: flex; align-items: center; gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
+    .insight-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 3px; }
+    .insight-body  { font-size: 0.82rem; color: var(--text-2); line-height: 1.5; }
+
+    /* ── Lesson Completion Bars ── */
+    .lesson-bar { margin-bottom: 8px; }
+    .lesson-bar-label {
+      display: flex; justify-content: space-between;
+      font-size: 0.82rem; margin-bottom: 4px; font-weight: 600;
     }
-    .student-row:last-child { border-bottom: none; }
-    .student-info { flex: 1; min-width: 0; }
-    .student-name { font-weight: 700; font-size: 0.9rem; }
-    .student-meta { font-size: 0.78rem; color: var(--text-muted); }
-    .progress-dots {
-      display: flex; gap: 3px;
+
+    /* ── Mood Bars ── */
+    .trend-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
     }
-    .pdot {
-      width: 10px; height: 10px; border-radius: 50%;
+    .trend-row:last-child { border-bottom: none; }
+    .trend-lesson { min-width: 90px; font-size: 0.8rem; font-weight: 700; color: var(--text-2); }
+    .mood-bar { flex: 1; display: flex; border-radius: var(--r-full); overflow: hidden; height: 22px; }
+    .mood-seg {
+      height: 100%; display: flex; align-items: center; justify-content: center;
+      font-size: 0.62rem; font-weight: 700; color: white; transition: width 0.6s ease;
     }
-    .pdot.done { background: var(--success); }
-    .pdot.in-progress { background: var(--orange); }
-    .pdot.not-started { background: var(--surface-2); border: 1px solid var(--border); }
-    .mini-score {
-      min-width: 36px; height: 36px;
-      border-radius: var(--r-sm);
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 0.82rem;
-    }
-    .mini-score.high { background: var(--success-bg); color: var(--success); }
-    .mini-score.mid  { background: var(--warning-bg); color: var(--warning); }
-    .mini-score.low  { background: var(--danger-bg);  color: var(--danger); }
+
+    /* ── Misconception Blocks ── */
     .misconception-block {
       background: var(--surface-2);
       border-radius: var(--r-md);
       padding: 14px;
       margin-bottom: 10px;
     }
-    .misc-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 8px;
-    }
+    .misc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; gap: 8px; }
     .misc-title { font-weight: 700; font-size: 0.88rem; }
     .misc-pct {
-      font-size: 0.75rem; font-weight: 700;
+      font-size: 0.72rem; font-weight: 800;
       padding: 2px 8px; border-radius: var(--r-full);
+      white-space: nowrap; flex-shrink: 0;
     }
     .misc-pct.high { background: var(--danger-bg); color: var(--danger); }
     .misc-pct.mid  { background: var(--warning-bg); color: var(--warning); }
-    .wrong-answer {
-      font-size: 0.82rem; color: var(--text-2); margin-bottom: 4px;
-      display: flex; align-items: flex-start; gap: 6px;
+    .wrong-answer { font-size: 0.82rem; color: var(--text-2); margin-bottom: 4px; display: flex; align-items: flex-start; gap: 6px; line-height: 1.4; }
+
+    /* ── Heatmap ── */
+    .heatmap-grid {
+      display: grid;
+      grid-template-columns: 110px repeat(5, 1fr);
+      gap: 4px;
+      font-size: 0.75rem;
     }
-    .trend-row {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 0; border-bottom: 1px solid var(--border);
+    .hm-header { font-weight: 700; padding: 6px 4px; text-align: center; color: var(--text-2); font-size: 0.7rem; }
+    .hm-label  { font-weight: 600; padding: 6px 4px; color: var(--text-2); display: flex; align-items: center; font-size: 0.7rem; }
+    .hm-cell {
+      height: 36px; border-radius: var(--r-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.78rem;
     }
-    .trend-row:last-child { border-bottom: none; }
-    .trend-lesson {
-      min-width: 80px;
-      font-size: 0.82rem; font-weight: 700; color: var(--text-2);
+    .hm-low  { background: #FDECEA; color: #C0392B; }
+    .hm-mid  { background: #FEF9E7; color: #D35400; }
+    .hm-high { background: #EAFAF1; color: #1E8449; }
+    .hm-none { background: var(--surface-2); color: var(--text-muted); }
+
+    /* ── Progression: Multi-bar Chart ── */
+    .multi-bar-group { margin-bottom: 16px; }
+    .mb-concept { font-size: 0.82rem; font-weight: 700; color: var(--text-2); margin-bottom: 5px; }
+    .mb-bars { display: flex; flex-direction: column; gap: 4px; }
+    .mb-row { display: flex; align-items: center; gap: 8px; }
+    .mb-lbl { font-size: 0.68rem; color: var(--text-muted); min-width: 22px; font-weight: 700; }
+    .mb-track { flex: 1; height: 16px; background: var(--surface-2); border-radius: var(--r-full); overflow: hidden; position: relative; }
+    .mb-fill {
+      height: 100%; border-radius: var(--r-full);
+      display: flex; align-items: center; justify-content: flex-end; padding-right: 6px;
+      font-size: 0.62rem; font-weight: 800; color: white;
+      transition: width 0.8s ease;
     }
-    .mood-bar {
-      flex: 1; display: flex; border-radius: var(--r-full); overflow: hidden; height: 20px;
+    .mb-fill.l1-color { background: var(--y1); }
+    .mb-fill.l2-color { background: var(--y2); }
+    .mb-fill.l3-color { background: var(--y3); }
+    .mb-val { font-size: 0.7rem; font-weight: 700; min-width: 32px; text-align: right; }
+    .developing-badge {
+      font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
+      padding: 1px 6px; border-radius: var(--r-full);
+      background: var(--warning-bg); color: var(--warning); margin-left: 6px;
     }
-    .mood-seg {
+
+    /* ── Student Journey Cards ── */
+    .journey-card {
+      background: var(--surface);
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .journey-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+    }
+    .journey-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.88rem; color: white; flex-shrink: 0;
+    }
+    .journey-name { font-weight: 800; font-size: 0.95rem; }
+    .journey-meta { font-size: 0.75rem; color: var(--text-muted); margin-top: 1px; }
+    .journey-status {
+      margin-left: auto;
+      font-size: 0.75rem; font-weight: 800;
+      padding: 4px 10px; border-radius: var(--r-full);
+      text-align: center; white-space: nowrap;
+    }
+    .status-on-track  { background: #EDFAF3; color: var(--success); }
+    .status-needs-sup { background: var(--danger-bg); color: var(--danger); }
+    .status-extend    { background: #FFFBF0; color: #B8860B; }
+    .status-monitor   { background: var(--warning-bg); color: var(--warning); }
+    .concept-bar-sm { margin-bottom: 6px; }
+    .cbsm-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+    .cbsm-lbl { font-size: 0.72rem; color: var(--text-2); min-width: 110px; }
+    .cbsm-track { flex: 1; height: 10px; background: var(--surface-2); border-radius: var(--r-full); overflow: hidden; }
+    .cbsm-fill { height: 100%; border-radius: var(--r-full); transition: width 0.7s ease; }
+    .cbsm-val { font-size: 0.68rem; font-weight: 700; min-width: 28px; text-align: right; }
+    .trend-arrow { font-size: 1rem; font-weight: 900; }
+    .ta-up   { color: var(--success); }
+    .ta-down { color: var(--danger); }
+    .ta-flat { color: var(--text-muted); }
+    .intervention-box {
+      background: var(--y2-bg); border-radius: var(--r-sm);
+      padding: 8px 10px; margin-top: 10px;
+      font-size: 0.78rem; color: var(--text-2); line-height: 1.45;
+    }
+    .intervention-box strong { color: var(--purple); }
+
+    /* ── Level Distribution ── */
+    .level-dist-row { margin-bottom: 14px; }
+    .ld-concept { font-size: 0.83rem; font-weight: 700; margin-bottom: 6px; color: var(--text-2); }
+    .ld-bar { display: flex; height: 28px; border-radius: var(--r-full); overflow: hidden; }
+    .ld-seg {
       height: 100%; display: flex; align-items: center; justify-content: center;
-      font-size: 0.65rem; font-weight: 700; color: white; transition: width 0.6s ease;
+      font-size: 0.65rem; font-weight: 800; color: white;
+      transition: width 0.7s ease;
     }
+    .ld-l1 { background: #E74C3C; }
+    .ld-l2 { background: #F39C12; }
+    .ld-l3 { background: #3498DB; }
+    .ld-l4 { background: #27AE60; }
+    .ld-legend {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;
+    }
+    .ld-legend-item { display: flex; align-items: center; gap: 4px; font-size: 0.72rem; color: var(--text-2); }
+    .ld-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+    /* ── Year 3 Bridge ── */
+    .y3-bridge {
+      background: linear-gradient(135deg, #E8F8EE, #D4F0DF);
+      border: 1px solid #9ED9B5;
+      border-radius: var(--r-lg);
+      padding: 20px;
+      margin-top: 20px;
+    }
+    .y3-bridge h3 { color: var(--y3); margin-bottom: 8px; }
+
+    /* ── Stat Grid in Overview ── */
+    .ov-stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    @media (min-width: 560px) { .ov-stat-grid { grid-template-columns: repeat(4,1fr); } }
+    .ov-stat {
+      background: var(--surface);
+      border-radius: var(--r-md);
+      padding: 16px 14px;
+      text-align: center;
+      box-shadow: var(--shadow-xs);
+      border: 1px solid var(--border);
+    }
+    .ov-stat-num { font-size: 1.9rem; font-weight: 900; line-height: 1; color: var(--purple); }
+    .ov-stat-lbl { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--text-muted); margin-top: 5px; }
+    .ov-stat-sub { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+
+    /* Utility */
     .heatmap-wrapper { overflow-x: auto; }
-    .section-title {
-      font-weight: 800; font-size: 1rem;
-      margin-bottom: 12px; margin-top: 24px;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .section-title:first-child { margin-top: 0; }
-    .filter-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+    .filter-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
     .filter-chip {
       padding: 5px 12px; border-radius: var(--r-full);
       font-size: 0.78rem; font-weight: 600;
@@ -133,18 +488,23 @@
       border: 1.5px solid transparent; cursor: pointer; transition: var(--t-fast);
     }
     .filter-chip.active { background: var(--y2-bg); color: var(--purple); border-color: var(--purple); }
-    .y2badge {
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 3px 8px; border-radius: var(--r-full);
-      font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+
+    /* Responsive */
+    @media (min-width: 640px) {
+      .tab-panel { padding: 28px 24px 80px; }
+      .upgrade-body { padding: 20px 22px; }
     }
-    .y2badge.new { background: var(--y2-bg); color: var(--purple); }
-    .y2badge.improved { background: var(--y3-bg); color: var(--y3); }
+
+    /* Print */
+    @media print {
+      .tab-panel { display: block !important; }
+      .tab-bar, .site-nav { display: none !important; }
+    }
   </style>
 </head>
 <body>
 
-<!-- Navigation -->
+<!-- ── Site Navigation ── -->
 <nav class="site-nav">
   <div class="nav-inner">
     <a href="index.html" class="nav-logo">
@@ -160,188 +520,471 @@
   </div>
 </nav>
 
-<!-- Dashboard Header -->
-<div class="dash-header">
-  <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-    <div>
-      <span class="y2badge new" style="margin-bottom:8px;display:inline-flex;">Year 2 · Teacher Dashboard</span>
-      <h2>How AI Makes Decisions</h2>
-      <p>Ms. Rivera's Class · Section 3A · 28 students</p>
-    </div>
-    <div style="text-align:right;">
-      <div style="font-size:1.8rem;font-weight:900;color:white;">Week 1</div>
-      <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);">May 2026</div>
-    </div>
-  </div>
-  <!-- Quick Stats -->
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px;">
-    <div style="background:rgba(255,255,255,0.12);border-radius:var(--r-md);padding:12px;text-align:center;">
-      <div style="font-size:1.5rem;font-weight:900;color:white;">28</div>
-      <div style="font-size:0.68rem;color:rgba(255,255,255,0.6);font-weight:700;text-transform:uppercase;">Students</div>
-    </div>
-    <div style="background:rgba(255,255,255,0.12);border-radius:var(--r-md);padding:12px;text-align:center;">
-      <div style="font-size:1.5rem;font-weight:900;color:white;">3/5</div>
-      <div style="font-size:0.68rem;color:rgba(255,255,255,0.6);font-weight:700;text-transform:uppercase;">Lessons done</div>
-    </div>
-    <div style="background:rgba(255,255,255,0.12);border-radius:var(--r-md);padding:12px;text-align:center;">
-      <div style="font-size:1.5rem;font-weight:900;color:#7CFC00;">78%</div>
-      <div style="font-size:0.68rem;color:rgba(255,255,255,0.6);font-weight:700;text-transform:uppercase;">Avg. Score</div>
-    </div>
-    <div style="background:rgba(255,255,255,0.12);border-radius:var(--r-md);padding:12px;text-align:center;">
-      <div style="font-size:1.5rem;font-weight:900;color:#FFD700;">+0.8</div>
-      <div style="font-size:0.68rem;color:rgba(255,255,255,0.6);font-weight:700;text-transform:uppercase;">Confidence↑</div>
+<!-- ── Page Header ── -->
+<div class="y2-header">
+  <div class="y2-header-inner">
+    <div class="y2-refined-badge">✦ Year 2 · Refined Measurement</div>
+    <h1>How AI Makes Decisions</h1>
+    <p class="sub">Ms. Rivera's Class · Section 3A · 28 students · K–5 AI Literacy · Code.org Grant Prototype</p>
+    <div class="header-stats">
+      <div class="hstat">
+        <div class="hstat-num">28</div>
+        <div class="hstat-lbl">Students</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-num">3/5</div>
+        <div class="hstat-lbl">Lessons Done</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-num" style="color:#7CFC00;">78%</div>
+        <div class="hstat-lbl">Avg. Score</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-num" style="color:#FFD700;">+11pt</div>
+        <div class="hstat-lbl">Growth vs Y1</div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Tab Bar -->
+<!-- ── Tab Bar ── -->
 <div class="tab-bar" id="tabBar">
-  <button class="tab-btn active" onclick="showTab('overview')">📊 Overview</button>
-  <button class="tab-btn" onclick="showTab('concepts')">🧠 Concepts</button>
-  <button class="tab-btn" onclick="showTab('students')">👩‍🎓 Students</button>
-  <button class="tab-btn" onclick="showTab('misconceptions')">⚠️ Gaps</button>
-  <button class="tab-btn" onclick="showTab('sentiment')">😊 Sentiment</button>
+  <button class="tab-btn active" onclick="showTab('overview', this)">📋 Overview</button>
+  <button class="tab-btn" onclick="showTab('assessment', this)">🔍 Stronger Assessment</button>
+  <button class="tab-btn" onclick="showTab('dashboards', this)">📊 Dashboards</button>
+  <button class="tab-btn" onclick="showTab('progression', this)">📈 Progression</button>
 </div>
 
-<!-- ── TAB: OVERVIEW ── -->
+
+<!-- ═══════════════════════════════════════════
+     TAB 1: OVERVIEW
+══════════════════════════════════════════════ -->
 <div class="tab-panel active" id="tab-overview">
 
-  <!-- Insight Cards -->
-  <div class="section-title">🔔 Today's Insights</div>
+  <div class="section-title">📌 Year 2 at a Glance</div>
+  <p class="section-subtitle">Year 2 upgrades from lightweight Year 1 signals to a three-pillar measurement system: richer formative assessment, actionable teacher dashboards, and longitudinal learning progression tracking.</p>
+
+  <!-- 4 Stat Cards -->
+  <div class="ov-stat-grid">
+    <div class="ov-stat">
+      <div class="ov-stat-num">5</div>
+      <div class="ov-stat-lbl">Lessons Assessed</div>
+      <div class="ov-stat-sub">Scenario-based checks</div>
+    </div>
+    <div class="ov-stat">
+      <div class="ov-stat-num" style="color:var(--success);">81%</div>
+      <div class="ov-stat-lbl">Vocab Mastery</div>
+      <div class="ov-stat-sub">6 key terms tracked</div>
+    </div>
+    <div class="ov-stat">
+      <div class="ov-stat-num" style="color:var(--y1);">4</div>
+      <div class="ov-stat-lbl">Insight Cards</div>
+      <div class="ov-stat-sub">Actionable daily flags</div>
+    </div>
+    <div class="ov-stat">
+      <div class="ov-stat-num" style="color:var(--y3);">+14pt</div>
+      <div class="ov-stat-lbl">Concept Growth</div>
+      <div class="ov-stat-sub">L1 → L3 avg. gain</div>
+    </div>
+  </div>
+
+  <!-- Three Pillars -->
+  <div class="section-title">🏛️ Three Pillars of Year 2 Measurement</div>
+
+  <div class="pillar-card pillar-p1">
+    <div class="pillar-icon">🔍</div>
+    <div>
+      <div class="pillar-title">Pillar 1 — Stronger Formative Assessment</div>
+      <div class="pillar-desc">Upgraded from Year 1's lightweight concept checks. Year 2 introduces scenario-based multiple choice, rubric-scored open response, and a vocabulary proficiency tracker with per-term mastery data across all five lessons.</div>
+    </div>
+  </div>
+
+  <div class="pillar-card pillar-p2">
+    <div class="pillar-icon">📊</div>
+    <div>
+      <div class="pillar-title">Pillar 2 — Teacher / Facilitator Dashboards &amp; Insights</div>
+      <div class="pillar-desc">Class-level insight cards automatically flag misconceptions and suggest interventions. A concept heatmap shows mastery across all lessons. Lesson completion, difficulty sentiment, and reflection themes are all visible in one view.</div>
+    </div>
+  </div>
+
+  <div class="pillar-card pillar-p3">
+    <div class="pillar-icon">📈</div>
+    <div>
+      <div class="pillar-title">Pillar 3 — Improved Learning Progression Tracking</div>
+      <div class="pillar-desc">Individual student journey cards show concept-by-concept growth over time. Class concept mastery is charted across Lessons 1–3. Proficiency level distributions reveal where students are developing vs. advanced.</div>
+    </div>
+  </div>
+
+  <!-- What's New vs Year 1 -->
+  <div class="section-title" style="margin-top:28px;">⬆️ What's New vs. Year 1</div>
+  <div class="card">
+    <div class="compare-strip y1-side">
+      <span class="cs-label">Y1</span>
+      <span class="cs-text">Quick 1–2 item multiple choice concept checks at end of each lesson</span>
+    </div>
+    <div class="compare-strip y2-side">
+      <span class="cs-label">Y2</span>
+      <span class="cs-text"><strong>Scenario-based questions + open response + rubric scoring</strong> embedded in every lesson</span>
+    </div>
+    <div style="height:8px;"></div>
+    <div class="compare-strip y1-side">
+      <span class="cs-label">Y1</span>
+      <span class="cs-text">Individual student data — no class-level aggregate view</span>
+    </div>
+    <div class="compare-strip y2-side">
+      <span class="cs-label">Y2</span>
+      <span class="cs-text"><strong>Live teacher dashboard</strong> with insight cards, heatmap, misconception flags &amp; interventions</span>
+    </div>
+    <div style="height:8px;"></div>
+    <div class="compare-strip y1-side">
+      <span class="cs-label">Y1</span>
+      <span class="cs-text">Single-lesson snapshots — no longitudinal growth tracking</span>
+    </div>
+    <div class="compare-strip y2-side">
+      <span class="cs-label">Y2</span>
+      <span class="cs-text"><strong>Cross-lesson progression tracking</strong> with individual journeys, trend arrows, and level distributions</span>
+    </div>
+    <div style="height:8px;"></div>
+    <div class="compare-strip y1-side">
+      <span class="cs-label">Y1</span>
+      <span class="cs-text">Vocabulary noted informally; no structured tracking</span>
+    </div>
+    <div class="compare-strip y2-side">
+      <span class="cs-label">Y2</span>
+      <span class="cs-text"><strong>Vocabulary proficiency tracker</strong> — 6 key terms with class mastery %, flagging terms needing re-teach</span>
+    </div>
+  </div>
+
+  <!-- Year 3 Bridge -->
+  <div class="y3-bridge">
+    <h3>🚀 Building Toward Year 3</h3>
+    <p class="text-sm" style="color:var(--text-2);margin-bottom:14px;">Two years of refined formative signals and growth data power Year 3's <strong>validated outcomes framework</strong> — reliable pre/post assessments designed for school-system-level reporting.</p>
+    <a href="year3.html" class="btn btn-y3 btn-sm btn-block">📋 See Year 3 Outcomes Framework →</a>
+  </div>
+
+</div><!-- /tab-overview -->
+
+
+<!-- ═══════════════════════════════════════════
+     TAB 2: STRONGER ASSESSMENT
+══════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-assessment">
+
+  <div class="section-title">🔍 Year 1 → Year 2 Assessment Upgrades</div>
+  <p class="section-subtitle">Each of the 5 lessons has been upgraded from lightweight concept checks to richer, scenario-based assessments. Below: the Year 1 baseline, the Year 2 upgrade, and three interactive example questions.</p>
+
+  <!-- ── Upgrade Card: Lesson 1 ── -->
+  <div class="upgrade-card">
+    <div class="upgrade-header">
+      <span class="upgrade-lesson-tag">Lesson 1 · Making Predictions</span>
+      <span class="upgrade-type-tag">Scenario-Based MC</span>
+    </div>
+    <div class="upgrade-body">
+      <div class="y1-was">
+        <div class="y1-was-lbl">Year 1 Was</div>
+        "What does AI use to make predictions?" — Single multiple choice, one right answer, no scenario context.
+      </div>
+      <div class="y2-now">
+        <div class="y2-now-lbl">Year 2 Upgrade</div>
+        Scenario-based question that puts students inside a realistic situation, requiring application — not just recall.
+      </div>
+
+      <div style="font-size:0.9rem;font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.45;">
+        Q1. A robot is learning to sort mail. It has been trained on 10 letters. When it sees a package, it puts it in the wrong bin. What is the most likely reason?
+      </div>
+      <div class="q-choices">
+        <div class="q-choice" onclick="selectChoice(this, false)"><span class="q-letter">A</span>The robot is broken</div>
+        <div class="q-choice correct" onclick="selectChoice(this, true)"><span class="q-letter">B</span>The robot hasn't seen enough examples of packages ✓</div>
+        <div class="q-choice" onclick="selectChoice(this, false)"><span class="q-letter">C</span>Packages are too heavy</div>
+        <div class="q-choice" onclick="selectChoice(this, false)"><span class="q-letter">D</span>The robot doesn't like packages</div>
+      </div>
+      <div style="font-size:0.75rem;color:var(--text-muted);margin-top:8px;">
+        <strong>Cognitive level:</strong> Application → Transfer &nbsp;|&nbsp; <strong>Signal captured:</strong> Training data concept, sample size awareness
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Upgrade Card: Lesson 2 ── -->
+  <div class="upgrade-card">
+    <div class="upgrade-header">
+      <span class="upgrade-lesson-tag">Lesson 2 · Training AI</span>
+      <span class="upgrade-type-tag">Transfer Question</span>
+    </div>
+    <div class="upgrade-body">
+      <div class="y1-was">
+        <div class="y1-was-lbl">Year 1 Was</div>
+        "Why is training data important?" — Recognition-level MC with obvious distractor answers.
+      </div>
+      <div class="y2-now">
+        <div class="y2-now-lbl">Year 2 Upgrade</div>
+        Transfer question: students must diagnose a training data problem they haven't seen before, applying the concept to a new domain.
+      </div>
+
+      <div style="font-size:0.9rem;font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.45;">
+        Q2. Sofia trains an AI to sort dogs vs. cats using only photos of fluffy animals. Later, the AI incorrectly labels a short-haired cat as a dog. What caused this problem?
+      </div>
+      <div class="q-choices">
+        <div class="q-choice" onclick="selectChoice(this, false)"><span class="q-letter">A</span>Too many cat photos</div>
+        <div class="q-choice correct" onclick="selectChoice(this, true)"><span class="q-letter">B</span>The training data wasn't diverse enough ✓</div>
+        <div class="q-choice" onclick="selectChoice(this, false)"><span class="q-letter">C</span>Sofia used the wrong computer</div>
+        <div class="q-choice" onclick="selectChoice(this, false)"><span class="q-letter">D</span>The AI is too old</div>
+      </div>
+      <div style="font-size:0.75rem;color:var(--text-muted);margin-top:8px;">
+        <strong>Cognitive level:</strong> Analysis → Transfer &nbsp;|&nbsp; <strong>Signal captured:</strong> Training data diversity, bias root causes
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Upgrade Card: Lesson 4 (Open Response) ── -->
+  <div class="upgrade-card">
+    <div class="upgrade-header">
+      <span class="upgrade-lesson-tag">Lesson 4 · AI Tools in School</span>
+      <span class="upgrade-type-tag">Open Response + Rubric</span>
+    </div>
+    <div class="upgrade-body">
+      <div class="y1-was">
+        <div class="y1-was-lbl">Year 1 Was</div>
+        Exit ticket: "Circle one — AI is good / AI is bad / AI is both." No vocabulary expectation, no reasoning required.
+      </div>
+      <div class="y2-now">
+        <div class="y2-now-lbl">Year 2 Upgrade</div>
+        Rubric-scored open response requiring structured reasoning, vocabulary use, and acknowledgment of multiple perspectives.
+      </div>
+
+      <div style="font-size:0.9rem;font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.45;">
+        Q3. Your school wants to use AI to decide which students get extra reading time. Write 2–3 sentences explaining one concern and one benefit.
+      </div>
+      <textarea
+        rows="3"
+        placeholder="Type a student response here to see how the rubric would score it…"
+        style="width:100%;border:2px solid var(--border);border-radius:var(--r-md);padding:12px;font-size:0.88rem;font-family:var(--font);resize:none;color:var(--text);background:var(--surface);transition:border-color var(--t-fast);outline:none;"
+        onfocus="this.style.borderColor='var(--purple)'"
+        onblur="this.style.borderColor='var(--border)'"
+      ></textarea>
+
+      <div class="rubric-box">
+        <div class="rubric-lbl">📋 Scoring Rubric — 4 Points Total</div>
+        <div class="rubric-row">
+          <span class="rubric-pts">1pt</span>
+          <span>Concern is clearly stated (e.g., biased data, unfair decisions, privacy)</span>
+        </div>
+        <div class="rubric-row">
+          <span class="rubric-pts">1pt</span>
+          <span>Benefit is clearly stated (e.g., helps teachers notice patterns, saves time)</span>
+        </div>
+        <div class="rubric-row">
+          <span class="rubric-pts">1pt</span>
+          <span>Uses AI vocabulary correctly (e.g., "training data," "bias," "prediction," "feature")</span>
+        </div>
+        <div class="rubric-row">
+          <span class="rubric-pts">1pt</span>
+          <span>Logical reasoning — concern/benefit is explained with a "because" or "so that"</span>
+        </div>
+        <div class="rubric-total">Total: 4 pts</div>
+      </div>
+      <div style="font-size:0.75rem;color:var(--text-muted);margin-top:8px;">
+        <strong>Cognitive level:</strong> Evaluation → Synthesis &nbsp;|&nbsp; <strong>Signal captured:</strong> AI ethics reasoning, vocabulary depth, argumentation
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Vocabulary Proficiency Tracker ── -->
+  <div class="section-title" style="margin-top:8px;">📖 Vocabulary Proficiency Tracker</div>
+  <p class="section-subtitle">Class mastery % for 6 key terms, aggregated across all embedded vocabulary checks in Lessons 1–3. Terms below 70% are flagged for re-teach.</p>
+
+  <div class="card">
+    <div class="vocab-row">
+      <span class="vocab-term">AI / Artificial Intelligence</span>
+      <div class="vocab-bar-wrap">
+        <div class="progress-track"><div class="progress-fill y2" style="width:94%"></div></div>
+      </div>
+      <span class="vocab-pct-lbl" style="color:var(--success);">94%</span>
+    </div>
+    <div class="vocab-row">
+      <span class="vocab-term">Training Data</span>
+      <div class="vocab-bar-wrap">
+        <div class="progress-track"><div class="progress-fill y2" style="width:81%"></div></div>
+      </div>
+      <span class="vocab-pct-lbl" style="color:var(--success);">81%</span>
+    </div>
+    <div class="vocab-row">
+      <span class="vocab-term">Feature</span>
+      <div class="vocab-bar-wrap">
+        <div class="progress-track"><div class="progress-fill y2" style="width:76%"></div></div>
+      </div>
+      <span class="vocab-pct-lbl" style="color:var(--warning);">76%</span>
+    </div>
+    <div class="vocab-row">
+      <span class="vocab-term">Prediction</span>
+      <div class="vocab-bar-wrap">
+        <div class="progress-track"><div class="progress-fill y2" style="width:88%"></div></div>
+      </div>
+      <span class="vocab-pct-lbl" style="color:var(--success);">88%</span>
+    </div>
+    <div class="vocab-row" style="background:#FFF5F5;border-radius:var(--r-sm);padding:8px;margin:-2px -4px;">
+      <span class="vocab-term">Bias <span class="vocab-flag">⚠ Needs Attention</span></span>
+      <div class="vocab-bar-wrap">
+        <div class="progress-track"><div class="progress-fill" style="width:63%;background:var(--danger);"></div></div>
+      </div>
+      <span class="vocab-pct-lbl" style="color:var(--danger);">63%</span>
+    </div>
+    <div class="vocab-row">
+      <span class="vocab-term">Feature Vector</span>
+      <div class="vocab-bar-wrap">
+        <div class="progress-track"><div class="progress-fill y2" style="width:71%"></div></div>
+      </div>
+      <span class="vocab-pct-lbl" style="color:var(--warning);">71%</span>
+    </div>
+    <div style="margin-top:12px;font-size:0.78rem;color:var(--text-muted);">
+      <strong>Re-teach priority:</strong> "Bias" is below the 70% threshold. Suggested: use the Attendance Bot scenario to build intuition before the term.
+    </div>
+  </div>
+
+  <!-- ── Formative Assessment Cycle ── -->
+  <div class="section-title" style="margin-top:8px;">🔄 Formative Assessment Cycle</div>
+  <p class="section-subtitle">Year 2 closes the loop: every lesson feeds data that informs next-day instruction.</p>
+
+  <div class="card" style="padding:16px 12px;">
+    <div class="cycle-diagram">
+      <div class="cycle-step">
+        <div class="cycle-bubble">Teach</div>
+        <div class="cycle-label">Lesson delivery</div>
+      </div>
+      <div class="cycle-arrow">→</div>
+      <div class="cycle-step">
+        <div class="cycle-bubble">Assess</div>
+        <div class="cycle-label">Scenario checks</div>
+      </div>
+      <div class="cycle-arrow">→</div>
+      <div class="cycle-step">
+        <div class="cycle-bubble">Analyze</div>
+        <div class="cycle-label">Dashboard insights</div>
+      </div>
+      <div class="cycle-arrow">→</div>
+      <div class="cycle-step">
+        <div class="cycle-bubble">Intervene</div>
+        <div class="cycle-label">Targeted re-teach</div>
+      </div>
+      <div class="cycle-arrow">→</div>
+      <div class="cycle-step">
+        <div class="cycle-bubble" style="background:linear-gradient(135deg,var(--y3),#3CC874);">Re-Assess</div>
+        <div class="cycle-label">Growth confirmed</div>
+      </div>
+    </div>
+    <div style="text-align:center;font-size:0.75rem;color:var(--text-muted);margin-top:4px;">
+      Cycle repeats each lesson &nbsp;·&nbsp; Data accumulates across Lessons 1–5 &nbsp;·&nbsp; Feeds Progression tab
+    </div>
+  </div>
+
+</div><!-- /tab-assessment -->
+
+
+<!-- ═══════════════════════════════════════════
+     TAB 3: DASHBOARDS
+══════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-dashboards">
+
+  <!-- Key Insights -->
+  <div class="section-title">🔔 Key Insights for Today</div>
 
   <div class="insight-card warning">
     <div class="insight-title">⚠️ Lesson 2: Bias Concept Needs Reinforcement</div>
-    <div class="insight-body">11 students (39%) answered the bias scenario question incorrectly. Most chose "different opinions in training data don't matter." Consider a 5-minute re-teach at the start of Lesson 3.</div>
+    <div class="insight-body">11 students (39%) answered the bias scenario incorrectly. Most chose "different opinions in training data don't matter." Consider a 5-minute re-teach before Lesson 4.</div>
   </div>
 
   <div class="insight-card good">
     <div class="insight-title">✅ Lesson 1: Strong Concept Mastery</div>
-    <div class="insight-body">86% of students correctly defined training data and could explain why AI makes incorrect predictions. Class is ready to move forward.</div>
+    <div class="insight-body">86% correctly defined training data and explained why AI makes incorrect predictions. Class is ready to advance.</div>
   </div>
 
   <div class="insight-card info">
-    <div class="insight-title">📈 Confidence Growing</div>
-    <div class="insight-body">Average pre-lesson confidence rose from 2.8 → 3.6 (out of 5) across Lessons 1–3. Students feel noticeably more secure with AI vocabulary.</div>
+    <div class="insight-title">📈 Confidence Growing Across Lessons 1–3</div>
+    <div class="insight-body">Average pre-lesson confidence: 2.8 → 3.6 out of 5. Students feel noticeably more secure with AI vocabulary after Lesson 3.</div>
   </div>
 
   <div class="insight-card action">
-    <div class="insight-title">💡 Differentiation Suggestion</div>
-    <div class="insight-body">6 students rated Lesson 2 "Too Easy" and 4 rated it "Too Hard." Consider pairing these students for the Lesson 4 AI Tools debate — mixed perspectives will enrich discussion.</div>
+    <div class="insight-title">💡 Differentiation Opportunity</div>
+    <div class="insight-body">6 students rated Lesson 2 "Too Easy" and 4 rated it "Too Hard." Pair them for the Lesson 4 AI Tools debate — mixed perspectives will enrich discussion.</div>
   </div>
 
-  <!-- Completion by Lesson -->
+  <!-- Lesson Completion -->
   <div class="section-title">📚 Lesson Completion</div>
   <div class="card">
     <div class="lesson-bar">
-      <div class="lesson-bar-label"><span>Lesson 1: Making Predictions</span><span style="font-weight:700;color:var(--success);">28/28 ✓</span></div>
+      <div class="lesson-bar-label"><span>Lesson 1: Making Predictions</span><span style="font-weight:800;color:var(--success);">28/28 ✓</span></div>
       <div class="progress-track"><div class="progress-fill y2" style="width:100%"></div></div>
     </div>
-    <div style="height:10px;"></div>
+    <div style="height:8px;"></div>
     <div class="lesson-bar">
-      <div class="lesson-bar-label"><span>Lesson 2: Training AI</span><span style="font-weight:700;color:var(--success);">28/28 ✓</span></div>
+      <div class="lesson-bar-label"><span>Lesson 2: Training AI</span><span style="font-weight:800;color:var(--success);">28/28 ✓</span></div>
       <div class="progress-track"><div class="progress-fill y2" style="width:100%"></div></div>
     </div>
-    <div style="height:10px;"></div>
+    <div style="height:8px;"></div>
     <div class="lesson-bar">
-      <div class="lesson-bar-label"><span>Lesson 3: Using AI Bot</span><span style="font-weight:700;color:var(--y1);">24/28</span></div>
+      <div class="lesson-bar-label"><span>Lesson 3: Using AI Bot</span><span style="font-weight:800;color:var(--y1);">24/28</span></div>
       <div class="progress-track"><div class="progress-fill y2" style="width:86%"></div></div>
     </div>
-    <div style="height:10px;"></div>
+    <div style="height:8px;"></div>
     <div class="lesson-bar">
-      <div class="lesson-bar-label"><span>Lesson 4: AI Tools in School</span><span style="font-weight:700;color:var(--text-muted);">0/28</span></div>
+      <div class="lesson-bar-label"><span>Lesson 4: AI Tools in School</span><span style="color:var(--text-muted);">0/28</span></div>
       <div class="progress-track"><div class="progress-fill y2" style="width:0%"></div></div>
     </div>
-    <div style="height:10px;"></div>
+    <div style="height:8px;"></div>
     <div class="lesson-bar">
-      <div class="lesson-bar-label"><span>Lesson 5: Share Your Voice</span><span style="font-weight:700;color:var(--text-muted);">0/28</span></div>
+      <div class="lesson-bar-label"><span>Lesson 5: Share Your Voice</span><span style="color:var(--text-muted);">0/28</span></div>
       <div class="progress-track"><div class="progress-fill y2" style="width:0%"></div></div>
     </div>
   </div>
 
-  <!-- Year 2 Improvements -->
-  <div class="section-title" style="margin-top:24px;">⬆️ What's Improved in Year 2 <span class="y2badge improved" style="font-size:0.7rem;">vs. Year 1</span></div>
-  <div class="card">
-    <div style="display:flex;flex-direction:column;gap:10px;">
-      <div style="display:flex;align-items:flex-start;gap:10px;">
-        <span>📊</span>
-        <div class="text-sm"><strong>Real-time class dashboard</strong> — teachers see aggregate signals as students complete each lesson (vs. individual data in Year 1)</div>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:10px;">
-        <span>🎯</span>
-        <div class="text-sm"><strong>Misconception flagging</strong> — specific wrong-answer patterns are auto-detected and surfaced with suggested interventions</div>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:10px;">
-        <span>📈</span>
-        <div class="text-sm"><strong>Growth tracking</strong> — confidence and concept scores are trended over time, not just single lesson snapshots</div>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:10px;">
-        <span>🔗</span>
-        <div class="text-sm"><strong>Stronger formative items</strong> — scenario-based questions added to every lesson, with rubric auto-scoring for written responses</div>
-      </div>
-    </div>
-  </div>
-
-</div><!-- end overview tab -->
-
-<!-- ── TAB: CONCEPTS ── -->
-<div class="tab-panel" id="tab-concepts">
-
+  <!-- Concept Heatmap -->
   <div class="section-title">🧠 Concept Mastery Heatmap</div>
-  <p class="text-sm text-muted" style="margin-bottom:16px;">Class-level mastery by concept across all completed lessons. Based on embedded concept checks.</p>
-
+  <p class="section-subtitle">Class-level mastery by concept, per lesson. Based on embedded scenario checks.</p>
   <div class="card" style="padding:16px 8px;">
     <div class="heatmap-wrapper">
       <div class="heatmap-grid">
-        <!-- Headers -->
-        <div class="hm-header" style="text-align:left;font-size:0.72rem;color:var(--text-muted);">Concept</div>
-        <div class="hm-header" style="font-size:0.7rem;">L1</div>
-        <div class="hm-header" style="font-size:0.7rem;">L2</div>
-        <div class="hm-header" style="font-size:0.7rem;">L3</div>
-        <div class="hm-header" style="font-size:0.7rem;">L4</div>
-        <div class="hm-header" style="font-size:0.7rem;">L5</div>
+        <div class="hm-header" style="text-align:left;color:var(--text-muted);">Concept</div>
+        <div class="hm-header">L1</div>
+        <div class="hm-header">L2</div>
+        <div class="hm-header">L3</div>
+        <div class="hm-header">L4</div>
+        <div class="hm-header">L5</div>
 
-        <!-- Row: What is AI -->
-        <div class="hm-label" style="font-size:0.72rem;">What is AI?</div>
+        <div class="hm-label">What is AI?</div>
         <div class="hm-cell hm-high">91%</div>
         <div class="hm-cell hm-high">88%</div>
         <div class="hm-cell hm-high">87%</div>
         <div class="hm-cell hm-none">–</div>
         <div class="hm-cell hm-none">–</div>
 
-        <!-- Row: Training data -->
-        <div class="hm-label" style="font-size:0.72rem;">Training data</div>
+        <div class="hm-label">Training Data</div>
         <div class="hm-cell hm-high">86%</div>
         <div class="hm-cell hm-high">82%</div>
         <div class="hm-cell hm-mid">74%</div>
         <div class="hm-cell hm-none">–</div>
         <div class="hm-cell hm-none">–</div>
 
-        <!-- Row: Sorting/features -->
-        <div class="hm-label" style="font-size:0.72rem;">Sorting features</div>
+        <div class="hm-label">Sorting Features</div>
         <div class="hm-cell hm-high">89%</div>
         <div class="hm-cell hm-high">85%</div>
         <div class="hm-cell hm-high">91%</div>
         <div class="hm-cell hm-none">–</div>
         <div class="hm-cell hm-none">–</div>
 
-        <!-- Row: Bias -->
-        <div class="hm-label" style="font-size:0.72rem;">AI Bias</div>
+        <div class="hm-label">AI Bias ⚠️</div>
         <div class="hm-cell hm-none">–</div>
         <div class="hm-cell hm-low">61%</div>
         <div class="hm-cell hm-mid">69%</div>
         <div class="hm-cell hm-none">–</div>
         <div class="hm-cell hm-none">–</div>
 
-        <!-- Row: Feature vector -->
-        <div class="hm-label" style="font-size:0.72rem;">Feature vectors</div>
+        <div class="hm-label">Feature Vectors</div>
         <div class="hm-cell hm-none">–</div>
         <div class="hm-cell hm-none">–</div>
         <div class="hm-cell hm-mid">73%</div>
         <div class="hm-cell hm-none">–</div>
         <div class="hm-cell hm-none">–</div>
 
-        <!-- Row: Human oversight -->
-        <div class="hm-label" style="font-size:0.72rem;">Human oversight</div>
+        <div class="hm-label">Human Oversight</div>
         <div class="hm-cell hm-none">–</div>
         <div class="hm-cell hm-mid">71%</div>
         <div class="hm-cell hm-mid">76%</div>
@@ -349,8 +992,6 @@
         <div class="hm-cell hm-none">–</div>
       </div>
     </div>
-
-    <!-- Legend -->
     <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;">
       <div style="display:flex;align-items:center;gap:4px;font-size:0.72rem;"><div style="width:12px;height:12px;border-radius:3px;background:#EAFAF1;border:1px solid #9ED9B5;"></div>80–100%</div>
       <div style="display:flex;align-items:center;gap:4px;font-size:0.72rem;"><div style="width:12px;height:12px;border-radius:3px;background:#FEF9E7;border:1px solid #F9E79F;"></div>65–79%</div>
@@ -359,281 +1000,9 @@
     </div>
   </div>
 
-  <!-- Concept Score Bars -->
-  <div class="section-title">📊 Concept Scores (Latest Lesson)</div>
-  <div class="card">
-    <div style="margin-bottom:6px;">
-      <div class="chart-bar">
-        <div class="chart-label">What is AI?</div>
-        <div class="chart-track"><div class="chart-fill" style="width:87%;background:var(--success);">87%</div></div>
-      </div>
-      <div class="chart-bar">
-        <div class="chart-label">Training data</div>
-        <div class="chart-track"><div class="chart-fill" style="width:74%;background:var(--warning);">74%</div></div>
-      </div>
-      <div class="chart-bar">
-        <div class="chart-label">Sorting features</div>
-        <div class="chart-track"><div class="chart-fill" style="width:91%;background:var(--success);">91%</div></div>
-      </div>
-      <div class="chart-bar">
-        <div class="chart-label">AI Bias ⚠️</div>
-        <div class="chart-track"><div class="chart-fill" style="width:69%;background:var(--danger);">69%</div></div>
-      </div>
-      <div class="chart-bar">
-        <div class="chart-label">Feature vectors</div>
-        <div class="chart-track"><div class="chart-fill" style="width:73%;background:var(--warning);">73%</div></div>
-      </div>
-    </div>
-  </div>
-
-</div><!-- end concepts tab -->
-
-<!-- ── TAB: STUDENTS ── -->
-<div class="tab-panel" id="tab-students">
-
-  <div class="section-title">👩‍🎓 Individual Student Progress</div>
-
-  <div class="filter-bar">
-    <button class="filter-chip active" onclick="filterStudents(this,'all')">All (28)</button>
-    <button class="filter-chip" onclick="filterStudents(this,'needs-help')">Needs Support (6)</button>
-    <button class="filter-chip" onclick="filterStudents(this,'on-track')">On Track (17)</button>
-    <button class="filter-chip" onclick="filterStudents(this,'advanced')">Advanced (5)</button>
-  </div>
-
-  <div class="card" id="studentList">
-    <!-- Student Rows -->
-    <div class="student-row" data-status="on-track">
-      <div class="student-avatar" style="background:#7435B2;">AM</div>
-      <div class="student-info">
-        <div class="student-name">Amir M.</div>
-        <div class="student-meta">Conf: 😊 4.2 avg · Mood: Just Right</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">
-        <div class="progress-dots">
-          <div class="pdot done" title="L1"></div>
-          <div class="pdot done" title="L2"></div>
-          <div class="pdot done" title="L3"></div>
-          <div class="pdot not-started" title="L4"></div>
-          <div class="pdot not-started" title="L5"></div>
-        </div>
-        <div class="mini-score high">82%</div>
-      </div>
-    </div>
-
-    <div class="student-row" data-status="needs-help">
-      <div class="student-avatar" style="background:#E65100;">BK</div>
-      <div class="student-info">
-        <div class="student-name">Brianna K.</div>
-        <div class="student-meta">Conf: 😕 2.1 avg · Mood: Too Hard</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">
-        <div class="progress-dots">
-          <div class="pdot done" title="L1"></div>
-          <div class="pdot done" title="L2"></div>
-          <div class="pdot in-progress" title="L3"></div>
-          <div class="pdot not-started" title="L4"></div>
-          <div class="pdot not-started" title="L5"></div>
-        </div>
-        <div class="mini-score low">54%</div>
-      </div>
-    </div>
-
-    <div class="student-row" data-status="advanced">
-      <div class="student-avatar" style="background:#1A6FA8;">CJ</div>
-      <div class="student-info">
-        <div class="student-name">Carlos J.</div>
-        <div class="student-meta">Conf: 😎 4.8 avg · Mood: Too Easy</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">
-        <div class="progress-dots">
-          <div class="pdot done"></div>
-          <div class="pdot done"></div>
-          <div class="pdot done"></div>
-          <div class="pdot not-started"></div>
-          <div class="pdot not-started"></div>
-        </div>
-        <div class="mini-score high">97%</div>
-      </div>
-    </div>
-
-    <div class="student-row" data-status="on-track">
-      <div class="student-avatar" style="background:#2E7D32;">DL</div>
-      <div class="student-info">
-        <div class="student-name">Diana L.</div>
-        <div class="student-meta">Conf: 🙂 3.8 avg · Mood: Just Right</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">
-        <div class="progress-dots">
-          <div class="pdot done"></div>
-          <div class="pdot done"></div>
-          <div class="pdot done"></div>
-          <div class="pdot not-started"></div>
-          <div class="pdot not-started"></div>
-        </div>
-        <div class="mini-score high">79%</div>
-      </div>
-    </div>
-
-    <div class="student-row" data-status="needs-help">
-      <div class="student-avatar" style="background:#E74C3C;">EP</div>
-      <div class="student-info">
-        <div class="student-name">Ethan P.</div>
-        <div class="student-meta">Conf: 😰 1.9 avg · Mood: Too Hard</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">
-        <div class="progress-dots">
-          <div class="pdot done"></div>
-          <div class="pdot done"></div>
-          <div class="pdot not-started"></div>
-          <div class="pdot not-started"></div>
-          <div class="pdot not-started"></div>
-        </div>
-        <div class="mini-score low">48%</div>
-      </div>
-    </div>
-
-    <div class="student-row" data-status="on-track">
-      <div class="student-avatar" style="background:#F57F17;">FW</div>
-      <div class="student-info">
-        <div class="student-name">Fatima W.</div>
-        <div class="student-meta">Conf: 🙂 3.6 avg · Mood: Just Right</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">
-        <div class="progress-dots">
-          <div class="pdot done"></div>
-          <div class="pdot done"></div>
-          <div class="pdot done"></div>
-          <div class="pdot not-started"></div>
-          <div class="pdot not-started"></div>
-        </div>
-        <div class="mini-score mid">77%</div>
-      </div>
-    </div>
-
-    <div class="student-row" data-status="advanced">
-      <div class="student-avatar" style="background:#6A1B9A;">GL</div>
-      <div class="student-info">
-        <div class="student-name">Grace L.</div>
-        <div class="student-meta">Conf: 😎 4.5 avg · Mood: Too Easy</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">
-        <div class="progress-dots">
-          <div class="pdot done"></div>
-          <div class="pdot done"></div>
-          <div class="pdot done"></div>
-          <div class="pdot not-started"></div>
-          <div class="pdot not-started"></div>
-        </div>
-        <div class="mini-score high">94%</div>
-      </div>
-    </div>
-
-    <div style="padding:14px 0;text-align:center;color:var(--text-muted);font-size:0.82rem;">
-      Showing 7 of 28 students · <a style="color:var(--purple);font-weight:700;cursor:pointer;">View all →</a>
-    </div>
-  </div>
-
-  <!-- Legend -->
-  <div class="card card-sm" style="margin-top:12px;">
-    <div style="display:flex;flex-wrap:wrap;gap:10px;">
-      <div style="display:flex;align-items:center;gap:6px;font-size:0.75rem;"><div class="pdot done"></div> Completed</div>
-      <div style="display:flex;align-items:center;gap:6px;font-size:0.75rem;"><div class="pdot in-progress"></div> In progress</div>
-      <div style="display:flex;align-items:center;gap:6px;font-size:0.75rem;"><div class="pdot not-started"></div> Not started</div>
-      <div style="display:flex;align-items:center;gap:6px;font-size:0.75rem;"><div class="mini-score high" style="width:24px;height:18px;font-size:0.6rem;">80+</div> Strong</div>
-      <div style="display:flex;align-items:center;gap:6px;font-size:0.75rem;"><div class="mini-score mid" style="width:24px;height:18px;font-size:0.6rem;">65+</div> OK</div>
-      <div style="display:flex;align-items:center;gap:6px;font-size:0.75rem;"><div class="mini-score low" style="width:24px;height:18px;font-size:0.6rem;">&lt;65</div> Needs help</div>
-    </div>
-  </div>
-
-</div><!-- end students tab -->
-
-<!-- ── TAB: MISCONCEPTIONS ── -->
-<div class="tab-panel" id="tab-misconceptions">
-
-  <div class="section-title">⚠️ Common Gaps & Misconceptions</div>
-  <p class="text-sm text-muted" style="margin-bottom:16px;">Auto-detected from wrong-answer patterns across all concept checks.</p>
-
-  <div class="misconception-block">
-    <div class="misc-header">
-      <div>
-        <div class="misc-title">🔴 AI Bias — Lesson 2</div>
-        <div style="font-size:0.75rem;color:var(--text-muted);">Q: "What happens when training data is biased?"</div>
-      </div>
-      <span class="misc-pct high">39% wrong</span>
-    </div>
-    <div class="wrong-answer">❌ <span><strong>Most common wrong answer:</strong> "Different opinions in training data don't affect AI's accuracy"</span></div>
-    <div class="wrong-answer">❌ <span><strong>Second most common:</strong> "Biased data only affects AI for 1 day then it corrects itself"</span></div>
-    <div style="background:var(--y2-bg);border-radius:var(--r-sm);padding:8px 10px;margin-top:8px;">
-      <div style="font-size:0.78rem;font-weight:700;color:var(--purple);margin-bottom:2px;">💡 Suggested Intervention</div>
-      <div style="font-size:0.78rem;color:var(--text-2);">Re-teach the "Attendance Bot" scenario from Lesson 2 Wrap Up. Ask: "What if only tall students were marked Present?" Connect bias to lasting, real-world consequences.</div>
-    </div>
-  </div>
-
-  <div class="misconception-block">
-    <div class="misc-header">
-      <div>
-        <div class="misc-title">🟡 Feature Vectors — Lesson 3</div>
-        <div style="font-size:0.75rem;color:var(--text-muted);">Q: "How does AI use feature vectors to make decisions?"</div>
-      </div>
-      <span class="misc-pct mid">27% wrong</span>
-    </div>
-    <div class="wrong-answer">❌ <span><strong>Most common wrong answer:</strong> "AI randomly picks from available options"</span></div>
-    <div style="background:var(--y2-bg);border-radius:var(--r-sm);padding:8px 10px;margin-top:8px;">
-      <div style="font-size:0.78rem;font-weight:700;color:var(--purple);margin-bottom:2px;">💡 Suggested Intervention</div>
-      <div style="font-size:0.78rem;color:var(--text-2);">Re-run the food feature vector activity as a whole-class demo. Emphasize the axes and show how proximity in the grid determines AI's choice.</div>
-    </div>
-  </div>
-
-  <div class="misconception-block">
-    <div class="misc-header">
-      <div>
-        <div class="misc-title">🟡 Human Oversight — Lessons 2 & 3</div>
-        <div style="font-size:0.75rem;color:var(--text-muted);">Q: "Should AI make final decisions without humans?"</div>
-      </div>
-      <span class="misc-pct mid">23% wrong</span>
-    </div>
-    <div class="wrong-answer">❌ <span><strong>Common wrong answer:</strong> "AI always makes better decisions than humans, so it should work alone"</span></div>
-    <div style="background:var(--y2-bg);border-radius:var(--r-sm);padding:8px 10px;margin-top:8px;">
-      <div style="font-size:0.78rem;font-weight:700;color:var(--purple);margin-bottom:2px;">💡 Suggested Intervention</div>
-      <div style="font-size:0.78rem;color:var(--text-2);">Use the Lesson 4 Wrap Up scenario (AI Activity Picker only recommending beach activities) to show failure cases that require human correction.</div>
-    </div>
-  </div>
-
-  <!-- Reflection Themes -->
-  <div class="section-title">✍️ Reflection Response Themes</div>
-  <p class="text-sm text-muted" style="margin-bottom:12px;">Auto-extracted key themes from student micro-reflections (NLP keyword analysis).</p>
-  <div class="card">
-    <div class="chart-bar">
-      <div class="chart-label">Data + patterns</div>
-      <div class="chart-track"><div class="chart-fill" style="width:78%;background:var(--y2);">78%</div></div>
-    </div>
-    <div class="chart-bar">
-      <div class="chart-label">Sorting features</div>
-      <div class="chart-track"><div class="chart-fill" style="width:65%;background:var(--y2);">65%</div></div>
-    </div>
-    <div class="chart-bar">
-      <div class="chart-label">AI errors/bias</div>
-      <div class="chart-track"><div class="chart-fill" style="width:52%;background:var(--warning);">52%</div></div>
-    </div>
-    <div class="chart-bar">
-      <div class="chart-label">Human oversight</div>
-      <div class="chart-track"><div class="chart-fill" style="width:41%;background:var(--warning);">41%</div></div>
-    </div>
-    <div class="chart-bar">
-      <div class="chart-label">Real-world use</div>
-      <div class="chart-track"><div class="chart-fill" style="width:34%;background:var(--y1);">34%</div></div>
-    </div>
-    <p class="text-xs text-muted" style="margin-top:8px;">% of reflections that mentioned each theme. Human oversight and real-world application are underrepresented — suggest more class discussion prompts.</p>
-  </div>
-
-</div><!-- end misconceptions tab -->
-
-<!-- ── TAB: SENTIMENT ── -->
-<div class="tab-panel" id="tab-sentiment">
-
+  <!-- Class Sentiment -->
   <div class="section-title">😊 Lesson Difficulty Sentiment</div>
-  <p class="text-sm text-muted" style="margin-bottom:12px;">How did the class rate each lesson's difficulty?</p>
-
+  <p class="section-subtitle">How did the class rate each lesson's difficulty?</p>
   <div class="card">
     <div class="trend-row">
       <div class="trend-lesson">L1 · Predictions</div>
@@ -659,125 +1028,381 @@
         <div class="mood-seg" style="width:21%;background:var(--warning);" title="Too Easy">😴 21%</div>
       </div>
     </div>
-    <div class="trend-row" style="opacity:0.4;">
+    <div class="trend-row" style="opacity:0.45;">
       <div class="trend-lesson">L4 · In School</div>
-      <div class="trend-lesson" style="font-size:0.75rem;color:var(--text-muted);">Not yet completed</div>
+      <div style="font-size:0.75rem;color:var(--text-muted);">Not yet completed</div>
     </div>
-    <div class="trend-row" style="opacity:0.4;">
+    <div class="trend-row" style="opacity:0.45;">
       <div class="trend-lesson">L5 · Share Voice</div>
-      <div class="trend-lesson" style="font-size:0.75rem;color:var(--text-muted);">Not yet completed</div>
+      <div style="font-size:0.75rem;color:var(--text-muted);">Not yet completed</div>
     </div>
-    <!-- Legend -->
-    <div style="display:flex;gap:14px;margin-top:12px;flex-wrap:wrap;">
+    <div style="display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;">
       <div style="display:flex;align-items:center;gap:4px;font-size:0.72rem;"><div style="width:12px;height:12px;border-radius:2px;background:var(--danger);"></div>Too Hard</div>
       <div style="display:flex;align-items:center;gap:4px;font-size:0.72rem;"><div style="width:12px;height:12px;border-radius:2px;background:var(--success);"></div>Just Right</div>
       <div style="display:flex;align-items:center;gap:4px;font-size:0.72rem;"><div style="width:12px;height:12px;border-radius:2px;background:var(--warning);"></div>Too Easy</div>
     </div>
   </div>
 
-  <!-- Confidence Trend -->
-  <div class="section-title">💪 Student Confidence Trend</div>
-  <p class="text-sm text-muted" style="margin-bottom:12px;">Average pre-lesson confidence (1–5 emoji scale) by lesson.</p>
-  <div class="card">
-    <div class="chart-bar">
-      <div class="chart-label">Before L1</div>
-      <div class="chart-track" style="background:linear-gradient(90deg,var(--surface-2),var(--surface-2));"><div class="chart-fill" style="width:56%;background:var(--purple);">2.8/5</div></div>
+  <!-- Top Misconceptions -->
+  <div class="section-title">⚠️ Top Misconceptions &amp; Interventions</div>
+  <p class="section-subtitle">Auto-detected from wrong-answer patterns. Interventions auto-generated based on lesson content.</p>
+
+  <div class="misconception-block">
+    <div class="misc-header">
+      <div>
+        <div class="misc-title">🔴 AI Bias — Lesson 2</div>
+        <div style="font-size:0.75rem;color:var(--text-muted);">Q: "What happens when training data is biased?"</div>
+      </div>
+      <span class="misc-pct high">39% wrong</span>
     </div>
-    <div class="chart-bar">
-      <div class="chart-label">After L1</div>
-      <div class="chart-track"><div class="chart-fill" style="width:68%;background:var(--purple);">3.4/5</div></div>
-    </div>
-    <div class="chart-bar">
-      <div class="chart-label">Before L2</div>
-      <div class="chart-track"><div class="chart-fill" style="width:70%;background:var(--purple);">3.5/5</div></div>
-    </div>
-    <div class="chart-bar">
-      <div class="chart-label">After L2</div>
-      <div class="chart-track"><div class="chart-fill" style="width:64%;background:var(--warning);">3.2/5 ↓</div></div>
-    </div>
-    <div class="chart-bar">
-      <div class="chart-label">Before L3</div>
-      <div class="chart-track"><div class="chart-fill" style="width:66%;background:var(--purple);">3.3/5</div></div>
-    </div>
-    <div class="chart-bar">
-      <div class="chart-label">After L3</div>
-      <div class="chart-track"><div class="chart-fill" style="width:72%;background:var(--success);">3.6/5 ↑</div></div>
-    </div>
-    <div class="insight-card info" style="margin-top:12px;margin-bottom:0;">
-      <div class="insight-title">📉 Confidence dip after Lesson 2</div>
-      <div class="insight-body">The bias concept in L2 caused a confidence drop (3.5 → 3.2). This is pedagogically expected — new, complex concepts should create "productive struggle." Monitor whether L4 discussion restores confidence.</div>
+    <div class="wrong-answer">❌ <span><strong>Most common:</strong> "Different opinions in training data don't affect AI's accuracy"</span></div>
+    <div class="wrong-answer">❌ <span><strong>Second:</strong> "Biased data only affects AI for one day, then it corrects itself"</span></div>
+    <div style="background:var(--y2-bg);border-radius:var(--r-sm);padding:8px 10px;margin-top:8px;">
+      <div style="font-size:0.78rem;font-weight:700;color:var(--purple);margin-bottom:3px;">💡 Suggested Intervention</div>
+      <div style="font-size:0.78rem;color:var(--text-2);">Re-teach the "Attendance Bot" scenario from Lesson 2 Wrap Up. Ask: "What if only tall students were marked Present?" Connect bias to lasting, real-world consequences.</div>
     </div>
   </div>
 
-  <!-- Help Preferences -->
-  <div class="section-title">🛠️ What Students Said Would Help</div>
-  <p class="text-sm text-muted" style="margin-bottom:12px;">From end-of-lesson "What would help you most?" responses.</p>
+  <div class="misconception-block">
+    <div class="misc-header">
+      <div>
+        <div class="misc-title">🟡 Feature Vectors — Lesson 3</div>
+        <div style="font-size:0.75rem;color:var(--text-muted);">Q: "How does AI use feature vectors to make decisions?"</div>
+      </div>
+      <span class="misc-pct mid">27% wrong</span>
+    </div>
+    <div class="wrong-answer">❌ <span><strong>Most common:</strong> "AI randomly picks from available options"</span></div>
+    <div style="background:var(--y2-bg);border-radius:var(--r-sm);padding:8px 10px;margin-top:8px;">
+      <div style="font-size:0.78rem;font-weight:700;color:var(--purple);margin-bottom:3px;">💡 Suggested Intervention</div>
+      <div style="font-size:0.78rem;color:var(--text-2);">Re-run the food feature vector activity as a whole-class demo. Emphasize the axes and show how proximity in the grid determines AI's choice.</div>
+    </div>
+  </div>
+
+  <div class="misconception-block">
+    <div class="misc-header">
+      <div>
+        <div class="misc-title">🟡 Human Oversight — Lessons 2 &amp; 3</div>
+        <div style="font-size:0.75rem;color:var(--text-muted);">Q: "Should AI make final decisions without humans?"</div>
+      </div>
+      <span class="misc-pct mid">23% wrong</span>
+    </div>
+    <div class="wrong-answer">❌ <span><strong>Common:</strong> "AI always makes better decisions than humans, so it should work alone"</span></div>
+    <div style="background:var(--y2-bg);border-radius:var(--r-sm);padding:8px 10px;margin-top:8px;">
+      <div style="font-size:0.78rem;font-weight:700;color:var(--purple);margin-bottom:3px;">💡 Suggested Intervention</div>
+      <div style="font-size:0.78rem;color:var(--text-2);">Use the Lesson 4 AI Activity Picker scenario — show the failure case when AI only recommends beach activities for all students regardless of location or ability.</div>
+    </div>
+  </div>
+
+</div><!-- /tab-dashboards -->
+
+
+<!-- ═══════════════════════════════════════════
+     TAB 4: PROGRESSION
+══════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-progression">
+
+  <!-- ── 1. Class Concept Mastery Over Time ── -->
+  <div class="section-title">📊 Class Concept Mastery Over Time</div>
+  <p class="section-subtitle">Percentage of students answering correctly for each concept, measured at each lesson (L1, L2, L3). Growth across lessons demonstrates cumulative learning.</p>
+
   <div class="card">
-    <div class="chart-bar">
-      <div class="chart-label">More examples</div>
-      <div class="chart-track"><div class="chart-fill" style="width:64%;background:var(--y2);">64%</div></div>
+    <!-- Legend -->
+    <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:5px;font-size:0.75rem;font-weight:700;">
+        <div style="width:14px;height:8px;border-radius:2px;background:var(--y1);"></div>Lesson 1
+      </div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:0.75rem;font-weight:700;">
+        <div style="width:14px;height:8px;border-radius:2px;background:var(--y2);"></div>Lesson 2
+      </div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:0.75rem;font-weight:700;">
+        <div style="width:14px;height:8px;border-radius:2px;background:var(--y3);"></div>Lesson 3
+      </div>
     </div>
-    <div class="chart-bar">
-      <div class="chart-label">More practice</div>
-      <div class="chart-track"><div class="chart-fill" style="width:48%;background:var(--y2);">48%</div></div>
+
+    <!-- What is AI -->
+    <div class="multi-bar-group">
+      <div class="mb-concept">What is AI</div>
+      <div class="mb-bars">
+        <div class="mb-row"><span class="mb-lbl">L1</span><div class="mb-track"><div class="mb-fill l1-color" style="width:72%">72%</div></div></div>
+        <div class="mb-row"><span class="mb-lbl">L2</span><div class="mb-track"><div class="mb-fill l2-color" style="width:85%">85%</div></div></div>
+        <div class="mb-row"><span class="mb-lbl">L3</span><div class="mb-track"><div class="mb-fill l3-color" style="width:87%">87%</div></div></div>
+      </div>
     </div>
-    <div class="chart-bar">
-      <div class="chart-label">Less reading</div>
-      <div class="chart-track"><div class="chart-fill" style="width:39%;background:var(--y2);">39%</div></div>
+
+    <!-- Training Data -->
+    <div class="multi-bar-group">
+      <div class="mb-concept">Training Data</div>
+      <div class="mb-bars">
+        <div class="mb-row"><span class="mb-lbl">L1</span><div class="mb-track"><div class="mb-fill l1-color" style="width:65%">65%</div></div></div>
+        <div class="mb-row"><span class="mb-lbl">L2</span><div class="mb-track"><div class="mb-fill l2-color" style="width:74%">74%</div></div></div>
+        <div class="mb-row"><span class="mb-lbl">L3</span><div class="mb-track"><div class="mb-fill l3-color" style="width:82%">82%</div></div></div>
+      </div>
     </div>
-    <div class="chart-bar">
-      <div class="chart-label">Partner work</div>
-      <div class="chart-track"><div class="chart-fill" style="width:35%;background:var(--y2);">35%</div></div>
+
+    <!-- AI Bias -->
+    <div class="multi-bar-group">
+      <div class="mb-concept">AI Bias <span class="developing-badge">Still Developing</span></div>
+      <div class="mb-bars">
+        <div class="mb-row"><span class="mb-lbl">L1</span><div class="mb-track"><div class="mb-fill l1-color" style="width:48%">48%</div></div></div>
+        <div class="mb-row"><span class="mb-lbl">L2</span><div class="mb-track"><div class="mb-fill" style="width:61%;background:var(--warning);">61%</div></div></div>
+        <div class="mb-row"><span class="mb-lbl">L3</span><div class="mb-track"><div class="mb-fill" style="width:69%;background:var(--warning);">69%</div></div></div>
+      </div>
     </div>
-    <div class="chart-bar">
-      <div class="chart-label">A video</div>
-      <div class="chart-track"><div class="chart-fill" style="width:28%;background:var(--y2);">28%</div></div>
+
+    <!-- Feature Vectors -->
+    <div class="multi-bar-group">
+      <div class="mb-concept">Feature Vectors</div>
+      <div class="mb-bars">
+        <div class="mb-row"><span class="mb-lbl">L1</span><div class="mb-track"><div style="height:100%;background:var(--surface-2);display:flex;align-items:center;padding-left:8px;font-size:0.62rem;color:var(--text-muted);">Not yet taught</div></div></div>
+        <div class="mb-row"><span class="mb-lbl">L2</span><div class="mb-track"><div style="height:100%;background:var(--surface-2);display:flex;align-items:center;padding-left:8px;font-size:0.62rem;color:var(--text-muted);">Not yet taught</div></div></div>
+        <div class="mb-row"><span class="mb-lbl">L3</span><div class="mb-track"><div class="mb-fill l3-color" style="width:73%">73%</div></div></div>
+      </div>
     </div>
-    <div class="chart-bar">
-      <div class="chart-label">More challenge</div>
-      <div class="chart-track"><div class="chart-fill" style="width:18%;background:var(--y2);">18%</div></div>
+
+    <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">
+      Growth trend: "What is AI" +15pt, "Training Data" +17pt, "AI Bias" +21pt (still below proficiency threshold). "Feature Vectors" introduced L3.
+    </div>
+  </div>
+
+  <!-- ── 2. Individual Learning Journeys ── -->
+  <div class="section-title" style="margin-top:28px;">👤 Individual Learning Journeys</div>
+  <p class="section-subtitle">Four representative students showing concept-level progress, confidence trends, and recommended next actions.</p>
+
+  <!-- Amir M — On Track -->
+  <div class="journey-card">
+    <div class="journey-header">
+      <div class="journey-avatar" style="background:#7435B2;">AM</div>
+      <div>
+        <div class="journey-name">Amir M.</div>
+        <div class="journey-meta">Conf: 😊 4.2 avg · Lessons 1–3 complete · Mood: Just Right</div>
+      </div>
+      <div class="journey-status status-on-track">On Track 🟢</div>
+    </div>
+    <div class="concept-bar-sm">
+      <div class="cbsm-row"><span class="cbsm-lbl">What is AI</span><div class="cbsm-track"><div class="cbsm-fill" style="width:90%;background:var(--success);"></div></div><span class="cbsm-val" style="color:var(--success);">90%</span><span class="trend-arrow ta-up">↑</span></div>
+      <div class="cbsm-row"><span class="cbsm-lbl">Training Data</span><div class="cbsm-track"><div class="cbsm-fill" style="width:84%;background:var(--success);"></div></div><span class="cbsm-val" style="color:var(--success);">84%</span><span class="trend-arrow ta-up">↑</span></div>
+      <div class="cbsm-row"><span class="cbsm-lbl">AI Bias</span><div class="cbsm-track"><div class="cbsm-fill" style="width:72%;background:var(--y2);"></div></div><span class="cbsm-val" style="color:var(--y2);">72%</span><span class="trend-arrow ta-up">↑</span></div>
+      <div class="cbsm-row"><span class="cbsm-lbl">Feature Vectors</span><div class="cbsm-track"><div class="cbsm-fill" style="width:80%;background:var(--success);"></div></div><span class="cbsm-val" style="color:var(--success);">80%</span><span class="trend-arrow ta-up">↑</span></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">
+      <span style="font-size:0.8rem;font-weight:700;">Overall: 82%</span>
+      <span style="font-size:0.75rem;color:var(--success);">All concepts trending up — steady growth across all lessons</span>
+    </div>
+  </div>
+
+  <!-- Brianna K — Needs Support -->
+  <div class="journey-card" style="border-color:#FBBABA;">
+    <div class="journey-header">
+      <div class="journey-avatar" style="background:#E74C3C;">BK</div>
+      <div>
+        <div class="journey-name">Brianna K.</div>
+        <div class="journey-meta">Conf: 😕 2.1 avg · L3 incomplete · Mood: Too Hard</div>
+      </div>
+      <div class="journey-status status-needs-sup">Needs Support 🔴</div>
+    </div>
+    <div class="concept-bar-sm">
+      <div class="cbsm-row"><span class="cbsm-lbl">What is AI</span><div class="cbsm-track"><div class="cbsm-fill" style="width:62%;background:var(--warning);"></div></div><span class="cbsm-val" style="color:var(--warning);">62%</span><span class="trend-arrow ta-flat">→</span></div>
+      <div class="cbsm-row"><span class="cbsm-lbl">Training Data</span><div class="cbsm-track"><div class="cbsm-fill" style="width:55%;background:var(--warning);"></div></div><span class="cbsm-val" style="color:var(--warning);">55%</span><span class="trend-arrow ta-flat">→</span></div>
+      <div class="cbsm-row"><span class="cbsm-lbl">AI Bias</span><div class="cbsm-track"><div class="cbsm-fill" style="width:38%;background:var(--danger);"></div></div><span class="cbsm-val" style="color:var(--danger);">38%</span><span class="trend-arrow ta-down">↓</span></div>
+      <div class="cbsm-row"><span class="cbsm-lbl">Feature Vectors</span><div class="cbsm-track"><div class="cbsm-fill" style="width:45%;background:var(--danger);"></div></div><span class="cbsm-val" style="color:var(--danger);">45%</span><span class="trend-arrow ta-down">↓</span></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">
+      <span style="font-size:0.8rem;font-weight:700;">Overall: 54%</span>
+      <span style="font-size:0.75rem;color:var(--danger);">Confidence low; AI Bias a significant gap</span>
+    </div>
+    <div class="intervention-box">
+      <strong>Suggested Intervention:</strong> Pair with Amir for the Lesson 4 debate. Before that, provide the "Attendance Bot" worked example one-on-one. Check in after each step — Brianna may need more concrete anchoring before abstract transfer.
+    </div>
+  </div>
+
+  <!-- Carlos J — Extend Learning -->
+  <div class="journey-card" style="border-color:#F0D080;">
+    <div class="journey-header">
+      <div class="journey-avatar" style="background:#1A6FA8;">CJ</div>
+      <div>
+        <div class="journey-name">Carlos J.</div>
+        <div class="journey-meta">Conf: 😎 4.8 avg · Lessons 1–3 complete · Mood: Too Easy</div>
+      </div>
+      <div class="journey-status status-extend">Extend Learning 🟡</div>
+    </div>
+    <div class="concept-bar-sm">
+      <div class="cbsm-row"><span class="cbsm-lbl">What is AI</span><div class="cbsm-track"><div class="cbsm-fill" style="width:98%;background:var(--success);"></div></div><span class="cbsm-val" style="color:var(--success);">98%</span><span class="trend-arrow ta-up">↑</span></div>
+      <div class="cbsm-row"><span class="cbsm-lbl">Training Data</span><div class="cbsm-track"><div class="cbsm-fill" style="width:96%;background:var(--success);"></div></div><span class="cbsm-val" style="color:var(--success);">96%</span><span class="trend-arrow ta-up">↑</span></div>
+      <div class="cbsm-row"><span class="cbsm-lbl">AI Bias</span><div class="cbsm-track"><div class="cbsm-fill" style="width:94%;background:var(--success);"></div></div><span class="cbsm-val" style="color:var(--success);">94%</span><span class="trend-arrow ta-up">↑</span></div>
+      <div class="cbsm-row"><span class="cbsm-lbl">Feature Vectors</span><div class="cbsm-track"><div class="cbsm-fill" style="width:99%;background:var(--success);"></div></div><span class="cbsm-val" style="color:var(--success);">99%</span><span class="trend-arrow ta-up">↑</span></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">
+      <span style="font-size:0.8rem;font-weight:700;">Overall: 97%</span>
+      <span style="font-size:0.75rem;color:#B8860B;">All concepts advanced — ready for extension</span>
+    </div>
+    <div class="intervention-box" style="background:#FFFBF0;border:1px solid #F0D080;">
+      <strong style="color:#7A5800;">Challenge Suggestion:</strong> Assign the optional "Design Your Own AI Classifier" task from Lesson 5 Appendix. Ask Carlos to create a feature vector diagram for a real-world scenario (e.g., an AI that recommends library books) and present it to the class.
+    </div>
+  </div>
+
+  <!-- Fatima W — Monitor -->
+  <div class="journey-card" style="border-color:#F9E79F;">
+    <div class="journey-header">
+      <div class="journey-avatar" style="background:#F57F17;">FW</div>
+      <div>
+        <div class="journey-name">Fatima W.</div>
+        <div class="journey-meta">Conf: 🙂 3.6 avg · Lessons 1–3 complete · Mood: Just Right</div>
+      </div>
+      <div class="journey-status status-monitor">Monitor 🟡</div>
+    </div>
+    <div class="concept-bar-sm">
+      <div class="cbsm-row"><span class="cbsm-lbl">What is AI</span><div class="cbsm-track"><div class="cbsm-fill" style="width:88%;background:var(--success);"></div></div><span class="cbsm-val" style="color:var(--success);">88%</span><span class="trend-arrow ta-up">↑</span></div>
+      <div class="cbsm-row"><span class="cbsm-lbl">Training Data</span><div class="cbsm-track"><div class="cbsm-fill" style="width:82%;background:var(--success);"></div></div><span class="cbsm-val" style="color:var(--success);">82%</span><span class="trend-arrow ta-up">↑</span></div>
+      <div class="cbsm-row"><span class="cbsm-lbl">AI Bias</span><div class="cbsm-track"><div class="cbsm-fill" style="width:52%;background:var(--danger);"></div></div><span class="cbsm-val" style="color:var(--danger);">52%</span><span class="trend-arrow ta-down">↓</span></div>
+      <div class="cbsm-row"><span class="cbsm-lbl">Feature Vectors</span><div class="cbsm-track"><div class="cbsm-fill" style="width:79%;background:var(--y2);"></div></div><span class="cbsm-val" style="color:var(--y2);">79%</span><span class="trend-arrow ta-up">↑</span></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">
+      <span style="font-size:0.8rem;font-weight:700;">Overall: 75%</span>
+      <span style="font-size:0.75rem;color:var(--warning);">Strong on sorting/features, inconsistent on bias</span>
+    </div>
+    <div class="intervention-box" style="background:#FFF8E1;border:1px solid #F9E79F;">
+      <strong style="color:#7A5800;">Watch for:</strong> Fatima's bias score is well below her other concept scores — this isn't a general struggle, it's a specific conceptual gap. Monitor her Lesson 4 open response closely. If she still conflates "different opinions" with "bias," use a visual anchor (training data as a funnel with holes).
+    </div>
+  </div>
+
+  <!-- ── 3. Level Distribution ── -->
+  <div class="section-title" style="margin-top:28px;">📊 Learning Progression Level Distribution</div>
+  <p class="section-subtitle">For each of the 5 learning outcomes, the class is distributed across four proficiency levels. Updated after each lesson's scenario-based checks.</p>
+
+  <div class="card">
+    <div class="level-dist-row">
+      <div class="ld-concept">Outcome 1 · What is AI &amp; How It Learns</div>
+      <div class="ld-bar">
+        <div class="ld-seg ld-l1" style="width:4%">L1</div>
+        <div class="ld-seg ld-l2" style="width:14%">14%</div>
+        <div class="ld-seg ld-l3" style="width:47%">47%</div>
+        <div class="ld-seg ld-l4" style="width:35%">35%</div>
+      </div>
+    </div>
+    <div style="height:8px;"></div>
+    <div class="level-dist-row">
+      <div class="ld-concept">Outcome 2 · Training Data &amp; Diversity</div>
+      <div class="ld-bar">
+        <div class="ld-seg ld-l1" style="width:7%">L1</div>
+        <div class="ld-seg ld-l2" style="width:21%">21%</div>
+        <div class="ld-seg ld-l3" style="width:50%">50%</div>
+        <div class="ld-seg ld-l4" style="width:22%">22%</div>
+      </div>
+    </div>
+    <div style="height:8px;"></div>
+    <div class="level-dist-row">
+      <div class="ld-concept">Outcome 3 · AI Bias &amp; Fairness</div>
+      <div class="ld-bar">
+        <div class="ld-seg ld-l1" style="width:18%">18%</div>
+        <div class="ld-seg ld-l2" style="width:36%">36%</div>
+        <div class="ld-seg ld-l3" style="width:32%">32%</div>
+        <div class="ld-seg ld-l4" style="width:14%">14%</div>
+      </div>
+    </div>
+    <div style="height:8px;"></div>
+    <div class="level-dist-row">
+      <div class="ld-concept">Outcome 4 · Feature Vectors &amp; Classification</div>
+      <div class="ld-bar">
+        <div class="ld-seg ld-l1" style="width:10%">10%</div>
+        <div class="ld-seg ld-l2" style="width:25%">25%</div>
+        <div class="ld-seg ld-l3" style="width:43%">43%</div>
+        <div class="ld-seg ld-l4" style="width:22%">22%</div>
+      </div>
+    </div>
+    <div style="height:8px;"></div>
+    <div class="level-dist-row">
+      <div class="ld-concept">Outcome 5 · Human Oversight &amp; AI Ethics</div>
+      <div class="ld-bar">
+        <div class="ld-seg ld-l1" style="width:14%">14%</div>
+        <div class="ld-seg ld-l2" style="width:30%">30%</div>
+        <div class="ld-seg ld-l3" style="width:38%">38%</div>
+        <div class="ld-seg ld-l4" style="width:18%">18%</div>
+      </div>
+    </div>
+
+    <div class="ld-legend">
+      <div class="ld-legend-item"><div class="ld-dot" style="background:#E74C3C;"></div>Level 1 – Beginning</div>
+      <div class="ld-legend-item"><div class="ld-dot" style="background:#F39C12;"></div>Level 2 – Developing</div>
+      <div class="ld-legend-item"><div class="ld-dot" style="background:#3498DB;"></div>Level 3 – Proficient</div>
+      <div class="ld-legend-item"><div class="ld-dot" style="background:#27AE60;"></div>Level 4 – Advanced</div>
+    </div>
+
+    <div style="margin-top:14px;font-size:0.78rem;color:var(--text-muted);">
+      <strong>Key finding:</strong> AI Bias (Outcome 3) has the highest Level 1+2 concentration (54%) and lowest Level 4 rate (14%). This aligns with vocabulary tracker and misconception flags. Intervention before Lesson 4 is recommended.
     </div>
   </div>
 
   <!-- Year 3 Bridge -->
-  <div class="card" style="margin-top:16px;background:linear-gradient(135deg,#E8F8EE,#D4F0DF);border:1px solid #9ED9B5;">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-      <span>🚀</span>
-      <span class="text-sm font-bold" style="color:var(--y3);">Ready for Year 3?</span>
-    </div>
-    <p class="text-sm" style="color:var(--text-2);margin-bottom:12px;">Two years of formative signals from Year 1 and Year 2 now power a <strong>validated outcomes framework</strong> — with reliable pre/post assessments and school-system reporting.</p>
+  <div class="y3-bridge">
+    <h3>🚀 Ready for Year 3?</h3>
+    <p class="text-sm" style="color:var(--text-2);margin-bottom:14px;">These progression distributions and individual journey data become the <strong>baseline evidence</strong> that Year 3's validated outcomes framework will measure against — enabling school-system-level reporting of K–5 AI literacy growth.</p>
     <a href="year3.html" class="btn btn-y3 btn-sm btn-block">📋 See Year 3 Outcomes Framework →</a>
   </div>
 
-</div><!-- end sentiment tab -->
+</div><!-- /tab-progression -->
+
 
 <script>
-  function showTab(name) {
+  /* ── Tab Switching ── */
+  function showTab(name, btn) {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('tab-' + name).classList.add('active');
-    event.target.classList.add('active');
+    if (btn) btn.classList.add('active');
+
+    // Animate fills in the newly-visible tab
+    requestAnimationFrame(() => {
+      const panel = document.getElementById('tab-' + name);
+      panel.querySelectorAll('.mb-fill, .progress-fill, .cbsm-fill, .ld-seg, .mood-seg').forEach(el => {
+        const target = el.style.width;
+        el.style.width = '0';
+        requestAnimationFrame(() => {
+          el.style.transition = 'width 0.75s ease';
+          el.style.width = target;
+        });
+      });
+    });
   }
 
-  function filterStudents(btn, filter) {
-    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.student-row').forEach(row => {
-      if (filter === 'all') {
-        row.style.display = '';
-      } else {
-        row.style.display = row.dataset.status === filter ? '' : 'none';
+  /* ── MC Choice Interaction ── */
+  function selectChoice(el, isCorrect) {
+    const siblings = el.closest('.q-choices').querySelectorAll('.q-choice');
+    siblings.forEach(s => {
+      s.style.pointerEvents = 'none';
+      if (!s.classList.contains('correct')) {
+        s.style.opacity = '0.55';
       }
     });
+    if (!isCorrect) {
+      el.style.borderColor = 'var(--danger)';
+      el.style.background  = 'var(--danger-bg)';
+      el.style.opacity = '1';
+      el.querySelector('.q-letter').style.background = 'var(--danger)';
+      el.querySelector('.q-letter').style.color = 'white';
+      // Reveal correct
+      siblings.forEach(s => {
+        if (s.classList.contains('correct')) {
+          s.style.opacity = '1';
+          s.style.borderColor = 'var(--success)';
+          s.style.background  = 'var(--success-bg)';
+        }
+      });
+    } else {
+      el.style.opacity = '1';
+    }
   }
 
-  // Animate chart fills on load
+  /* ── Animate chart bars on initial load ── */
   window.addEventListener('load', () => {
-    document.querySelectorAll('.chart-fill').forEach(el => {
-      const w = el.style.width;
-      el.style.width = '0';
-      setTimeout(() => { el.style.width = w; }, 300);
-    });
+    // Animate only in the active tab on load
+    const activePanel = document.querySelector('.tab-panel.active');
+    if (activePanel) {
+      activePanel.querySelectorAll('.progress-fill, .mb-fill, .cbsm-fill, .ld-seg, .mood-seg').forEach(el => {
+        const w = el.style.width;
+        el.style.width = '0';
+        setTimeout(() => { el.style.width = w; }, 400);
+      });
+    }
   });
 </script>
 </body>
