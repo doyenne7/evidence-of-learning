@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evidence of Learning – 3-Year Measurement Roadmap</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .roadmap-header { text-align: center; padding: 40px 20px 32px; }
+    .position-quote {
+      background: linear-gradient(135deg, #1A1A2E, #2D1B69);
+      color: white;
+      border-radius: var(--r-xl);
+      padding: 28px 24px;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .position-quote::before {
+      content: '"';
+      position: absolute;
+      top: -20px; left: 12px;
+      font-size: 8rem;
+      opacity: 0.08;
+      font-family: Georgia, serif;
+      line-height: 1;
+    }
+    .position-quote p { color: rgba(255,255,255,0.92); font-size: 1rem; line-height: 1.7; position: relative; z-index: 1; }
+    .course-overview { background: var(--surface); border-radius: var(--r-xl); padding: 24px; margin-bottom: 24px; border: 1px solid var(--border); }
+    .lesson-pill {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .lesson-pill:last-child { border-bottom: none; }
+    .lesson-num {
+      min-width: 32px; height: 32px;
+      border-radius: var(--r-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800;
+      font-size: 0.85rem;
+      color: white;
+    }
+    .signals-section { margin-top: 24px; }
+    .signal-table { width: 100%; }
+    .signal-table-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+    }
+    .signal-table-row:last-child { border-bottom: none; }
+    .signal-name { font-weight: 600; font-size: 0.9rem; }
+    .signal-desc { font-size: 0.82rem; color: var(--text-2); margin-top: 2px; }
+    .signal-tag {
+      padding: 2px 8px;
+      border-radius: var(--r-full);
+      font-size: 0.7rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .signal-tag.behavioral   { background: #EBF5FF; color: #1A6FA8; }
+    .signal-tag.cognitive    { background: var(--y2-bg); color: var(--y2); }
+    .signal-tag.affective    { background: #FFF3E0; color: #E65100; }
+    .signal-tag.reflective   { background: var(--y3-bg); color: var(--y3); }
+    .year-card {
+      border-radius: var(--r-xl);
+      padding: 24px;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .year-card::after {
+      content: attr(data-year);
+      position: absolute;
+      right: -12px; bottom: -16px;
+      font-size: 6rem;
+      font-weight: 900;
+      opacity: 0.06;
+      line-height: 1;
+    }
+    .year-card.y1 { background: linear-gradient(135deg, #E8F6FC, #D0EDFA); border: 1px solid #B3DDF2; }
+    .year-card.y2 { background: linear-gradient(135deg, #F2EAF9, #E5D4F5); border: 1px solid #C9A8E8; }
+    .year-card.y3 { background: linear-gradient(135deg, #E8F8EE, #D4F0DF); border: 1px solid #9ED9B5; }
+    .year-card h3 { margin-bottom: 4px; }
+    .year-card .year-label { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 12px; }
+    .y1 .year-label { color: var(--y1); }
+    .y2 .year-label { color: var(--y2); }
+    .y3 .year-label { color: var(--y3); }
+    .signals-list { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+    .signals-list li {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 0.88rem; color: var(--text-2);
+      list-style: none;
+    }
+    .arrow-connector {
+      text-align: center;
+      font-size: 1.5rem;
+      color: var(--text-muted);
+      margin: 4px 0;
+    }
+    .cta-block {
+      text-align: center;
+      padding: 32px 20px;
+    }
+    .cta-links { display: flex; flex-direction: column; gap: 12px; max-width: 320px; margin: 0 auto; }
+    .demo-link {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px;
+      border-radius: var(--r-lg);
+      text-decoration: none;
+      font-weight: 700;
+      transition: var(--t-med);
+      color: white;
+    }
+    .demo-link:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .demo-link.y1 { background: var(--y1); }
+    .demo-link.y2 { background: var(--y2); }
+    .demo-link.y3 { background: var(--y3); }
+    .demo-link-sub { font-size: 0.78rem; opacity: 0.85; font-weight: 400; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (min-width: 640px) {
+      .cta-links { flex-direction: row; max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="logo-icon">🧠</div>
+      <span>Evidence of Learning</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html"  class="nav-link active">Overview</a>
+      <a href="year1.html"  class="nav-link y1">Year 1</a>
+      <a href="year2.html"  class="nav-link y2">Year 2</a>
+      <a href="year3.html"  class="nav-link y3">Year 3</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">🎓 Grant Proposal Prototype · Code.org</div>
+    <h1>Evidence of Learning:<br>A 3-Year Measurement Roadmap</h1>
+    <p>Starting from Year 1 with lightweight formative signals — iteratively building toward validated learning outcomes by Year 3.</p>
+    <div class="hero-cta">
+      <a href="year1.html" class="btn btn-y1">▶ Try Year 1 Demo</a>
+      <a href="#roadmap"   class="btn btn-outline" style="color:white;border-color:rgba(255,255,255,0.4)">See the Roadmap ↓</a>
+    </div>
+  </div>
+</section>
+
+<!-- Main Content -->
+<main class="container-wide" style="padding-top:32px; padding-bottom:64px;">
+
+  <!-- Position Statement -->
+  <div class="position-quote">
+    <div style="font-size:0.78rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:10px;">Our Position for Donors</div>
+    <p>"We are not waiting until Year 3 to think about assessment. We are starting with <strong>lightweight formative learning signals from Year 1</strong>, so we can continuously improve the experience and iteratively build toward learning-outcomes measurement appropriate for school systems."</p>
+  </div>
+
+  <!-- Course Overview -->
+  <div class="course-overview">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+      <span style="font-size:1.3rem;">🤖</span>
+      <div>
+        <div style="font-size:0.75rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Code.org K–5 AI Curriculum</div>
+        <h3 style="margin:0;">How AI Makes Decisions</h3>
+      </div>
+    </div>
+    <p class="text-sm text-muted" style="margin-bottom:16px;">5 lessons · 45 min each · Upper elementary · Mobile-first learning</p>
+
+    <div>
+      <div class="lesson-pill">
+        <div class="lesson-num" style="background:#1A6FA8;">1</div>
+        <div>
+          <div class="font-bold" style="font-size:0.9rem;">Making Predictions</div>
+          <div class="text-sm text-muted">Sorting items by features; supervised & reinforcement learning</div>
+        </div>
+      </div>
+      <div class="lesson-pill">
+        <div class="lesson-num" style="background:#E65100;">2</div>
+        <div>
+          <div class="font-bold" style="font-size:0.9rem;">Training AI</div>
+          <div class="text-sm text-muted">How training data impacts predictions; AI for Oceans; bias</div>
+        </div>
+      </div>
+      <div class="lesson-pill">
+        <div class="lesson-num" style="background:#6A1B9A;">3</div>
+        <div>
+          <div class="font-bold" style="font-size:0.9rem;">Using AI Bot</div>
+          <div class="text-sm text-muted">Feature vectors; Dance Party AI; human-AI collaboration</div>
+        </div>
+      </div>
+      <div class="lesson-pill">
+        <div class="lesson-num" style="background:#2E7D32;">4</div>
+        <div>
+          <div class="font-bold" style="font-size:0.9rem;">AI Tools in School</div>
+          <div class="text-sm text-muted">Evaluating student data; weighing AI pros and cons</div>
+        </div>
+      </div>
+      <div class="lesson-pill">
+        <div class="lesson-num" style="background:#F57F17;">5</div>
+        <div>
+          <div class="font-bold" style="font-size:0.9rem;">Share Your Voice</div>
+          <div class="text-sm text-muted">Creating artifacts; reflecting on AI impact; Glows & Grows</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3-Year Roadmap -->
+  <div id="roadmap" style="scroll-margin-top:80px;">
+    <h2 style="margin-bottom:6px;">The 3-Year Measurement Roadmap</h2>
+    <p class="text-muted text-sm" style="margin-bottom:20px;">Each year builds on the prior, with increasing rigor and validity.</p>
+
+    <!-- Year 1 Card -->
+    <div class="year-card y1" data-year="1">
+      <div class="year-label">Year 1</div>
+      <h3>Collecting Early Evidence of Learning</h3>
+      <p class="text-sm" style="margin:8px 0 12px;color:var(--text-2);">Lightweight formative signals woven into every lesson — automatic and low-friction for students and teachers.</p>
+      <ul class="signals-list">
+        <li>🔵 <span><strong>Engagement signals</strong> — lesson completion, time on task, activity attempts</span></li>
+        <li>🟡 <span><strong>Confidence checks</strong> — pre/post emoji self-ratings before and after lessons</span></li>
+        <li>🟣 <span><strong>Embedded concept checks</strong> — 1–2 quick questions mapped to each lesson's objectives</span></li>
+        <li>🟢 <span><strong>Micro-reflections</strong> — short text prompts ("What surprised you?", "What was hardest?")</span></li>
+        <li>🟠 <span><strong>Lesson sentiment</strong> — end-of-lesson mood ("Too hard / Just right / Too easy")</span></li>
+      </ul>
+      <a href="year1.html" class="btn btn-y1 btn-sm" style="margin-top:16px;">▶ Try Interactive Demo →</a>
+    </div>
+
+    <div class="arrow-connector">↓</div>
+
+    <!-- Year 2 Card -->
+    <div class="year-card y2" data-year="2">
+      <div class="year-label">Year 2</div>
+      <h3>Refining Learning Measurement</h3>
+      <p class="text-sm" style="margin:8px 0 12px;color:var(--text-2);">Year 1 signals are aggregated into teacher dashboards; formative assessment gains stronger scaffolding and feedback loops.</p>
+      <ul class="signals-list">
+        <li>📊 <span><strong>Teacher dashboards</strong> — concept mastery heatmaps, class-level trend lines</span></li>
+        <li>📈 <span><strong>Learning progression tracking</strong> — individual student growth over 5 lessons</span></li>
+        <li>🔍 <span><strong>Misconception detection</strong> — flagging common wrong-answer patterns</span></li>
+        <li>🏫 <span><strong>Stronger formative items</strong> — richer scenario-based questions per lesson</span></li>
+        <li>🤝 <span><strong>Facilitation insights</strong> — "Class needs more practice on Lesson 2 bias concept"</span></li>
+      </ul>
+      <a href="year2.html" class="btn btn-y2 btn-sm" style="margin-top:16px;">📊 View Teacher Dashboard →</a>
+    </div>
+
+    <div class="arrow-connector">↓</div>
+
+    <!-- Year 3 Card -->
+    <div class="year-card y3" data-year="3">
+      <div class="year-label">Year 3</div>
+      <h3>Validated Learning Outcomes Framework</h3>
+      <p class="text-sm" style="margin:8px 0 12px;color:var(--text-2);">Two years of data inform a robust, evidence-backed assessment framework aligned to AI4K12 and CSTA standards.</p>
+      <ul class="signals-list">
+        <li>✅ <span><strong>Validated learning outcomes</strong> — pre/post assessments with reliability data</span></li>
+        <li>📐 <span><strong>Rubric-based evaluation</strong> — 4-level progression rubrics per learning objective</span></li>
+        <li>🏛️ <span><strong>Standards alignment</strong> — mapped to AI4K12 Big Ideas (BI-3, BI-5, BI-2)</span></li>
+        <li>📋 <span><strong>School-system reporting</strong> — shareable evidence summaries for districts</span></li>
+        <li>🔬 <span><strong>Continuous validity</strong> — ongoing refinement based on multi-year evidence</span></li>
+      </ul>
+      <a href="year3.html" class="btn btn-y3 btn-sm" style="margin-top:16px;">📋 See Outcomes Framework →</a>
+    </div>
+  </div>
+
+  <!-- Assessment Signals by Lesson -->
+  <div style="margin-top:40px;">
+    <h2 style="margin-bottom:6px;">Year 1 Assessment Signals by Lesson</h2>
+    <p class="text-muted text-sm" style="margin-bottom:20px;">Every signal is lightweight, low-stakes, and collected automatically or with 1–2 taps.</p>
+
+    <!-- L1 -->
+    <div class="card" style="margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+        <span class="lesson-chip l1">Lesson 1</span>
+        <span class="font-bold">Making Predictions</span>
+      </div>
+      <div class="signal-table">
+        <div class="signal-table-row">
+          <div><div class="signal-name">🟡 Pre-lesson confidence check</div><div class="signal-desc">5-emoji self-rating before the activity begins</div></div>
+          <span class="signal-tag affective">Affective</span>
+        </div>
+        <div class="signal-table-row">
+          <div><div class="signal-name">🔵 Sorting accuracy & attempts</div><div class="signal-desc">Auto-captured: % correct, # of re-sorts, time per item in the sorting game</div></div>
+          <span class="signal-tag behavioral">Behavioral</span>
+        </div>
+        <div class="signal-table-row">
+          <div><div class="signal-name">🟣 Concept check (2 questions)</div><div class="signal-desc">"What is training data?" / "Why might AI make wrong predictions?" — MC</div></div>
+          <span class="signal-tag cognitive">Cognitive</span>
+        </div>
+        <div class="signal-table-row">
+          <div><div class="signal-name">✍️ Micro-reflection</div><div class="signal-desc">"Which sorting level was easiest? Why?" — short text, max 200 chars</div></div>
+          <span class="signal-tag reflective">Reflective</span>
+        </div>
+        <div class="signal-table-row">
+          <div><div class="signal-name">😊 Lesson sentiment</div><div class="signal-desc">Too hard / Just right / Too easy — 1-tap, end of lesson</div></div>
+          <span class="signal-tag affective">Affective</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- L2 -->
+    <div class="card" style="margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+        <span class="lesson-chip l2">Lesson 2</span>
+        <span class="font-bold">Training AI</span>
+      </div>
+      <div class="signal-table">
+        <div class="signal-table-row">
+          <div><div class="signal-name">🔵 AI for Oceans labeling accuracy</div><div class="signal-desc">Auto-captured: % fish vs. trash labeled correctly in the training simulation</div></div>
+          <span class="signal-tag behavioral">Behavioral</span>
+        </div>
+        <div class="signal-table-row">
+          <div><div class="signal-name">🟣 Bias scenario response</div><div class="signal-desc">"What would happen if only blue fish were labeled 'angry'?" — MC</div></div>
+          <span class="signal-tag cognitive">Cognitive</span>
+        </div>
+        <div class="signal-table-row">
+          <div><div class="signal-name">🟡 Confidence shift</div><div class="signal-desc">Post-lesson confidence vs. pre-lesson — growth indicator</div></div>
+          <span class="signal-tag affective">Affective</span>
+        </div>
+        <div class="signal-table-row">
+          <div><div class="signal-name">✍️ "I wonder…" prompt</div><div class="signal-desc">Open curiosity question — captures intellectual engagement signal</div></div>
+          <span class="signal-tag reflective">Reflective</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- L3 -->
+    <div class="card" style="margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+        <span class="lesson-chip l3">Lesson 3</span>
+        <span class="font-bold">Using AI Bot</span>
+      </div>
+      <div class="signal-table">
+        <div class="signal-table-row">
+          <div><div class="signal-name">🔵 Feature vector placement accuracy</div><div class="signal-desc">Food and emoji feature vector check-for-understanding scores</div></div>
+          <span class="signal-tag behavioral">Behavioral</span>
+        </div>
+        <div class="signal-table-row">
+          <div><div class="signal-name">🟣 AI expectation gap</div><div class="signal-desc">"Did AI choose what you expected?" (yes/no + reason) — 2-tap</div></div>
+          <span class="signal-tag cognitive">Cognitive</span>
+        </div>
+        <div class="signal-table-row">
+          <div><div class="signal-name">🟡 Human vs. AI preference</div><div class="signal-desc">Preference for human-selected vs AI-selected dance effects — opinion signal</div></div>
+          <span class="signal-tag affective">Affective</span>
+        </div>
+        <div class="signal-table-row">
+          <div><div class="signal-name">🔵 Dance Party engagement depth</div><div class="signal-desc">Auto-captured: time in activity, # of regenerations, "Use code" attempts</div></div>
+          <span class="signal-tag behavioral">Behavioral</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- L4 -->
+    <div class="card" style="margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+        <span class="lesson-chip l4">Lesson 4</span>
+        <span class="font-bold">AI Tools in School</span>
+      </div>
+      <div class="signal-table">
+        <div class="signal-table-row">
+          <div><div class="signal-name">🟣 Opinion articulation quality</div><div class="signal-desc">Letter to principal — auto-scored for presence of: claim, evidence, AI vocabulary</div></div>
+          <span class="signal-tag cognitive">Cognitive</span>
+        </div>
+        <div class="signal-table-row">
+          <div><div class="signal-name">🔵 Data pattern recognition</div><div class="signal-desc">Student dataset analysis: correctly identified patterns in the class survey data</div></div>
+          <span class="signal-tag behavioral">Behavioral</span>
+        </div>
+        <div class="signal-table-row">
+          <div><div class="signal-name">🟣 Bias prevention response</div><div class="signal-desc">"How can you prevent bias in training data?" — open response + key-term check</div></div>
+          <span class="signal-tag cognitive">Cognitive</span>
+        </div>
+        <div class="signal-table-row">
+          <div><div class="signal-name">✍️ Module reflection: biggest takeaway</div><div class="signal-desc">"What's the most important thing you learned?" — short text</div></div>
+          <span class="signal-tag reflective">Reflective</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- L5 -->
+    <div class="card" style="margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+        <span class="lesson-chip l5">Lesson 5</span>
+        <span class="font-bold">Share Your Voice</span>
+      </div>
+      <div class="signal-table">
+        <div class="signal-table-row">
+          <div><div class="signal-name">🔵 Artifact creation & completion</div><div class="signal-desc">Type chosen, words written / slides made, completion status</div></div>
+          <span class="signal-tag behavioral">Behavioral</span>
+        </div>
+        <div class="signal-table-row">
+          <div><div class="signal-name">🟣 Module exit concept check</div><div class="signal-desc">3 questions covering all 5 lessons — final formative pulse</div></div>
+          <span class="signal-tag cognitive">Cognitive</span>
+        </div>
+        <div class="signal-table-row">
+          <div><div class="signal-name">✍️ Glows, Grows, Want-to-Knows</div><div class="signal-desc">Structured module reflection — metacognitive depth signal</div></div>
+          <span class="signal-tag reflective">Reflective</span>
+        </div>
+        <div class="signal-table-row">
+          <div><div class="signal-name">🟡 Module sentiment</div><div class="signal-desc">Overall course experience rating + optional free response</div></div>
+          <span class="signal-tag affective">Affective</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Signal Type Legend -->
+  <div class="card" style="margin-top:8px;">
+    <h3 style="margin-bottom:12px;">Signal Type Guide</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div style="display:flex;align-items:flex-start;gap:8px;">
+        <span class="signal-tag behavioral" style="flex-shrink:0;">Behavioral</span>
+        <span class="text-sm text-muted">Auto-captured from how students interact with activities</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:8px;">
+        <span class="signal-tag cognitive" style="flex-shrink:0;">Cognitive</span>
+        <span class="text-sm text-muted">Concept understanding via quick questions and checks</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:8px;">
+        <span class="signal-tag affective" style="flex-shrink:0;">Affective</span>
+        <span class="text-sm text-muted">Student feelings, confidence, and engagement quality</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:8px;">
+        <span class="signal-tag reflective" style="flex-shrink:0;">Reflective</span>
+        <span class="text-sm text-muted">Metacognitive processing through short text responses</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-block">
+    <h2 style="margin-bottom:8px;">Explore the Full Prototype</h2>
+    <p class="text-muted" style="margin-bottom:24px;max-width:400px;margin-left:auto;margin-right:auto;">Each demo shows a different layer — from the student's mobile experience to the teacher's dashboard to the outcomes framework.</p>
+    <div class="cta-links">
+      <a href="year1.html" class="demo-link y1">
+        <div>
+          <div>Year 1 Demo</div>
+          <div class="demo-link-sub">Interactive student experience</div>
+        </div>
+        <span>→</span>
+      </a>
+      <a href="year2.html" class="demo-link y2">
+        <div>
+          <div>Year 2 Demo</div>
+          <div class="demo-link-sub">Teacher dashboard & insights</div>
+        </div>
+        <span>→</span>
+      </a>
+      <a href="year3.html" class="demo-link y3">
+        <div>
+          <div>Year 3 Demo</div>
+          <div class="demo-link-sub">Outcomes framework</div>
+        </div>
+        <span>→</span>
+      </a>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

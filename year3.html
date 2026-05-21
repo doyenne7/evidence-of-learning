@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Year 3: Validated Learning Outcomes Framework</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .outcomes-hero {
+      background: linear-gradient(135deg, #0D3B1A, #1E7A35, var(--y3));
+      color: white;
+      padding: 28px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .outcomes-hero::after {
+      content: '3';
+      position: absolute; right: 16px; bottom: -12px;
+      font-size: 8rem; font-weight: 900; opacity: 0.08; line-height: 1;
+    }
+    .outcomes-hero h2 { color: white; }
+    .outcomes-hero p  { color: rgba(255,255,255,0.8); font-size: 0.88rem; }
+    .outcomes-hero .y3badge-white {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px; border-radius: var(--r-full);
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+      background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.9);
+      margin-bottom: 10px;
+    }
+    .standard-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: var(--r-full);
+      font-size: 0.75rem; font-weight: 700;
+      background: var(--y3-bg); color: var(--y3); border: 1px solid #9ED9B5;
+    }
+    .outcome-row {
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+    }
+    .outcome-row:last-child { border-bottom: none; }
+    .outcome-num {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--y3); color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.85rem; flex-shrink: 0;
+    }
+    .outcome-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 3px; }
+    .outcome-desc  { font-size: 0.82rem; color: var(--text-2); }
+    .rubric-level {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px; border-radius: var(--r-sm);
+      margin-bottom: 8px; border: 1px solid var(--border);
+    }
+    .rubric-level.level-4 { background: #EAFAF1; border-color: #A9DFBF; }
+    .rubric-level.level-3 { background: #EAF4FB; border-color: #AED6F1; }
+    .rubric-level.level-2 { background: #FEF9E7; border-color: #F9E79F; }
+    .rubric-level.level-1 { background: #FDEDEC; border-color: #F5B7B1; }
+    .level-badge {
+      min-width: 64px; padding: 3px 8px;
+      border-radius: var(--r-sm); text-align: center;
+      font-size: 0.72rem; font-weight: 800; text-transform: uppercase;
+    }
+    .level-badge.l4 { background: var(--y3); color: white; }
+    .level-badge.l3 { background: var(--y1); color: white; }
+    .level-badge.l2 { background: var(--warning); color: white; }
+    .level-badge.l1 { background: var(--danger); color: white; }
+    .level-desc { font-size: 0.82rem; color: var(--text-2); flex: 1; }
+    .evidence-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 12px 0; border-bottom: 1px solid var(--border);
+    }
+    .evidence-item:last-child { border-bottom: none; }
+    .ev-year {
+      min-width: 64px; padding: 3px 8px;
+      border-radius: var(--r-full); text-align: center;
+      font-size: 0.72rem; font-weight: 800;
+    }
+    .ev-year.y1 { background: var(--y1-bg); color: var(--y1); }
+    .ev-year.y2 { background: var(--y2-bg); color: var(--y2); }
+    .ev-year.y3 { background: var(--y3-bg); color: var(--y3); }
+    .section-title {
+      font-weight: 800; font-size: 1rem;
+      margin-bottom: 12px; margin-top: 24px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-title:first-child { margin-top: 0; }
+    .assessment-q {
+      border: 2px solid var(--border); border-radius: var(--r-md);
+      padding: 14px; margin-bottom: 10px;
+      background: var(--surface);
+    }
+    .q-label {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.04em; color: var(--text-muted); margin-bottom: 6px;
+    }
+    .q-text { font-weight: 600; font-size: 0.92rem; margin-bottom: 8px; line-height: 1.5; }
+    .q-standard { display: flex; gap: 6px; flex-wrap: wrap; }
+    .q-answer { font-size: 0.8rem; color: var(--text-2); background: var(--surface-2); border-radius: var(--r-sm); padding: 6px 10px; margin-top: 6px; cursor: pointer; }
+    .q-answer:hover { background: var(--y3-bg); }
+    .q-answer.correct-ans { background: var(--y3-bg); border: 1px solid var(--y3); color: #1A5E35; }
+    .reliability-box {
+      background: var(--surface-2);
+      border-radius: var(--r-md);
+      padding: 14px;
+      margin-bottom: 10px;
+    }
+    .rb-label { font-size: 0.78rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
+    .rb-value { font-size: 1.3rem; font-weight: 900; }
+    .district-card {
+      background: linear-gradient(135deg, #E8F8EE, #D4F0DF);
+      border: 1px solid #9ED9B5;
+      border-radius: var(--r-xl);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .school-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.06);
+      font-size: 0.88rem;
+    }
+    .school-row:last-child { border-bottom: none; }
+    .school-score {
+      font-weight: 800; font-size: 0.95rem;
+      padding: 3px 10px; border-radius: var(--r-full);
+    }
+    .school-score.a { background: var(--y3-bg); color: var(--y3); }
+    .school-score.b { background: var(--y1-bg); color: var(--y1); }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="logo-icon">🧠</div>
+      <span>Evidence of Learning</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html"  class="nav-link">Overview</a>
+      <a href="year1.html"  class="nav-link y1">Year 1</a>
+      <a href="year2.html"  class="nav-link y2">Year 2</a>
+      <a href="year3.html"  class="nav-link active y3">Year 3</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Outcomes Hero -->
+<div class="outcomes-hero">
+  <div class="y3badge-white">Year 3 · Validated Outcomes Framework</div>
+  <h2 style="margin-bottom:4px;">Learning Outcomes Framework</h2>
+  <p>Built on 2 years of formative signals — validated, standards-aligned, and school-system ready.</p>
+
+  <!-- Progress from Years 1 → 3 -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:16px;">
+    <div style="background:rgba(255,255,255,0.1);border-radius:var(--r-md);padding:12px;text-align:center;">
+      <div style="font-size:1.1rem;font-weight:900;color:white;">Yr 1</div>
+      <div style="font-size:0.65rem;color:rgba(255,255,255,0.65);font-weight:700;text-transform:uppercase;margin-top:2px;">Lightweight signals</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.1);border-radius:var(--r-md);padding:12px;text-align:center;">
+      <div style="font-size:1.1rem;font-weight:900;color:white;">Yr 2</div>
+      <div style="font-size:0.65rem;color:rgba(255,255,255,0.65);font-weight:700;text-transform:uppercase;margin-top:2px;">Refined measurement</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.2);border-radius:var(--r-md);padding:12px;text-align:center;border:1px solid rgba(255,255,255,0.3);">
+      <div style="font-size:1.1rem;font-weight:900;color:white;">Yr 3 ✓</div>
+      <div style="font-size:0.65rem;color:rgba(255,255,255,0.8);font-weight:700;text-transform:uppercase;margin-top:2px;">Validated outcomes</div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="container-wide" style="padding-top:28px;padding-bottom:64px;">
+
+  <!-- Learning Outcomes -->
+  <div class="section-title">🎯 Learning Outcomes</div>
+  <p class="text-sm text-muted" style="margin-bottom:16px;">5 validated learning outcomes for the "How AI Makes Decisions" module, aligned to national standards.</p>
+
+  <div class="card" style="margin-bottom:20px;">
+    <div class="outcome-row">
+      <div class="outcome-num">1</div>
+      <div>
+        <div class="outcome-title">Pattern-Based Prediction</div>
+        <div class="outcome-desc">Students can explain that AI makes predictions by identifying patterns in training data — not through randomness or magic. They can demonstrate this by correctly sorting items by features.</div>
+        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;">
+          <span class="standard-chip">AI4K12 BI-3</span>
+          <span class="standard-chip">CSTA DA</span>
+        </div>
+      </div>
+    </div>
+    <div class="outcome-row">
+      <div class="outcome-num">2</div>
+      <div>
+        <div class="outcome-title">Training Data Influence</div>
+        <div class="outcome-desc">Students can explain how the quantity and quality of training data directly impacts the accuracy of AI predictions. They can give examples of scenarios where limited data leads to poor outcomes.</div>
+        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;">
+          <span class="standard-chip">AI4K12 BI-3</span>
+          <span class="standard-chip">AI4K12 BI-5</span>
+        </div>
+      </div>
+    </div>
+    <div class="outcome-row">
+      <div class="outcome-num">3</div>
+      <div>
+        <div class="outcome-title">AI Bias Awareness</div>
+        <div class="outcome-desc">Students can identify how biased training data leads to unfair AI predictions. They can propose strategies to reduce bias by diversifying training data and including human oversight.</div>
+        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;">
+          <span class="standard-chip">AI4K12 BI-5</span>
+        </div>
+      </div>
+    </div>
+    <div class="outcome-row">
+      <div class="outcome-num">4</div>
+      <div>
+        <div class="outcome-title">Feature-Based Representation</div>
+        <div class="outcome-desc">Students can build a feature vector by assigning numeric values to object characteristics. They can explain why two students might get different AI recommendations even when using the same tool.</div>
+        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;">
+          <span class="standard-chip">AI4K12 BI-2</span>
+          <span class="standard-chip">AI4K12 BI-3</span>
+        </div>
+      </div>
+    </div>
+    <div class="outcome-row">
+      <div class="outcome-num">5</div>
+      <div>
+        <div class="outcome-title">Critical AI Evaluation</div>
+        <div class="outcome-desc">Students can weigh the pros and cons of using AI tools for real-world decisions. They can articulate an evidence-based opinion about when human oversight is necessary and why AI should not operate unchecked.</div>
+        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;">
+          <span class="standard-chip">AI4K12 BI-5</span>
+          <span class="standard-chip">CSTA IC</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rubric -->
+  <div class="section-title">📐 4-Level Progression Rubric</div>
+  <p class="text-sm text-muted" style="margin-bottom:12px;">Example rubric for Outcome 3: AI Bias Awareness</p>
+
+  <div class="card" style="margin-bottom:20px;">
+    <div class="rubric-level level-4">
+      <div class="level-badge l4">Level 4<br><span style="font-size:0.65rem;">Advanced</span></div>
+      <div class="level-desc">Student identifies multiple sources of bias in training data AND proposes concrete mitigation strategies (e.g., diverse data sources, human review). Can transfer to novel scenarios not discussed in class.</div>
+    </div>
+    <div class="rubric-level level-3">
+      <div class="level-badge l3">Level 3<br><span style="font-size:0.65rem;">Proficient</span></div>
+      <div class="level-desc">Student correctly explains that biased training data leads to unfair AI predictions and gives at least one example from lessons (e.g., Attendance Bot, fish labeling). Understands human oversight is needed.</div>
+    </div>
+    <div class="rubric-level level-2">
+      <div class="level-badge l2">Level 2<br><span style="font-size:0.65rem;">Developing</span></div>
+      <div class="level-desc">Student recognizes that AI can make unfair decisions but cannot consistently explain why, or confuses bias with technical errors. Needs additional examples and reinforcement.</div>
+    </div>
+    <div class="rubric-level level-1">
+      <div class="level-badge l1">Level 1<br><span style="font-size:0.65rem;">Beginning</span></div>
+      <div class="level-desc">Student cannot yet explain AI bias or believes AI always makes fair decisions because it is "just a computer." Requires re-teaching with concrete, relatable scenarios.</div>
+    </div>
+
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);">
+      <div class="text-xs text-muted" style="margin-bottom:8px;font-weight:700;">CLASS DISTRIBUTION (End of Module)</div>
+      <div class="chart-bar">
+        <div class="chart-label" style="min-width:80px;">Level 4 (25%)</div>
+        <div class="chart-track"><div class="chart-fill" style="width:25%;background:var(--y3);">7 students</div></div>
+      </div>
+      <div class="chart-bar">
+        <div class="chart-label" style="min-width:80px;">Level 3 (43%)</div>
+        <div class="chart-track"><div class="chart-fill" style="width:43%;background:var(--y1);">12 students</div></div>
+      </div>
+      <div class="chart-bar">
+        <div class="chart-label" style="min-width:80px;">Level 2 (25%)</div>
+        <div class="chart-track"><div class="chart-fill" style="width:25%;background:var(--warning);">7 students</div></div>
+      </div>
+      <div class="chart-bar">
+        <div class="chart-label" style="min-width:80px;">Level 1 (7%)</div>
+        <div class="chart-track"><div class="chart-fill" style="width:7%;background:var(--danger);">2</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pre/Post Assessment -->
+  <div class="section-title">📝 Pre/Post Assessment Design</div>
+  <p class="text-sm text-muted" style="margin-bottom:12px;">Validated assessment items for the module. Designed for K–5 readability (Flesch-Kincaid Grade 4.2).</p>
+
+  <div class="assessment-q">
+    <div class="q-label">PRE/POST · Outcome 1 · Multiple Choice</div>
+    <div class="q-text">When an AI system makes a prediction, what is it using to figure out the answer?</div>
+    <div>
+      <div class="q-answer">A) Its own feelings and ideas</div>
+      <div class="q-answer">B) Random guessing from a list</div>
+      <div class="q-answer correct-ans">C) ✅ Patterns it learned from sorted data</div>
+      <div class="q-answer">D) Instructions typed by its programmer for every question</div>
+    </div>
+    <div class="q-standard">
+      <span class="standard-chip">AI4K12 BI-3</span>
+      <span style="font-size:0.72rem;color:var(--text-muted);">Difficulty: Low · Discrimination index: 0.42</span>
+    </div>
+  </div>
+
+  <div class="assessment-q">
+    <div class="q-label">PRE/POST · Outcome 3 · Scenario-Based</div>
+    <div class="q-text">A school uses an AI tool to recommend books to students. The AI was only trained on books enjoyed by students who speak English at home. Which problem would most likely happen?</div>
+    <div>
+      <div class="q-answer">A) The AI would recommend too many books</div>
+      <div class="q-answer correct-ans">B) ✅ The AI would not recommend books well for students who speak other languages at home</div>
+      <div class="q-answer">C) The AI would become slower over time</div>
+      <div class="q-answer">D) The AI would only recommend books published this year</div>
+    </div>
+    <div class="q-standard">
+      <span class="standard-chip">AI4K12 BI-5</span>
+      <span style="font-size:0.72rem;color:var(--text-muted);">Difficulty: Medium · Discrimination index: 0.58</span>
+    </div>
+  </div>
+
+  <div class="assessment-q">
+    <div class="q-label">PRE/POST · Outcome 5 · Open Response</div>
+    <div class="q-text">Your school wants to use an AI tool to decide who gets Student of the Month. Do you think this is a good idea? Explain your answer using at least two reasons.</div>
+    <div class="q-standard" style="margin-top:8px;">
+      <span class="standard-chip">AI4K12 BI-5</span>
+      <span class="standard-chip">CSTA IC</span>
+      <span style="font-size:0.72rem;color:var(--text-muted);">Auto-scored rubric: claim (1pt) + evidence (2pt) + AI vocabulary (1pt)</span>
+    </div>
+    <div style="margin-top:8px;padding:8px 10px;background:var(--y3-bg);border-radius:var(--r-sm);font-size:0.78rem;color:#1A5E35;">
+      📊 <strong>Scoring note:</strong> 4-point auto-rubric (claim present, ≥2 reasons, uses AI vocabulary, correct AI claim). 87% inter-rater agreement across 120 hand-scored test items.
+    </div>
+  </div>
+
+  <!-- Reliability / Validity -->
+  <div class="section-title">🔬 Validity & Reliability Data</div>
+  <p class="text-sm text-muted" style="margin-bottom:12px;">Psychometric data from Year 3 field testing with 847 students across 12 schools.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+    <div class="reliability-box">
+      <div class="rb-label">Cronbach's Alpha (Internal Consistency)</div>
+      <div class="rb-value" style="color:var(--y3);">α = 0.81</div>
+      <div style="font-size:0.72rem;color:var(--text-muted);margin-top:4px;">Good reliability for a K–5 tool</div>
+    </div>
+    <div class="reliability-box">
+      <div class="rb-label">Pre-Post Effect Size (Cohen's d)</div>
+      <div class="rb-value" style="color:var(--y1);">d = 0.74</div>
+      <div style="font-size:0.72rem;color:var(--text-muted);margin-top:4px;">Medium-large learning gain</div>
+    </div>
+    <div class="reliability-box">
+      <div class="rb-label">Test-Retest Reliability (2-week)</div>
+      <div class="rb-value" style="color:var(--y3);">r = 0.78</div>
+      <div style="font-size:0.72rem;color:var(--text-muted);margin-top:4px;">Acceptable stability over time</div>
+    </div>
+    <div class="reliability-box">
+      <div class="rb-label">Item Discrimination Range</div>
+      <div class="rb-value" style="color:var(--y2);">0.35–0.68</div>
+      <div style="font-size:0.72rem;color:var(--text-muted);margin-top:4px;">All items above minimum threshold</div>
+    </div>
+  </div>
+
+  <!-- Evidence Chain -->
+  <div class="section-title">🔗 The Evidence Chain: Year 1 → Year 3</div>
+  <p class="text-sm text-muted" style="margin-bottom:12px;">Every Year 3 outcome is grounded in two years of iterative measurement.</p>
+
+  <div class="card" style="margin-bottom:20px;">
+    <div class="evidence-item">
+      <span class="ev-year y1">Year 1</span>
+      <div>
+        <div style="font-size:0.88rem;font-weight:700;">Concept check responses + reflection themes</div>
+        <div style="font-size:0.8rem;color:var(--text-2);">Revealed that "AI bias" was consistently the hardest concept across all classes. Item bank was refined based on wrong-answer analysis.</div>
+      </div>
+    </div>
+    <div class="evidence-item">
+      <span class="ev-year y2">Year 2</span>
+      <div>
+        <div style="font-size:0.88rem;font-weight:700;">Teacher dashboard + misconception patterns</div>
+        <div style="font-size:0.8rem;color:var(--text-2);">Systematic teacher interventions (prompted by Year 2 dashboard) improved bias concept mastery by 18 percentage points. Teacher facilitation guide was developed.</div>
+      </div>
+    </div>
+    <div class="evidence-item">
+      <span class="ev-year y3">Year 3</span>
+      <div>
+        <div style="font-size:0.88rem;font-weight:700;">Validated pre/post items + rubric scoring</div>
+        <div style="font-size:0.8rem;color:var(--text-2);">Full assessment battery validated with 847 students. Bias outcome shows d=0.84 pre/post effect size — the strongest gain of all 5 outcomes.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- School-System Reporting -->
+  <div class="section-title">🏛️ School-System Reporting</div>
+  <p class="text-sm text-muted" style="margin-bottom:12px;">Shareable district-level evidence summary — designed for administrators and school boards.</p>
+
+  <div class="district-card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <span style="font-size:1.5rem;">🏫</span>
+      <div>
+        <div style="font-size:0.75rem;font-weight:700;color:var(--y3);text-transform:uppercase;letter-spacing:0.04em;">District Evidence Summary · Spring 2026</div>
+        <div style="font-size:1rem;font-weight:800;">How AI Makes Decisions · K–5 Module</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;">
+      <div style="background:white;border-radius:var(--r-md);padding:12px;text-align:center;box-shadow:var(--shadow-xs);">
+        <div style="font-size:1.6rem;font-weight:900;color:var(--y3);">847</div>
+        <div style="font-size:0.68rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;">Students</div>
+      </div>
+      <div style="background:white;border-radius:var(--r-md);padding:12px;text-align:center;box-shadow:var(--shadow-xs);">
+        <div style="font-size:1.6rem;font-weight:900;color:var(--y1);">12</div>
+        <div style="font-size:0.68rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;">Schools</div>
+      </div>
+      <div style="background:white;border-radius:var(--r-md);padding:12px;text-align:center;box-shadow:var(--shadow-xs);">
+        <div style="font-size:1.6rem;font-weight:900;color:var(--y2);">+0.74d</div>
+        <div style="font-size:0.68rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;">Learning gain</div>
+      </div>
+    </div>
+
+    <div style="background:white;border-radius:var(--r-md);padding:14px;box-shadow:var(--shadow-xs);">
+      <div style="font-size:0.78rem;font-weight:700;color:var(--text-muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.04em;">School-Level Results</div>
+      <div class="school-row">
+        <span>Lincoln Elementary</span>
+        <span class="school-score a">83% proficient</span>
+      </div>
+      <div class="school-row">
+        <span>Jefferson K–5</span>
+        <span class="school-score a">79% proficient</span>
+      </div>
+      <div class="school-row">
+        <span>Roosevelt Academy</span>
+        <span class="school-score b">71% proficient</span>
+      </div>
+      <div class="school-row">
+        <span>King Elementary</span>
+        <span class="school-score b">68% proficient</span>
+      </div>
+      <div class="school-row" style="color:var(--text-muted);font-style:italic;">
+        <span>+ 8 more schools</span>
+        <span>Avg: 75% proficient</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Standards Alignment Table -->
+  <div class="section-title">📋 Standards Alignment</div>
+  <div class="card" style="overflow-x:auto;margin-bottom:20px;">
+    <table class="rubric-table">
+      <thead>
+        <tr>
+          <th>Standard</th>
+          <th>Description</th>
+          <th>Lessons</th>
+          <th>Outcomes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="standard-chip">AI4K12 BI-2</span></td>
+          <td style="font-size:0.82rem;">Agents maintain representations of the world and use them for reasoning</td>
+          <td style="font-size:0.82rem;">L3</td>
+          <td style="font-size:0.82rem;">Outcome 4</td>
+        </tr>
+        <tr>
+          <td><span class="standard-chip">AI4K12 BI-3</span></td>
+          <td style="font-size:0.82rem;">Computers can learn from data</td>
+          <td style="font-size:0.82rem;">L1, L2, L3, L4</td>
+          <td style="font-size:0.82rem;">Outcomes 1, 2, 4</td>
+        </tr>
+        <tr>
+          <td><span class="standard-chip">AI4K12 BI-5</span></td>
+          <td style="font-size:0.82rem;">AI can impact society in both positive and negative ways</td>
+          <td style="font-size:0.82rem;">L2, L3, L4, L5</td>
+          <td style="font-size:0.82rem;">Outcomes 3, 5</td>
+        </tr>
+        <tr>
+          <td><span class="standard-chip">CSTA DA</span></td>
+          <td style="font-size:0.82rem;">Data & Analysis</td>
+          <td style="font-size:0.82rem;">L1, L2, L4</td>
+          <td style="font-size:0.82rem;">Outcomes 1, 2</td>
+        </tr>
+        <tr>
+          <td><span class="standard-chip">CSTA IC</span></td>
+          <td style="font-size:0.82rem;">Impacts of Computing</td>
+          <td style="font-size:0.82rem;">L4, L5</td>
+          <td style="font-size:0.82rem;">Outcome 5</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- The Full Journey -->
+  <div class="section-title">🗺️ The Full 3-Year Journey</div>
+  <div class="card" style="margin-bottom:20px;">
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot" style="border-color:var(--y1);"></div>
+        <div>
+          <div class="badge badge-y1" style="margin-bottom:6px;">Year 1</div>
+          <div style="font-weight:700;font-size:0.95rem;">Build engagement & collect early signals</div>
+          <div style="font-size:0.82rem;color:var(--text-2);margin-top:4px;">5 formative signal types per lesson · 2 concept checks per lesson · End-of-lesson mood rating · Pre/post confidence · Micro-reflections</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot y2"></div>
+        <div>
+          <div class="badge badge-y2" style="margin-bottom:6px;">Year 2</div>
+          <div style="font-weight:700;font-size:0.95rem;">Refine measurement & support teachers</div>
+          <div style="font-size:0.82rem;color:var(--text-2);margin-top:4px;">Teacher dashboard · Misconception detection · Confidence trend tracking · Richer formative items · Facilitation guide</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot y3"></div>
+        <div>
+          <div class="badge badge-y3" style="margin-bottom:6px;">Year 3</div>
+          <div style="font-weight:700;font-size:0.95rem;">Validate outcomes & scale to school systems</div>
+          <div style="font-size:0.82rem;color:var(--text-2);margin-top:4px;">Validated pre/post assessment · 4-level rubrics · Reliability data · District-level reporting · Evidence for continued investment</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back to Top -->
+  <div style="text-align:center;">
+    <a href="index.html" class="btn btn-outline">← Back to Roadmap Overview</a>
+  </div>
+
+</div><!-- end container-wide -->
+
+<script>
+  // Animate bars on load
+  window.addEventListener('load', () => {
+    const fills = document.querySelectorAll('.chart-fill');
+    fills.forEach(el => {
+      const w = el.style.width;
+      el.style.width = '0';
+      setTimeout(() => { el.style.width = w; }, 400);
+    });
+  });
+</script>
+</body>
+</html>
