@@ -6,7 +6,186 @@
   <title>Year 1: Collecting Early Evidence of Learning</title>
   <link rel="stylesheet" href="style.css">
   <style>
+    /* ── Page Background ── */
     body { background: #F6F7FB; }
+
+    /* ══════════════════════════════════════════
+       PHONE MOCKUP FRAME (desktop only ≥640px)
+       ══════════════════════════════════════════ */
+    @media (min-width: 640px) {
+      /* Push everything under teacher-bar + site-nav */
+      .phone-scene {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 32px 20px 64px;
+        min-height: calc(100vh - 96px);
+        background: radial-gradient(ellipse at 50% 0%, #E8EEF8 0%, #D4DBF0 100%);
+      }
+
+      .phone-wrapper {
+        position: relative;
+        width: 390px;
+        flex-shrink: 0;
+        background: #1A1A2E;
+        border: 12px solid #1A1A2E;
+        border-radius: 48px;
+        box-shadow:
+          0 32px 80px rgba(0,0,0,0.35),
+          0 0 0 1px rgba(255,255,255,0.08) inset,
+          0 2px 0 rgba(255,255,255,0.15) inset;
+        overflow: hidden;
+      }
+
+      /* Side buttons (decorative) */
+      .phone-wrapper::before {
+        content: '';
+        position: absolute;
+        left: -16px;
+        top: 88px;
+        width: 4px;
+        height: 34px;
+        background: #111;
+        border-radius: 2px 0 0 2px;
+        box-shadow: 0 48px 0 #111, 0 90px 0 #111;
+      }
+      .phone-wrapper::after {
+        content: '';
+        position: absolute;
+        right: -16px;
+        top: 108px;
+        width: 4px;
+        height: 64px;
+        background: #111;
+        border-radius: 0 2px 2px 0;
+      }
+
+      /* Glass screen bezel */
+      .phone-screen {
+        background: #F6F7FB;
+        border-radius: 36px;
+        overflow: hidden;
+        height: 780px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Scrollable content area */
+      .phone-content {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+        /* Hide scrollbar inside phone */
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .phone-content::-webkit-scrollbar { display: none; }
+    }
+
+    @media (max-width: 639px) {
+      .phone-scene { display: contents; }
+      .phone-wrapper { display: contents; }
+      .phone-screen { display: contents; }
+      .phone-content { display: contents; }
+    }
+
+    /* ── Notch bar ── */
+    .phone-notch-bar {
+      height: 28px;
+      background: #1A1A2E;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .phone-notch-pill {
+      width: 80px;
+      height: 10px;
+      background: #0D0D1A;
+      border-radius: 9999px;
+    }
+    @media (max-width: 639px) {
+      .phone-notch-bar { display: none; }
+    }
+
+    /* ── Home indicator ── */
+    .phone-home-bar {
+      height: 22px;
+      background: #F6F7FB;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .phone-home-pill {
+      width: 40px;
+      height: 4px;
+      background: #333;
+      border-radius: 9999px;
+      opacity: 0.5;
+    }
+    @media (max-width: 639px) {
+      .phone-home-bar { display: none; }
+    }
+
+    /* ── Floating signals counter ── */
+    .signals-counter {
+      display: none; /* shown only in teacher mode */
+      position: absolute;
+      bottom: 36px;
+      right: -54px;
+      background: #1A1A2E;
+      color: #F5A623;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 6px 10px;
+      border-radius: var(--r-full);
+      white-space: nowrap;
+      box-shadow: var(--shadow-md);
+      z-index: 300;
+      writing-mode: horizontal-tb;
+      letter-spacing: 0.02em;
+    }
+    .teacher-mode .signals-counter { display: block; }
+    @media (max-width: 639px) {
+      .signals-counter {
+        position: fixed;
+        bottom: 80px;
+        right: 12px;
+        writing-mode: horizontal-tb;
+      }
+      .teacher-mode .signals-counter { display: block; }
+    }
+
+    /* ── Wizard shell overrides inside phone ── */
+    @media (min-width: 640px) {
+      .wizard-shell {
+        max-width: 100%;
+        margin: 0;
+        padding: 0 0 80px;
+        min-height: auto;
+        border: none !important;
+        border-radius: 0 !important;
+        overflow: visible;
+      }
+      .wizard-header {
+        position: sticky;
+        top: 0;
+        z-index: 90;
+      }
+      .bottom-nav {
+        position: sticky !important;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        max-width: 100%;
+        border-radius: 0;
+        box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
+      }
+    }
+
+    /* ── Question of the Day banner ── */
     .question-of-day {
       background: linear-gradient(135deg, var(--y1), var(--teal-light));
       color: white;
@@ -14,58 +193,206 @@
       padding: 18px 20px;
       margin-bottom: 20px;
     }
-    .question-of-day .qod-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.75; margin-bottom: 4px; }
-    .question-of-day p { font-size: 1.05rem; font-weight: 600; line-height: 1.4; }
-    .confidence-labels {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 6px;
+    .question-of-day .qod-label {
       font-size: 0.72rem;
-      color: var(--text-muted);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      opacity: 0.8;
+      margin-bottom: 4px;
     }
-    .sorting-grid {
+    .question-of-day p {
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    /* ── Progress dots (numbered) ── */
+    .step-indicators {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      margin-bottom: 0;
+    }
+    .step-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 800;
+      flex-shrink: 0;
+      background: var(--surface-2);
+      color: var(--text-muted);
+      transition: all var(--t-med);
+      border: 2px solid transparent;
+    }
+    .step-dot.done {
+      background: var(--y1);
+      color: white;
+      border-color: var(--y1);
+    }
+    .step-dot.done::after {
+      content: '✓';
+      font-size: 0.65rem;
+    }
+    /* Override number with checkmark when done */
+    .step-dot.done { font-size: 0; }
+    .step-dot.done::after { font-size: 0.7rem; }
+    .step-dot.current {
+      background: var(--orange);
+      color: white;
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(245,166,35,0.25);
+      transform: scale(1.15);
+    }
+
+    /* ── Confidence emoji buttons ── */
+    .emoji-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 3px solid var(--border);
+      background: var(--surface);
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--t-med);
+    }
+    .emoji-btn:hover { transform: scale(1.1); border-color: var(--orange); }
+    .emoji-btn.selected {
+      border-color: var(--y1);
+      background: var(--y1-bg);
+      transform: scale(1.15);
+      box-shadow: 0 0 0 5px rgba(0,148,202,0.18);
+    }
+
+    /* ── Sorting warm-up items ── */
+    .sorting-warmup-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
       margin-bottom: 16px;
     }
-    .sort-box {
-      border: 2px dashed var(--border);
-      border-radius: var(--r-md);
-      padding: 14px;
-      min-height: 80px;
-      text-align: center;
-      transition: var(--t-med);
-    }
-    .sort-box.highlight { border-color: var(--y1); background: var(--y1-bg); }
-    .sort-box-label { font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 6px; }
-    .sort-box-items { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
-    .placed-item { font-size: 1.6rem; cursor: pointer; transition: transform var(--t-fast); }
-    .placed-item:hover { transform: scale(1.2); }
-    .items-bank {
+    .sort-item {
       display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
-      min-height: 60px;
-      padding: 10px;
-      background: var(--surface-2);
-      border-radius: var(--r-md);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 18px 12px;
+      min-height: 96px;
+      border: 2.5px solid var(--border);
+      border-radius: var(--r-lg);
+      cursor: pointer;
+      background: var(--surface);
+      transition: var(--t-med);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-2);
     }
-    .bank-item { font-size: 2rem; cursor: pointer; transition: var(--t-med); }
-    .bank-item:hover { transform: scale(1.15); }
-    .bank-item.gone { opacity: 0; pointer-events: none; }
+    .sort-item:hover { border-color: var(--orange); background: #FFF8EE; transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+    .sort-item.selected { border-color: var(--y1); background: var(--y1-bg); box-shadow: 0 0 0 4px rgba(0,148,202,0.15); }
+    .sort-item .item-emoji { font-size: 2.5rem; line-height: 1; }
+
+    /* ── Concept check choice buttons ── */
+    .choice-btn {
+      width: 100%;
+      text-align: left;
+      padding: 14px 16px;
+      border: 2.5px solid var(--border);
+      border-radius: var(--r-md);
+      background: var(--surface);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--t-med);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 52px;
+      line-height: 1.4;
+    }
+    .choice-btn:hover:not(:disabled) { border-color: var(--y1); background: var(--y1-bg); }
+
+    .choice-letter {
+      min-width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.88rem;
+      color: white;
+      flex-shrink: 0;
+      transition: var(--t-fast);
+    }
+    /* Color-coded letter circles */
+    .choice-btn:nth-child(1) .choice-letter { background: #5B8DEF; }
+    .choice-btn:nth-child(2) .choice-letter { background: #E05C68; }
+    .choice-btn:nth-child(3) .choice-letter { background: #F5A623; }
+    .choice-btn:nth-child(4) .choice-letter { background: #27AE60; }
+
+    /* Selected/correct/wrong states */
+    .choice-btn.correct {
+      border-color: var(--success);
+      background: var(--success-bg);
+    }
+    .choice-btn.correct .choice-letter { background: var(--success); }
+    .choice-btn.selected-wrong {
+      border-color: var(--danger);
+      background: var(--danger-bg);
+    }
+    .choice-btn.selected-wrong .choice-letter { background: var(--danger); }
+    .choice-btn:disabled { opacity: 0.75; cursor: not-allowed; }
+    .choice-btn:disabled:not(.correct):not(.selected-wrong):hover { border-color: var(--border); background: var(--surface); }
+
+    /* ── Correct reveal ── */
+    .correct-answer-reveal {
+      display: none;
+      padding: 12px 14px;
+      background: var(--success-bg);
+      border-radius: var(--r-sm);
+      border-left: 3px solid var(--success);
+      font-size: 0.85rem;
+      color: #1A5E35;
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+    .correct-answer-reveal.show { display: block; }
+
+    /* Wrong answer hint */
+    .wrong-answer-hint {
+      display: none;
+      padding: 10px 14px;
+      background: var(--danger-bg);
+      border-radius: var(--r-sm);
+      border-left: 3px solid var(--danger);
+      font-size: 0.85rem;
+      color: #7B1F1F;
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+    .wrong-answer-hint.show { display: block; }
+
+    /* ── Feedback message ── */
     .feedback-msg {
       padding: 12px 16px;
       border-radius: var(--r-md);
       font-weight: 600;
       font-size: 0.9rem;
-      text-align: center;
+      line-height: 1.4;
       display: none;
     }
     .feedback-msg.show { display: block; }
     .feedback-msg.correct { background: var(--success-bg); color: var(--success); }
     .feedback-msg.try-again { background: var(--warning-bg); color: var(--warning); }
+
+    /* ── Reflection textarea ── */
     .reflection-area {
       width: 100%;
       border: 2px solid var(--border);
@@ -77,23 +404,95 @@
       transition: border-color var(--t-fast);
       color: var(--text);
       background: var(--surface);
+      min-height: 110px;
     }
-    .reflection-area:focus { outline: none; border-color: var(--y1); }
+    .reflection-area:focus { outline: none; border-color: var(--y1); box-shadow: 0 0 0 3px rgba(0,148,202,0.12); }
     .char-count { text-align: right; font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+
+    /* ── Word bank chips ── */
     .word-bank-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
     .word-chip {
-      padding: 5px 12px;
+      padding: 7px 13px;
       border-radius: var(--r-full);
       background: var(--surface-2);
       border: 1.5px solid var(--border);
       font-size: 0.8rem;
       cursor: pointer;
       transition: var(--t-fast);
+      min-height: 36px;
+      display: flex;
+      align-items: center;
     }
     .word-chip:hover { background: var(--y1-bg); border-color: var(--y1); color: var(--y1); }
+
+    /* ── Summary ── */
     .summary-grid { display: flex; flex-direction: column; gap: 0; }
+    .score-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 20px;
+      border-radius: var(--r-full);
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+    .score-perfect { background: var(--success-bg); color: var(--success); }
+    .score-ok { background: var(--warning-bg); color: var(--warning); }
+
+    /* ── Lesson badge ── */
+    .lesson-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--y1-bg);
+      color: var(--y1);
+      padding: 4px 12px;
+      border-radius: var(--r-full);
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .aha-text { font-size: 1.4rem; text-align: center; margin: 8px 0; }
+    .step-header-text { font-size: 0.78rem; color: var(--text-muted); font-weight: 600; }
+
+    /* ── Concept check header bubble ── */
+    .check-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding: 10px 14px;
+      background: linear-gradient(90deg, var(--y1-bg), transparent);
+      border-radius: var(--r-md);
+      border-left: 4px solid var(--y1);
+    }
+    .check-num {
+      background: var(--y1);
+      color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    .check-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--y1);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Final button ── */
     .final-btn {
-      display: flex; align-items: center; justify-content: space-between;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       padding: 16px 20px;
       border-radius: var(--r-lg);
       text-decoration: none;
@@ -106,35 +505,83 @@
       border: none;
       width: 100%;
       font-size: 1rem;
+      min-height: 56px;
     }
     .final-btn:hover { background: var(--purple-dark); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
-    .step-header-text { font-size: 0.78rem; color: var(--text-muted); font-weight: 600; }
-    .lesson-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: var(--y1-bg); color: var(--y1);
-      padding: 4px 12px; border-radius: var(--r-full);
-      font-size: 0.78rem; font-weight: 700;
-      margin-bottom: 8px;
-    }
-    .aha-text { font-size: 1.4rem; text-align: center; margin: 8px 0; }
-    .correct-answer-reveal {
+
+    /* ── Step slide transitions ── */
+    .step-screen {
       display: none;
-      padding: 10px 14px;
-      background: var(--success-bg);
+      padding: 20px 16px;
+    }
+    .step-screen.active {
+      display: block;
+      animation: slideInRight 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .step-screen.slide-out-left {
+      animation: slideOutLeft 0.22s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+    }
+    .step-screen.slide-in-from-left {
+      animation: slideInLeft 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(32px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-32px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes slideOutLeft {
+      from { opacity: 1; transform: translateX(0); }
+      to   { opacity: 0; transform: translateX(-32px); }
+    }
+
+    /* ── Reason tag row ── */
+    .tag-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag {
+      padding: 8px 14px;
+      border-radius: var(--r-full);
+      font-size: 0.82rem;
+      font-weight: 600;
+      background: var(--surface-2);
+      color: var(--text-2);
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: var(--t-fast);
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+    }
+    .tag:hover { border-color: var(--purple); color: var(--purple); }
+    .tag.active { background: var(--y2-bg); color: var(--purple); border-color: var(--purple); }
+
+    /* ── Teacher bar badge ── */
+    .year-badge {
+      background: rgba(0,148,202,0.25);
+      color: #7FD4F5;
+      padding: 3px 10px;
+      border-radius: var(--r-full);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Intro feature list ── */
+    .feature-list-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: var(--surface-2);
       border-radius: var(--r-sm);
-      border-left: 3px solid var(--success);
-      font-size: 0.85rem;
-      color: #1A5E35;
-      margin-top: 8px;
+      min-height: 48px;
     }
-    .correct-answer-reveal.show { display: block; }
-    .score-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 6px 16px; border-radius: var(--r-full);
-      font-weight: 800; font-size: 1.1rem;
-    }
-    .score-perfect { background: var(--success-bg); color: var(--success); }
-    .score-ok      { background: var(--warning-bg); color: var(--warning); }
+    .feature-list-icon { font-size: 1.4rem; flex-shrink: 0; }
+
+    /* ── Help prompt ── */
+    #helpPrompt { display: none; margin-top: 14px; }
+
   </style>
 </head>
 <body id="pageBody">
@@ -144,6 +591,7 @@
   <div class="teacher-bar-left">
     <span>🧑‍💻</span>
     <span>Student View</span>
+    <span class="year-badge">📱 Year 1 · Formative Signals Demo</span>
   </div>
   <label class="toggle-switch" title="Toggle teacher signal overlay">
     <input type="checkbox" id="teacherToggle" onchange="toggleTeacherMode(this)">
@@ -171,409 +619,445 @@
   </div>
 </nav>
 
-<!-- App Shell -->
-<div class="wizard-shell">
+<!-- Phone Scene Wrapper -->
+<div class="phone-scene">
+  <div class="phone-wrapper" id="phoneWrapper">
+    <!-- Floating signals counter (teacher mode only) -->
+    <div class="signals-counter" id="signalsCounter">📡 signals collected: 0</div>
 
-  <!-- Sticky Header with Progress -->
-  <div class="wizard-header">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-      <div class="lesson-badge">📚 Lesson 1: Making Predictions</div>
-      <span class="step-header-text" id="stepLabel">Step 1 of 8</span>
-    </div>
-    <div class="step-indicators" id="stepIndicators">
-      <!-- Generated by JS -->
-    </div>
-  </div>
-
-  <!-- ─── STEP 1: WELCOME ─── -->
-  <div class="step-screen active" id="step-1">
-    <div class="question-of-day">
-      <div class="qod-label">🗓️ Question of the Day</div>
-      <p>What features help us decide how to sort a group of objects?</p>
-    </div>
-
-    <div class="signal-overlay">
-      📡 <strong>Signal captured:</strong> Lesson started · timestamp recorded · student identified
-    </div>
-
-    <div class="card" style="margin-bottom:16px;">
-      <div style="font-size:2.5rem;text-align:center;margin-bottom:12px;">🤖</div>
-      <h2 style="text-align:center;margin-bottom:8px;">How AI Makes Decisions</h2>
-      <p class="text-sm text-muted text-center" style="margin-bottom:16px;">In this lesson you'll act like an AI — sorting objects by features and making predictions!</p>
-      <div style="display:flex;flex-direction:column;gap:8px;">
-        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--surface-2);border-radius:var(--r-sm);">
-          <span style="font-size:1.3rem;">🔢</span>
-          <span class="text-sm">Learn how computers <strong>sort data by features</strong></span>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--surface-2);border-radius:var(--r-sm);">
-          <span style="font-size:1.3rem;">🎯</span>
-          <span class="text-sm">Practice <strong>predicting patterns</strong> like an AI model</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--surface-2);border-radius:var(--r-sm);">
-          <span style="font-size:1.3rem;">💬</span>
-          <span class="text-sm">Discuss <strong>real-world examples</strong> of AI sorting</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="bottom-nav">
-      <button class="btn btn-y1 btn-block btn-lg" onclick="goToStep(2)">Let's Start! →</button>
-    </div>
-  </div>
-
-  <!-- ─── STEP 2: PRE-LESSON CONFIDENCE ─── -->
-  <div class="step-screen" id="step-2">
-    <div class="card">
-      <div class="aha-text">🤔</div>
-      <h3 style="text-align:center;margin-bottom:4px;">Before we begin…</h3>
-      <p class="text-sm text-muted text-center" style="margin-bottom:20px;">How confident are you about sorting things and making predictions?</p>
-
-      <div class="emoji-row" id="confidenceRow">
-        <div style="text-align:center;">
-          <button class="emoji-btn" onclick="selectConfidence(this, 1)" title="Not sure at all">😰</button>
-          <div class="text-xs text-muted" style="margin-top:4px;">Not sure</div>
-        </div>
-        <div style="text-align:center;">
-          <button class="emoji-btn" onclick="selectConfidence(this, 2)" title="A little unsure">😕</button>
-          <div class="text-xs text-muted" style="margin-top:4px;">A bit unsure</div>
-        </div>
-        <div style="text-align:center;">
-          <button class="emoji-btn" onclick="selectConfidence(this, 3)" title="Neutral">😐</button>
-          <div class="text-xs text-muted" style="margin-top:4px;">Neutral</div>
-        </div>
-        <div style="text-align:center;">
-          <button class="emoji-btn" onclick="selectConfidence(this, 4)" title="Pretty confident">🙂</button>
-          <div class="text-xs text-muted" style="margin-top:4px;">Pretty good</div>
-        </div>
-        <div style="text-align:center;">
-          <button class="emoji-btn" onclick="selectConfidence(this, 5)" title="Very confident">😎</button>
-          <div class="text-xs text-muted" style="margin-top:4px;">Got it!</div>
-        </div>
+    <div class="phone-screen">
+      <!-- Notch bar -->
+      <div class="phone-notch-bar">
+        <div class="phone-notch-pill"></div>
       </div>
 
-      <div class="signal-overlay">
-        📡 <strong>Signal captured:</strong> Pre-lesson confidence score (1–5 emoji) · Affective baseline for growth tracking
-      </div>
-    </div>
+      <!-- Scrollable app content -->
+      <div class="phone-content" id="phoneContent">
 
-    <div class="bottom-nav">
-      <button class="btn btn-outline" onclick="goToStep(1)">← Back</button>
-      <button class="btn btn-y1 btn-block" id="confNext" onclick="goToStep(3)" disabled>Next →</button>
-    </div>
-  </div>
+        <!-- App Shell -->
+        <div class="wizard-shell">
 
-  <!-- ─── STEP 3: SORTING WARM-UP ─── -->
-  <div class="step-screen" id="step-3">
-    <div class="card">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-        <span style="font-size:1.3rem;">🥐</span>
-        <h3>Warm Up: Which Doesn't Belong?</h3>
-      </div>
-      <p class="text-sm text-muted" style="margin-bottom:16px;">These four pastries can be sorted in different ways. Tap the one that <em>doesn't belong</em> based on a feature you choose!</p>
-
-      <div class="sorting-grid" id="sortingGrid">
-        <button class="sort-item" onclick="selectItem(this, 'croissant')" id="item-croissant">
-          <span class="item-emoji">🥐</span>
-          <span>Croissant</span>
-        </button>
-        <button class="sort-item" onclick="selectItem(this, 'pancakes')" id="item-pancakes">
-          <span class="item-emoji">🥞</span>
-          <span>Pancakes</span>
-        </button>
-        <button class="sort-item" onclick="selectItem(this, 'donut')" id="item-donut">
-          <span class="item-emoji">🍩</span>
-          <span>Donut</span>
-        </button>
-        <button class="sort-item" onclick="selectItem(this, 'pretzel')" id="item-pretzel">
-          <span class="item-emoji">🥨</span>
-          <span>Pretzel</span>
-        </button>
-      </div>
-
-      <div id="sortFeedback" class="feedback-msg">
-        <!-- Filled by JS -->
-      </div>
-
-      <div id="reasonRow" style="display:none;margin-top:14px;">
-        <p class="text-sm font-bold" style="margin-bottom:8px;">What feature made it different?</p>
-        <div class="tag-row" id="reasonTags">
-          <button class="tag" onclick="selectReason(this, 'shape')">🔷 Shape</button>
-          <button class="tag" onclick="selectReason(this, 'sweet')">🍬 Sweet vs. Savory</button>
-          <button class="tag" onclick="selectReason(this, 'topping')">✨ Has Topping</button>
-          <button class="tag" onclick="selectReason(this, 'round')">⭕ Round/Not Round</button>
-        </div>
-      </div>
-
-      <div class="signal-overlay">
-        📡 <strong>Signals captured:</strong><br>
-        • Item selected (sorting choice)<br>
-        • Reasoning feature category<br>
-        • Time to select (behavioral engagement)
-      </div>
-    </div>
-
-    <div class="bottom-nav">
-      <button class="btn btn-outline" onclick="goToStep(2)">← Back</button>
-      <button class="btn btn-y1 btn-block" id="sortNext" onclick="goToStep(4)" disabled>Next →</button>
-    </div>
-  </div>
-
-  <!-- ─── STEP 4: CONCEPT CHECK Q1 ─── -->
-  <div class="step-screen" id="step-4">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-      <div style="background:var(--y1);color:white;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;">1</div>
-      <span class="text-sm font-bold" style="color:var(--y1);">QUICK CHECK</span>
-    </div>
-
-    <div class="card" style="margin-bottom:12px;">
-      <p style="font-weight:700;font-size:1rem;margin-bottom:16px;line-height:1.5;">What is <em>training data</em>?</p>
-      <div id="q1choices" style="display:flex;flex-direction:column;gap:8px;">
-        <button class="choice-btn" onclick="answerQ1(this,'A')">
-          <span class="choice-letter">A</span>
-          <span>Random information collected from the internet</span>
-        </button>
-        <button class="choice-btn" onclick="answerQ1(this,'B')">
-          <span class="choice-letter">B</span>
-          <span>Information that has been sorted, then given to a computer so it can make predictions</span>
-        </button>
-        <button class="choice-btn" onclick="answerQ1(this,'C')">
-          <span class="choice-letter">C</span>
-          <span>A computer's test results from an exam</span>
-        </button>
-        <button class="choice-btn" onclick="answerQ1(this,'D')">
-          <span class="choice-letter">D</span>
-          <span>Instructions that humans program into AI by hand</span>
-        </button>
-      </div>
-      <div class="correct-answer-reveal" id="q1reveal">
-        ✅ <strong>Correct!</strong> Training data is information that's been sorted and labeled so a computer can learn from it to make predictions — just like sorting fish vs. trash in AI for Oceans!
-      </div>
-    </div>
-
-    <div class="signal-overlay">
-      📡 <strong>Signal captured:</strong><br>
-      • Answer choice & correctness · Cognitive check on "training data" concept<br>
-      • Time to answer · Mapped to: Lesson Objective 1
-    </div>
-
-    <div class="bottom-nav">
-      <button class="btn btn-outline" onclick="goToStep(3)">← Back</button>
-      <button class="btn btn-y1 btn-block" id="q1Next" onclick="goToStep(5)" disabled>Next →</button>
-    </div>
-  </div>
-
-  <!-- ─── STEP 5: CONCEPT CHECK Q2 ─── -->
-  <div class="step-screen" id="step-5">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-      <div style="background:var(--y1);color:white;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:circle;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;">2</div>
-      <span class="text-sm font-bold" style="color:var(--y1);">QUICK CHECK</span>
-    </div>
-
-    <div class="card" style="margin-bottom:12px;">
-      <p style="font-weight:700;font-size:1rem;margin-bottom:16px;line-height:1.5;">Why might an AI model make <em>incorrect predictions</em>?</p>
-      <div id="q2choices" style="display:flex;flex-direction:column;gap:8px;">
-        <button class="choice-btn" onclick="answerQ2(this,'A')">
-          <span class="choice-letter">A</span>
-          <span>The computer doesn't have enough electricity</span>
-        </button>
-        <button class="choice-btn" onclick="answerQ2(this,'B')">
-          <span class="choice-letter">B</span>
-          <span>It wasn't built by the right kind of engineer</span>
-        </button>
-        <button class="choice-btn" onclick="answerQ2(this,'C')">
-          <span class="choice-letter">C</span>
-          <span>It doesn't have enough training data, or the training data is biased</span>
-        </button>
-        <button class="choice-btn" onclick="answerQ2(this,'D')">
-          <span class="choice-letter">D</span>
-          <span>The computer is moving too fast</span>
-        </button>
-      </div>
-      <div class="correct-answer-reveal" id="q2reveal">
-        ✅ <strong>Correct!</strong> AI predictions are only as good as the data they're trained on. If the training data is limited or biased, the AI will make incorrect or unfair predictions.
-      </div>
-    </div>
-
-    <div class="signal-overlay">
-      📡 <strong>Signal captured:</strong><br>
-      • Answer choice & correctness · Cognitive check on "AI prediction accuracy"<br>
-      • Misconception pattern detection · Mapped to: Lesson Objective 2
-    </div>
-
-    <div class="bottom-nav">
-      <button class="btn btn-outline" onclick="goToStep(4)">← Back</button>
-      <button class="btn btn-y1 btn-block" id="q2Next" onclick="goToStep(6)" disabled>Next →</button>
-    </div>
-  </div>
-
-  <!-- ─── STEP 6: MICRO-REFLECTION ─── -->
-  <div class="step-screen" id="step-6">
-    <div class="card">
-      <div style="font-size:2rem;text-align:center;margin-bottom:8px;">💭</div>
-      <h3 style="text-align:center;margin-bottom:4px;">Take a Moment to Reflect</h3>
-      <p class="text-sm text-muted text-center" style="margin-bottom:16px;">Which sorting level was easiest for you? Why do you think so?</p>
-
-      <textarea class="reflection-area" id="reflectionText" rows="4" maxlength="200"
-        placeholder="Type your answer here... (e.g., 'The first level was easiest because the items were already labeled with their colors...')"
-        oninput="updateCharCount(this)"></textarea>
-      <div class="char-count"><span id="charCount">0</span>/200 characters</div>
-
-      <div style="margin-top:12px;">
-        <p class="text-xs text-muted" style="margin-bottom:6px;">💡 Need a word? Tap to add it:</p>
-        <div class="word-bank-chips">
-          <button class="word-chip" onclick="addWord('clear pattern')">clear pattern</button>
-          <button class="word-chip" onclick="addWord('more examples')">more examples</button>
-          <button class="word-chip" onclick="addWord('fewer items')">fewer items</button>
-          <button class="word-chip" onclick="addWord('already labeled')">already labeled</button>
-          <button class="word-chip" onclick="addWord('I could see')">I could see</button>
-          <button class="word-chip" onclick="addWord('the feature was')">the feature was</button>
-        </div>
-      </div>
-
-      <div class="signal-overlay">
-        📡 <strong>Signal captured:</strong><br>
-        • Reflection text (NLP key-term check: "pattern", "data", "feature")<br>
-        • Word bank usage (scaffolding needs signal)<br>
-        • Response length · Metacognitive depth indicator
-      </div>
-    </div>
-
-    <div class="bottom-nav">
-      <button class="btn btn-outline" onclick="goToStep(5)">← Back</button>
-      <button class="btn btn-y1 btn-block" id="reflectNext" onclick="goToStep(7)" disabled>Next →</button>
-    </div>
-  </div>
-
-  <!-- ─── STEP 7: LESSON MOOD ─── -->
-  <div class="step-screen" id="step-7">
-    <div class="card">
-      <div style="font-size:2rem;text-align:center;margin-bottom:8px;">📊</div>
-      <h3 style="text-align:center;margin-bottom:4px;">How did today's lesson feel?</h3>
-      <p class="text-sm text-muted text-center" style="margin-bottom:16px;">Your honest answer helps your teacher plan better lessons!</p>
-
-      <div class="mood-grid">
-        <button class="mood-btn" onclick="selectMood(this,'hard')" id="moodHard">
-          <span class="mood-emoji">😤</span>
-          Too Hard
-        </button>
-        <button class="mood-btn" onclick="selectMood(this,'right')" id="moodRight">
-          <span class="mood-emoji">😊</span>
-          Just Right!
-        </button>
-        <button class="mood-btn" onclick="selectMood(this,'easy')" id="moodEasy">
-          <span class="mood-emoji">😴</span>
-          Too Easy
-        </button>
-      </div>
-
-      <div id="helpPrompt" style="display:none;margin-top:12px;">
-        <p class="text-sm font-bold" style="margin-bottom:8px;">What would help you most? (optional)</p>
-        <div class="tag-row" id="helpTags">
-          <button class="tag" onclick="toggleTag(this)">📖 More examples</button>
-          <button class="tag" onclick="toggleTag(this)">🎮 More practice</button>
-          <button class="tag" onclick="toggleTag(this)">📝 Less reading</button>
-          <button class="tag" onclick="toggleTag(this)">🚀 More challenge</button>
-          <button class="tag" onclick="toggleTag(this)">👥 Partner work</button>
-          <button class="tag" onclick="toggleTag(this)">🎥 A video</button>
-        </div>
-      </div>
-
-      <div class="signal-overlay">
-        📡 <strong>Signal captured:</strong><br>
-        • Difficulty rating (Too hard / Just right / Too easy) · Pacing signal<br>
-        • Help preferences selected · Differentiation signal for teacher
-      </div>
-    </div>
-
-    <div class="bottom-nav">
-      <button class="btn btn-outline" onclick="goToStep(6)">← Back</button>
-      <button class="btn btn-y1 btn-block" id="moodNext" onclick="goToStep(8)" disabled>See My Summary →</button>
-    </div>
-  </div>
-
-  <!-- ─── STEP 8: LEARNING SUMMARY ─── -->
-  <div class="step-screen" id="step-8">
-    <div style="text-align:center;margin-bottom:20px;">
-      <div style="font-size:2.5rem;margin-bottom:8px;">🌟</div>
-      <h2>Great work today!</h2>
-      <p class="text-sm text-muted">Here's what you showed us about your learning.</p>
-    </div>
-
-    <!-- Score snapshot -->
-    <div class="card" style="margin-bottom:16px;text-align:center;">
-      <div class="text-xs text-muted font-bold" style="text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Today's Concept Check</div>
-      <div id="scoreDisplay" class="score-badge score-perfect" style="margin:0 auto;">🏆 2 / 2 correct</div>
-    </div>
-
-    <!-- Signal Summary -->
-    <div class="card" style="margin-bottom:16px;">
-      <h3 style="margin-bottom:4px;">📡 Learning Signals Collected</h3>
-      <p class="text-xs text-muted" style="margin-bottom:14px;">Each signal helps your teacher understand how to support you better.</p>
-      <div class="summary-grid">
-        <div class="signal-row">
-          <div class="signal-icon">💪</div>
-          <div>
-            <div class="signal-label">Pre-lesson confidence</div>
-            <div class="signal-value" id="summaryConfidence">–</div>
+          <!-- Sticky Header with Progress -->
+          <div class="wizard-header">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+              <div class="lesson-badge">📚 Lesson 1: Making Predictions</div>
+              <span class="step-header-text" id="stepLabel">Step 1 of 8</span>
+            </div>
+            <div class="step-indicators" id="stepIndicators">
+              <!-- Generated by JS -->
+            </div>
           </div>
-        </div>
-        <div class="signal-row">
-          <div class="signal-icon">🔀</div>
-          <div>
-            <div class="signal-label">Warm-up: sorting choice</div>
-            <div class="signal-value" id="summarySorting">–</div>
+
+          <!-- ─── STEP 1: WELCOME ─── -->
+          <div class="step-screen active" id="step-1">
+            <div class="question-of-day">
+              <div class="qod-label">🗓️ Question of the Day</div>
+              <p>What features help us decide how to sort a group of objects?</p>
+            </div>
+
+            <div class="signal-overlay">
+              📡 <strong>Signal captured:</strong> Lesson started · timestamp recorded · student identified
+            </div>
+
+            <div class="card" style="margin-bottom:16px;">
+              <div style="font-size:2.8rem;text-align:center;margin-bottom:14px;line-height:1;">🤖</div>
+              <h2 style="text-align:center;margin-bottom:8px;">How AI Makes Decisions</h2>
+              <p class="text-sm text-muted text-center" style="margin-bottom:18px;">In this lesson you'll act like an AI — sorting objects by features and making predictions!</p>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <div class="feature-list-item">
+                  <span class="feature-list-icon">🔢</span>
+                  <span class="text-sm">Learn how computers <strong>sort data by features</strong></span>
+                </div>
+                <div class="feature-list-item">
+                  <span class="feature-list-icon">🎯</span>
+                  <span class="text-sm">Practice <strong>predicting patterns</strong> like an AI model</span>
+                </div>
+                <div class="feature-list-item">
+                  <span class="feature-list-icon">💬</span>
+                  <span class="text-sm">Discuss <strong>real-world examples</strong> of AI sorting</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bottom-nav">
+              <button class="btn btn-y1 btn-block btn-lg" onclick="goToStep(2)">Let's Start! →</button>
+            </div>
           </div>
-        </div>
-        <div class="signal-row">
-          <div class="signal-icon">🧠</div>
-          <div>
-            <div class="signal-label">Concept check score</div>
-            <div class="signal-value" id="summaryScore">–</div>
+
+          <!-- ─── STEP 2: PRE-LESSON CONFIDENCE ─── -->
+          <div class="step-screen" id="step-2">
+            <div class="card">
+              <div class="aha-text">🤔</div>
+              <h3 style="text-align:center;margin-bottom:4px;">Before we begin…</h3>
+              <p class="text-sm text-muted text-center" style="margin-bottom:22px;">How confident are you about sorting things and making predictions?</p>
+
+              <div class="emoji-row" id="confidenceRow" style="gap:10px;margin-bottom:8px;">
+                <div style="text-align:center;">
+                  <button class="emoji-btn" onclick="selectConfidence(this, 1)" title="Not sure at all">😰</button>
+                  <div class="text-xs text-muted" style="margin-top:5px;">Not sure</div>
+                </div>
+                <div style="text-align:center;">
+                  <button class="emoji-btn" onclick="selectConfidence(this, 2)" title="A little unsure">😕</button>
+                  <div class="text-xs text-muted" style="margin-top:5px;">A bit unsure</div>
+                </div>
+                <div style="text-align:center;">
+                  <button class="emoji-btn" onclick="selectConfidence(this, 3)" title="Neutral">😐</button>
+                  <div class="text-xs text-muted" style="margin-top:5px;">Neutral</div>
+                </div>
+                <div style="text-align:center;">
+                  <button class="emoji-btn" onclick="selectConfidence(this, 4)" title="Pretty confident">🙂</button>
+                  <div class="text-xs text-muted" style="margin-top:5px;">Pretty good</div>
+                </div>
+                <div style="text-align:center;">
+                  <button class="emoji-btn" onclick="selectConfidence(this, 5)" title="Very confident">😎</button>
+                  <div class="text-xs text-muted" style="margin-top:5px;">Got it!</div>
+                </div>
+              </div>
+
+              <div class="signal-overlay">
+                📡 <strong>Signal captured:</strong> Pre-lesson confidence score (1–5 emoji) · Affective baseline for growth tracking
+              </div>
+            </div>
+
+            <div class="bottom-nav">
+              <button class="btn btn-outline" onclick="goToStep(1)">← Back</button>
+              <button class="btn btn-y1 btn-block" id="confNext" onclick="goToStep(3)" disabled>Next →</button>
+            </div>
           </div>
-        </div>
-        <div class="signal-row">
-          <div class="signal-icon">✍️</div>
-          <div>
-            <div class="signal-label">Reflection submitted</div>
-            <div class="signal-value" id="summaryReflection">–</div>
+
+          <!-- ─── STEP 3: SORTING WARM-UP ─── -->
+          <div class="step-screen" id="step-3">
+            <div class="card">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                <span style="font-size:1.4rem;">🥐</span>
+                <h3>Warm Up: Which Doesn't Belong?</h3>
+              </div>
+              <p class="text-sm text-muted" style="margin-bottom:18px;">These four pastries can be sorted in different ways. Tap the one that <em>doesn't belong</em> based on a feature you choose!</p>
+
+              <div class="sorting-warmup-grid" id="sortingGrid">
+                <button class="sort-item" onclick="selectItem(this, 'croissant')" id="item-croissant">
+                  <span class="item-emoji">🥐</span>
+                  <span>Croissant</span>
+                </button>
+                <button class="sort-item" onclick="selectItem(this, 'pancakes')" id="item-pancakes">
+                  <span class="item-emoji">🥞</span>
+                  <span>Pancakes</span>
+                </button>
+                <button class="sort-item" onclick="selectItem(this, 'donut')" id="item-donut">
+                  <span class="item-emoji">🍩</span>
+                  <span>Donut</span>
+                </button>
+                <button class="sort-item" onclick="selectItem(this, 'pretzel')" id="item-pretzel">
+                  <span class="item-emoji">🥨</span>
+                  <span>Pretzel</span>
+                </button>
+              </div>
+
+              <div id="sortFeedback" class="feedback-msg">
+                <!-- Filled by JS -->
+              </div>
+
+              <div id="reasonRow" style="display:none;margin-top:16px;">
+                <p class="text-sm font-bold" style="margin-bottom:10px;">What feature made it different?</p>
+                <div class="tag-row" id="reasonTags">
+                  <button class="tag" onclick="selectReason(this, 'shape')">🔷 Shape</button>
+                  <button class="tag" onclick="selectReason(this, 'sweet')">🍬 Sweet vs. Savory</button>
+                  <button class="tag" onclick="selectReason(this, 'topping')">✨ Has Topping</button>
+                  <button class="tag" onclick="selectReason(this, 'round')">⭕ Round/Not Round</button>
+                </div>
+              </div>
+
+              <div class="signal-overlay" style="margin-top:14px;">
+                📡 <strong>Signals captured:</strong><br>
+                • Item selected (sorting choice)<br>
+                • Reasoning feature category<br>
+                • Time to select (behavioral engagement)
+              </div>
+            </div>
+
+            <div class="bottom-nav">
+              <button class="btn btn-outline" onclick="goToStep(2)">← Back</button>
+              <button class="btn btn-y1 btn-block" id="sortNext" onclick="goToStep(4)" disabled>Next →</button>
+            </div>
           </div>
-        </div>
-        <div class="signal-row">
-          <div class="signal-icon">📊</div>
-          <div>
-            <div class="signal-label">Lesson difficulty</div>
-            <div class="signal-value" id="summaryMood">–</div>
+
+          <!-- ─── STEP 4: CONCEPT CHECK Q1 ─── -->
+          <div class="step-screen" id="step-4">
+            <div class="check-header">
+              <div class="check-num">1</div>
+              <div>
+                <div class="check-label">Quick Check</div>
+                <div class="text-xs text-muted">Choose the best answer</div>
+              </div>
+            </div>
+
+            <div class="card" style="margin-bottom:12px;">
+              <p style="font-weight:700;font-size:1rem;margin-bottom:18px;line-height:1.5;">What is <em>training data</em>?</p>
+              <div id="q1choices" style="display:flex;flex-direction:column;gap:10px;">
+                <button class="choice-btn" onclick="answerQ1(this,'A')">
+                  <span class="choice-letter">A</span>
+                  <span>Random information collected from the internet</span>
+                </button>
+                <button class="choice-btn" onclick="answerQ1(this,'B')">
+                  <span class="choice-letter">B</span>
+                  <span>Information that has been sorted, then given to a computer so it can make predictions</span>
+                </button>
+                <button class="choice-btn" onclick="answerQ1(this,'C')">
+                  <span class="choice-letter">C</span>
+                  <span>A computer's test results from an exam</span>
+                </button>
+                <button class="choice-btn" onclick="answerQ1(this,'D')">
+                  <span class="choice-letter">D</span>
+                  <span>Instructions that humans program into AI by hand</span>
+                </button>
+              </div>
+              <div class="correct-answer-reveal" id="q1reveal">
+                ✅ <strong>Correct!</strong> Training data is information that's been sorted and labeled so a computer can learn from it to make predictions — just like sorting fish vs. trash in AI for Oceans!
+              </div>
+              <div class="wrong-answer-hint" id="q1wrong">
+                💡 <strong>Not quite.</strong> Training data is information that's been <em>sorted and labeled</em> so a computer can learn to make predictions. Think of labeling pictures of cats and dogs!
+              </div>
+            </div>
+
+            <div class="signal-overlay">
+              📡 <strong>Signal captured:</strong><br>
+              • Answer choice & correctness · Cognitive check on "training data" concept<br>
+              • Time to answer · Mapped to: Lesson Objective 1
+            </div>
+
+            <div class="bottom-nav">
+              <button class="btn btn-outline" onclick="goToStep(3)">← Back</button>
+              <button class="btn btn-y1 btn-block" id="q1Next" onclick="goToStep(5)" disabled>Next →</button>
+            </div>
           </div>
-        </div>
+
+          <!-- ─── STEP 5: CONCEPT CHECK Q2 ─── -->
+          <div class="step-screen" id="step-5">
+            <div class="check-header">
+              <div class="check-num">2</div>
+              <div>
+                <div class="check-label">Quick Check</div>
+                <div class="text-xs text-muted">Choose the best answer</div>
+              </div>
+            </div>
+
+            <div class="card" style="margin-bottom:12px;">
+              <p style="font-weight:700;font-size:1rem;margin-bottom:18px;line-height:1.5;">Why might an AI model make <em>incorrect predictions</em>?</p>
+              <div id="q2choices" style="display:flex;flex-direction:column;gap:10px;">
+                <button class="choice-btn" onclick="answerQ2(this,'A')">
+                  <span class="choice-letter">A</span>
+                  <span>The computer doesn't have enough electricity</span>
+                </button>
+                <button class="choice-btn" onclick="answerQ2(this,'B')">
+                  <span class="choice-letter">B</span>
+                  <span>It wasn't built by the right kind of engineer</span>
+                </button>
+                <button class="choice-btn" onclick="answerQ2(this,'C')">
+                  <span class="choice-letter">C</span>
+                  <span>It doesn't have enough training data, or the training data is biased</span>
+                </button>
+                <button class="choice-btn" onclick="answerQ2(this,'D')">
+                  <span class="choice-letter">D</span>
+                  <span>The computer is moving too fast</span>
+                </button>
+              </div>
+              <div class="correct-answer-reveal" id="q2reveal">
+                ✅ <strong>Correct!</strong> AI predictions are only as good as the data they're trained on. If the training data is limited or biased, the AI will make incorrect or unfair predictions.
+              </div>
+              <div class="wrong-answer-hint" id="q2wrong">
+                💡 <strong>Not quite.</strong> AI makes mistakes when its <em>training data is limited or biased</em> — not because of hardware or who built it. The data quality is what matters!
+              </div>
+            </div>
+
+            <div class="signal-overlay">
+              📡 <strong>Signal captured:</strong><br>
+              • Answer choice & correctness · Cognitive check on "AI prediction accuracy"<br>
+              • Misconception pattern detection · Mapped to: Lesson Objective 2
+            </div>
+
+            <div class="bottom-nav">
+              <button class="btn btn-outline" onclick="goToStep(4)">← Back</button>
+              <button class="btn btn-y1 btn-block" id="q2Next" onclick="goToStep(6)" disabled>Next →</button>
+            </div>
+          </div>
+
+          <!-- ─── STEP 6: MICRO-REFLECTION ─── -->
+          <div class="step-screen" id="step-6">
+            <div class="card">
+              <div style="font-size:2rem;text-align:center;margin-bottom:8px;">💭</div>
+              <h3 style="text-align:center;margin-bottom:4px;">Take a Moment to Reflect</h3>
+              <p class="text-sm text-muted text-center" style="margin-bottom:18px;">Which sorting level was easiest for you? Why do you think so?</p>
+
+              <textarea class="reflection-area" id="reflectionText" rows="4" maxlength="200"
+                placeholder="Type your answer here... (e.g., 'The first level was easiest because the items were already labeled with their colors...')"
+                oninput="updateCharCount(this)"></textarea>
+              <div class="char-count"><span id="charCount">0</span>/200 characters</div>
+
+              <div style="margin-top:14px;">
+                <p class="text-xs text-muted" style="margin-bottom:8px;">💡 Need a word? Tap to add it:</p>
+                <div class="word-bank-chips">
+                  <button class="word-chip" onclick="addWord('clear pattern')">clear pattern</button>
+                  <button class="word-chip" onclick="addWord('more examples')">more examples</button>
+                  <button class="word-chip" onclick="addWord('fewer items')">fewer items</button>
+                  <button class="word-chip" onclick="addWord('already labeled')">already labeled</button>
+                  <button class="word-chip" onclick="addWord('I could see')">I could see</button>
+                  <button class="word-chip" onclick="addWord('the feature was')">the feature was</button>
+                </div>
+              </div>
+
+              <div class="signal-overlay" style="margin-top:14px;">
+                📡 <strong>Signal captured:</strong><br>
+                • Reflection text (NLP key-term check: "pattern", "data", "feature")<br>
+                • Word bank usage (scaffolding needs signal)<br>
+                • Response length · Metacognitive depth indicator
+              </div>
+            </div>
+
+            <div class="bottom-nav">
+              <button class="btn btn-outline" onclick="goToStep(5)">← Back</button>
+              <button class="btn btn-y1 btn-block" id="reflectNext" onclick="goToStep(7)" disabled>Next →</button>
+            </div>
+          </div>
+
+          <!-- ─── STEP 7: LESSON MOOD ─── -->
+          <div class="step-screen" id="step-7">
+            <div class="card">
+              <div style="font-size:2rem;text-align:center;margin-bottom:8px;">📊</div>
+              <h3 style="text-align:center;margin-bottom:4px;">How did today's lesson feel?</h3>
+              <p class="text-sm text-muted text-center" style="margin-bottom:18px;">Your honest answer helps your teacher plan better lessons!</p>
+
+              <div class="mood-grid">
+                <button class="mood-btn" onclick="selectMood(this,'hard')" id="moodHard">
+                  <span class="mood-emoji">😤</span>
+                  Too Hard
+                </button>
+                <button class="mood-btn" onclick="selectMood(this,'right')" id="moodRight">
+                  <span class="mood-emoji">😊</span>
+                  Just Right!
+                </button>
+                <button class="mood-btn" onclick="selectMood(this,'easy')" id="moodEasy">
+                  <span class="mood-emoji">😴</span>
+                  Too Easy
+                </button>
+              </div>
+
+              <div id="helpPrompt">
+                <p class="text-sm font-bold" style="margin-bottom:10px;">What would help you most? <span class="text-muted" style="font-weight:400;">(optional)</span></p>
+                <div class="tag-row" id="helpTags">
+                  <button class="tag" onclick="toggleTag(this)">📖 More examples</button>
+                  <button class="tag" onclick="toggleTag(this)">🎮 More practice</button>
+                  <button class="tag" onclick="toggleTag(this)">📝 Less reading</button>
+                  <button class="tag" onclick="toggleTag(this)">🚀 More challenge</button>
+                  <button class="tag" onclick="toggleTag(this)">👥 Partner work</button>
+                  <button class="tag" onclick="toggleTag(this)">🎥 A video</button>
+                </div>
+              </div>
+
+              <div class="signal-overlay" style="margin-top:14px;">
+                📡 <strong>Signal captured:</strong><br>
+                • Difficulty rating (Too hard / Just right / Too easy) · Pacing signal<br>
+                • Help preferences selected · Differentiation signal for teacher
+              </div>
+            </div>
+
+            <div class="bottom-nav">
+              <button class="btn btn-outline" onclick="goToStep(6)">← Back</button>
+              <button class="btn btn-y1 btn-block" id="moodNext" onclick="goToStep(8)" disabled>See My Summary →</button>
+            </div>
+          </div>
+
+          <!-- ─── STEP 8: LEARNING SUMMARY ─── -->
+          <div class="step-screen" id="step-8">
+            <div style="text-align:center;margin-bottom:20px;">
+              <div style="font-size:3rem;margin-bottom:8px;">🌟</div>
+              <h2>Great work today!</h2>
+              <p class="text-sm text-muted">Here's what you showed us about your learning.</p>
+            </div>
+
+            <!-- Score snapshot -->
+            <div class="card" style="margin-bottom:16px;text-align:center;">
+              <div class="text-xs text-muted font-bold" style="text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px;">Today's Concept Check</div>
+              <div id="scoreDisplay" class="score-badge score-perfect" style="margin:0 auto;">🏆 2 / 2 correct</div>
+            </div>
+
+            <!-- Signal Summary -->
+            <div class="card" style="margin-bottom:16px;">
+              <h3 style="margin-bottom:4px;">📡 Learning Signals Collected</h3>
+              <p class="text-xs text-muted" style="margin-bottom:14px;">Each signal helps your teacher understand how to support you better.</p>
+              <div class="summary-grid">
+                <div class="signal-row">
+                  <div class="signal-icon">💪</div>
+                  <div>
+                    <div class="signal-label">Pre-lesson confidence</div>
+                    <div class="signal-value" id="summaryConfidence">–</div>
+                  </div>
+                </div>
+                <div class="signal-row">
+                  <div class="signal-icon">🔀</div>
+                  <div>
+                    <div class="signal-label">Warm-up: sorting choice</div>
+                    <div class="signal-value" id="summarySorting">–</div>
+                  </div>
+                </div>
+                <div class="signal-row">
+                  <div class="signal-icon">🧠</div>
+                  <div>
+                    <div class="signal-label">Concept check score</div>
+                    <div class="signal-value" id="summaryScore">–</div>
+                  </div>
+                </div>
+                <div class="signal-row">
+                  <div class="signal-icon">✍️</div>
+                  <div>
+                    <div class="signal-label">Reflection submitted</div>
+                    <div class="signal-value" id="summaryReflection">–</div>
+                  </div>
+                </div>
+                <div class="signal-row">
+                  <div class="signal-icon">📊</div>
+                  <div>
+                    <div class="signal-label">Lesson difficulty</div>
+                    <div class="signal-value" id="summaryMood">–</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Teacher Insight Preview -->
+            <div class="card" style="margin-bottom:16px;background:linear-gradient(135deg,#F2EAF9,#E9DBFA);border:1px solid #C9A8E8;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                <span>👩‍🏫</span>
+                <span class="text-sm font-bold" style="color:var(--purple);">Teacher Insight Preview</span>
+              </div>
+              <p class="text-sm" style="color:var(--text-2);">These 5 signals from every student combine into a <strong>class dashboard</strong> that shows concept mastery gaps and pacing needs — without requiring extra grading time.</p>
+              <a href="year2.html" class="btn btn-y2 btn-sm btn-block" style="margin-top:12px;">📊 See the Teacher Dashboard →</a>
+            </div>
+
+            <div class="card" style="background:var(--y1-bg);border:1px solid #B3DDF2;margin-bottom:16px;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                <span>🗓️</span>
+                <span class="font-bold text-sm" style="color:var(--y1);">Question of the Day — Your Turn!</span>
+              </div>
+              <p class="text-sm" style="color:var(--text-2);">What features help us decide how to sort a group of objects?</p>
+              <p class="text-xs text-muted" style="margin-top:6px;">Think about the pastries from the warm-up — and what would a computer need to know?</p>
+            </div>
+
+            <div class="bottom-nav">
+              <button class="btn btn-outline" onclick="goToStep(7)">← Back</button>
+              <a href="year2.html" class="btn btn-y2 btn-block">📊 View Teacher Dashboard →</a>
+            </div>
+          </div>
+
+        </div><!-- end wizard-shell -->
+      </div><!-- end phone-content -->
+
+      <!-- Home indicator -->
+      <div class="phone-home-bar">
+        <div class="phone-home-pill"></div>
       </div>
-    </div>
-
-    <!-- Teacher Insight Preview -->
-    <div class="card" style="margin-bottom:16px;background:linear-gradient(135deg,#F2EAF9,#E9DBFA);border:1px solid #C9A8E8;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-        <span>👩‍🏫</span>
-        <span class="text-sm font-bold" style="color:var(--purple);">Teacher Insight Preview</span>
-      </div>
-      <p class="text-sm" style="color:var(--text-2);">These 5 signals from every student combine into a <strong>class dashboard</strong> that shows concept mastery gaps and pacing needs — without requiring extra grading time.</p>
-      <a href="year2.html" class="btn btn-y2 btn-sm btn-block" style="margin-top:12px;">📊 See the Teacher Dashboard →</a>
-    </div>
-
-    <div class="card" style="background:var(--y1-bg);border:1px solid #B3DDF2;margin-bottom:16px;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-        <span>🗓️</span>
-        <span class="font-bold text-sm" style="color:var(--y1);">Question of the Day — Your Turn!</span>
-      </div>
-      <p class="text-sm" style="color:var(--text-2);">What features help us decide how to sort a group of objects?</p>
-      <p class="text-xs text-muted" style="margin-top:6px;">Think about the pastries from the warm-up — and what would a computer need to know?</p>
-    </div>
-
-    <div class="bottom-nav">
-      <button class="btn btn-outline" onclick="goToStep(7)">← Back</button>
-      <a href="year2.html" class="btn btn-y2 btn-block">📊 View Teacher Dashboard →</a>
-    </div>
-  </div>
-
-</div><!-- end wizard-shell -->
+    </div><!-- end phone-screen -->
+  </div><!-- end phone-wrapper -->
+</div><!-- end phone-scene -->
 
 <script>
   // ── State ──
@@ -587,6 +1071,8 @@
     q2correct: null,
     reflectionText: '',
     mood: null,
+    signalsCollected: 0,
+    navDirection: 'forward', // 'forward' | 'back'
   };
 
   const CONFIDENCE_EMOJIS = ['😰','😕','😐','🙂','😎'];
@@ -597,25 +1083,85 @@
     document.getElementById('pageBody').classList.toggle('teacher-mode', checkbox.checked);
   }
 
-  // ── Step navigation ──
+  // ── Signals counter ──
+  function incrementSignals() {
+    state.signalsCollected++;
+    const el = document.getElementById('signalsCounter');
+    if (el) el.textContent = `📡 signals collected: ${state.signalsCollected}`;
+  }
+
+  // ── Step navigation with slide transitions ──
   function goToStep(n) {
     if (n < 1 || n > state.totalSteps) return;
-    document.getElementById(`step-${state.currentStep}`).classList.remove('active');
-    state.currentStep = n;
-    document.getElementById(`step-${n}`).classList.add('active');
-    updateProgress();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const fromStep = state.currentStep;
+    const direction = n > fromStep ? 'forward' : 'back';
+    state.navDirection = direction;
 
-    if (n === 8) buildSummary();
+    const outEl = document.getElementById(`step-${fromStep}`);
+    const inEl  = document.getElementById(`step-${n}`);
+
+    // Determine animation classes
+    const outClass = direction === 'forward' ? 'slide-out-left' : 'slide-out-right';
+    const inClass  = direction === 'forward' ? 'slideInRight' : 'slideInLeft';
+
+    // Hide outgoing step with animation
+    outEl.style.display = 'block';
+    outEl.classList.remove('active');
+    void outEl.offsetWidth; // reflow
+    if (direction === 'forward') {
+      outEl.style.animation = 'slideOutLeft 0.22s cubic-bezier(0.55,0,1,0.45) forwards';
+    } else {
+      outEl.style.animation = 'slideOutRight 0.22s cubic-bezier(0.55,0,1,0.45) forwards';
+    }
+
+    setTimeout(() => {
+      outEl.style.display = 'none';
+      outEl.style.animation = '';
+
+      state.currentStep = n;
+      inEl.style.display = 'block';
+      void inEl.offsetWidth; // reflow
+      if (direction === 'forward') {
+        inEl.style.animation = 'slideInRight 0.28s cubic-bezier(0.25,0.46,0.45,0.94)';
+      } else {
+        inEl.style.animation = 'slideInLeft 0.28s cubic-bezier(0.25,0.46,0.45,0.94)';
+      }
+      inEl.classList.add('active');
+
+      updateProgress();
+      scrollToTop();
+      if (n === 8) buildSummary();
+    }, 200);
+  }
+
+  function scrollToTop() {
+    // Scroll inside phone-content if on desktop, else window
+    const phoneContent = document.getElementById('phoneContent');
+    if (phoneContent && getComputedStyle(phoneContent).overflow !== 'visible') {
+      phoneContent.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   function updateProgress() {
-    const dots = document.getElementById('stepIndicators');
-    dots.innerHTML = '';
+    const container = document.getElementById('stepIndicators');
+    container.innerHTML = '';
     for (let i = 1; i <= state.totalSteps; i++) {
       const d = document.createElement('div');
-      d.className = 'step-dot' + (i < state.currentStep ? ' done' : i === state.currentStep ? ' current' : '');
-      dots.appendChild(d);
+      if (i < state.currentStep) {
+        d.className = 'step-dot done';
+        d.setAttribute('aria-label', `Step ${i} complete`);
+      } else if (i === state.currentStep) {
+        d.className = 'step-dot current';
+        d.textContent = i;
+        d.setAttribute('aria-label', `Current step ${i}`);
+      } else {
+        d.className = 'step-dot';
+        d.textContent = i;
+        d.setAttribute('aria-label', `Step ${i} not started`);
+      }
+      container.appendChild(d);
     }
     document.getElementById('stepLabel').textContent = `Step ${state.currentStep} of ${state.totalSteps}`;
   }
@@ -624,8 +1170,10 @@
   function selectConfidence(btn, val) {
     document.querySelectorAll('#confidenceRow .emoji-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
+    const wasNull = state.confidence === null;
     state.confidence = val;
     document.getElementById('confNext').disabled = false;
+    if (wasNull) incrementSignals();
   }
 
   // ── Step 3: Sorting ──
@@ -639,6 +1187,7 @@
   function selectItem(btn, item) {
     document.querySelectorAll('.sort-item').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
+    const isNew = state.sortedItem === null;
     state.sortedItem = item;
 
     const fb = document.getElementById('sortFeedback');
@@ -646,47 +1195,61 @@
     fb.innerHTML = `✅ Good thinking! ${correctAnswers[item]} There's often more than one right answer — it depends on the feature you choose!`;
 
     document.getElementById('reasonRow').style.display = 'block';
+    if (isNew) incrementSignals();
   }
 
   function selectReason(btn, reason) {
     document.querySelectorAll('#reasonTags .tag').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
+    const isNew = state.sortReason === null;
     state.sortReason = reason;
     document.getElementById('sortNext').disabled = false;
+    if (isNew) incrementSignals();
   }
 
   // ── Step 4: Q1 ──
   function answerQ1(btn, letter) {
     document.querySelectorAll('#q1choices .choice-btn').forEach(b => b.disabled = true);
     const correct = (letter === 'B');
+    const isNew = state.q1correct === null;
     state.q1correct = correct;
     btn.classList.add(correct ? 'correct' : 'selected-wrong');
     if (!correct) {
       document.querySelectorAll('#q1choices .choice-btn')[1].classList.add('correct');
+      document.getElementById('q1wrong').classList.add('show');
+    } else {
+      document.getElementById('q1reveal').classList.add('show');
     }
-    if (correct) document.getElementById('q1reveal').classList.add('show');
     document.getElementById('q1Next').disabled = false;
+    if (isNew) incrementSignals();
   }
 
   // ── Step 5: Q2 ──
   function answerQ2(btn, letter) {
     document.querySelectorAll('#q2choices .choice-btn').forEach(b => b.disabled = true);
     const correct = (letter === 'C');
+    const isNew = state.q2correct === null;
     state.q2correct = correct;
     btn.classList.add(correct ? 'correct' : 'selected-wrong');
     if (!correct) {
       document.querySelectorAll('#q2choices .choice-btn')[2].classList.add('correct');
+      document.getElementById('q2wrong').classList.add('show');
+    } else {
+      document.getElementById('q2reveal').classList.add('show');
     }
-    if (correct) document.getElementById('q2reveal').classList.add('show');
     document.getElementById('q2Next').disabled = false;
+    if (isNew) incrementSignals();
   }
 
   // ── Step 6: Reflection ──
   function updateCharCount(el) {
     const len = el.value.length;
     document.getElementById('charCount').textContent = len;
+    const wasEmpty = state.reflectionText.length < 8;
     state.reflectionText = el.value;
-    document.getElementById('reflectNext').disabled = (len < 8);
+    const isNowValid = len >= 8;
+    document.getElementById('reflectNext').disabled = !isNowValid;
+    if (wasEmpty && isNowValid) incrementSignals();
   }
 
   function addWord(word) {
@@ -702,10 +1265,12 @@
     document.querySelectorAll('.mood-btn').forEach(b => {
       b.classList.remove('selected-hard','selected-right','selected-easy');
     });
+    const isNew = state.mood === null;
     state.mood = mood;
     btn.classList.add(`selected-${mood}`);
     document.getElementById('helpPrompt').style.display = (mood !== 'right') ? 'block' : 'none';
     document.getElementById('moodNext').disabled = false;
+    if (isNew) incrementSignals();
   }
 
   function toggleTag(btn) {
@@ -714,20 +1279,21 @@
 
   // ── Step 8: Summary ──
   function buildSummary() {
+    incrementSignals(); // final step arrival
+
     // Confidence
     const cScore = state.confidence || 3;
     document.getElementById('summaryConfidence').textContent =
       `${CONFIDENCE_EMOJIS[cScore-1]} ${CONFIDENCE_LABELS[cScore-1]}`;
 
     // Sorting
-    const sortMap = { croissant: '🥐 Croissant', pancakes: '🥞 Pancakes', donut: '🍩 Donut', pretzel: '🥨 Pretzel', null: 'Not answered' };
+    const sortMap = { croissant: '🥐 Croissant', pancakes: '🥞 Pancakes', donut: '🍩 Donut', pretzel: '🥨 Pretzel' };
     document.getElementById('summarySorting').textContent =
       `${sortMap[state.sortedItem] || '–'} · Feature: ${state.sortReason || '–'}`;
 
     // Score
     const correct = [state.q1correct, state.q2correct].filter(Boolean).length;
-    const scoreEl = document.getElementById('summaryScore');
-    scoreEl.textContent = `${correct}/2 correct`;
+    document.getElementById('summaryScore').textContent = `${correct}/2 correct`;
     const scoreDisplay = document.getElementById('scoreDisplay');
     if (correct === 2) {
       scoreDisplay.className = 'score-badge score-perfect';
@@ -750,7 +1316,24 @@
     document.getElementById('summaryMood').textContent = state.mood ? moodMap[state.mood] : '–';
   }
 
+  // ── Add missing keyframe for reverse slide ──
+  (function injectStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideOutRight {
+        from { opacity: 1; transform: translateX(0); }
+        to   { opacity: 0; transform: translateX(32px); }
+      }
+    `;
+    document.head.appendChild(style);
+  })();
+
   // ── Init ──
+  // Override default CSS step-screen display for transition system
+  document.querySelectorAll('.step-screen:not(.active)').forEach(el => {
+    el.style.display = 'none';
+  });
+
   updateProgress();
 </script>
 </body>
