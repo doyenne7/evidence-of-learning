@@ -3,137 +3,532 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Year 3: Validated Learning Outcomes Framework</title>
+  <title>Year 3: Validated Outcomes Framework — How AI Makes Decisions</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    .outcomes-hero {
-      background: linear-gradient(135deg, #0D3B1A, #1E7A35, var(--y3));
+    /* ── Page Hero ── */
+    .y3-hero {
+      background: linear-gradient(135deg, #0A2E18 0%, #145A2E 45%, #1E8449 80%, #27AE60 100%);
       color: white;
-      padding: 28px 20px;
+      padding: 36px 20px 32px;
       position: relative;
       overflow: hidden;
     }
-    .outcomes-hero::after {
+    .y3-hero::before {
+      content: '';
+      position: absolute;
+      top: -40%; right: -10%;
+      width: 60%; height: 200%;
+      background: radial-gradient(ellipse, rgba(88,214,141,0.18) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .y3-hero::after {
       content: '3';
-      position: absolute; right: 16px; bottom: -12px;
-      font-size: 8rem; font-weight: 900; opacity: 0.08; line-height: 1;
+      position: absolute; right: 12px; bottom: -18px;
+      font-size: 9rem; font-weight: 900; opacity: 0.07; line-height: 1;
+      pointer-events: none;
     }
-    .outcomes-hero h2 { color: white; }
-    .outcomes-hero p  { color: rgba(255,255,255,0.8); font-size: 0.88rem; }
-    .outcomes-hero .y3badge-white {
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 3px 10px; border-radius: var(--r-full);
-      font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
-      background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.9);
-      margin-bottom: 10px;
+    .y3-hero-inner { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; }
+    .y3-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 12px; border-radius: var(--r-full);
+      font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;
+      background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.95);
+      border: 1px solid rgba(255,255,255,0.25);
+      margin-bottom: 12px;
     }
-    .standard-chip {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 4px 10px; border-radius: var(--r-full);
-      font-size: 0.75rem; font-weight: 700;
-      background: var(--y3-bg); color: var(--y3); border: 1px solid #9ED9B5;
-    }
-    .outcome-row {
+    .y3-hero h1 { color: white; margin-bottom: 6px; font-size: clamp(1.4rem, 4vw, 2rem); }
+    .y3-hero p  { color: rgba(255,255,255,0.78); font-size: 0.92rem; max-width: 580px; margin-bottom: 20px; }
+    .hero-pillars {
       display: grid;
-      grid-template-columns: 32px 1fr;
-      gap: 12px;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--border);
-      align-items: start;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
     }
-    .outcome-row:last-child { border-bottom: none; }
-    .outcome-num {
+    .hero-pillar {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: var(--r-md);
+      padding: 12px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .hero-pillar:hover { background: rgba(255,255,255,0.18); }
+    .hero-pillar-icon { font-size: 1.4rem; display: block; margin-bottom: 4px; }
+    .hero-pillar-label { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: rgba(255,255,255,0.8); line-height: 1.3; }
+
+    /* ── Tab Navigation ── */
+    .tab-nav-wrap {
+      background: white;
+      border-bottom: 2px solid var(--border);
+      position: sticky;
+      top: 57px;
+      z-index: 80;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .tab-nav {
+      display: flex;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 12px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      gap: 2px;
+    }
+    .tab-nav::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      display: flex; align-items: center; gap: 7px;
+      padding: 14px 18px;
+      border: none; background: none;
+      font-size: 0.88rem; font-weight: 700;
+      color: var(--text-muted);
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+      white-space: nowrap;
+      font-family: var(--font);
+    }
+    .tab-btn:hover { color: var(--text); background: var(--surface-2); }
+    .tab-btn.active { color: var(--y3); border-bottom-color: var(--y3); }
+
+    /* ── Tab Panels ── */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Section headings inside tabs ── */
+    .pillar-section-title {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 1rem; font-weight: 800;
+      margin: 28px 0 12px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--border);
+      color: var(--text);
+    }
+    .pillar-section-title:first-child { margin-top: 0; }
+    .pillar-section-title .icon-circle {
       width: 32px; height: 32px; border-radius: 50%;
+      background: var(--y3-bg); color: var(--y3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.95rem; flex-shrink: 0;
+    }
+
+    /* ── Outcome Cards (Tab 1) ── */
+    .outcome-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .outcome-card-header {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .outcome-num {
+      width: 36px; height: 36px; border-radius: 50%;
       background: var(--y3); color: white;
       display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 0.85rem; flex-shrink: 0;
+      font-weight: 900; font-size: 0.9rem; flex-shrink: 0;
     }
-    .outcome-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 3px; }
-    .outcome-desc  { font-size: 0.82rem; color: var(--text-2); }
-    .rubric-level {
-      display: flex; align-items: flex-start; gap: 10px;
-      padding: 10px; border-radius: var(--r-sm);
-      margin-bottom: 8px; border: 1px solid var(--border);
-    }
-    .rubric-level.level-4 { background: #EAFAF1; border-color: #A9DFBF; }
-    .rubric-level.level-3 { background: #EAF4FB; border-color: #AED6F1; }
-    .rubric-level.level-2 { background: #FEF9E7; border-color: #F9E79F; }
-    .rubric-level.level-1 { background: #FDEDEC; border-color: #F5B7B1; }
-    .level-badge {
-      min-width: 64px; padding: 3px 8px;
-      border-radius: var(--r-sm); text-align: center;
-      font-size: 0.72rem; font-weight: 800; text-transform: uppercase;
-    }
-    .level-badge.l4 { background: var(--y3); color: white; }
-    .level-badge.l3 { background: var(--y1); color: white; }
-    .level-badge.l2 { background: var(--warning); color: white; }
-    .level-badge.l1 { background: var(--danger); color: white; }
-    .level-desc { font-size: 0.82rem; color: var(--text-2); flex: 1; }
-    .evidence-item {
-      display: flex; align-items: flex-start; gap: 10px;
-      padding: 12px 0; border-bottom: 1px solid var(--border);
-    }
-    .evidence-item:last-child { border-bottom: none; }
-    .ev-year {
-      min-width: 64px; padding: 3px 8px;
-      border-radius: var(--r-full); text-align: center;
+    .outcome-title { font-weight: 800; font-size: 1rem; margin-bottom: 3px; }
+    .outcome-desc  { font-size: 0.83rem; color: var(--text-2); line-height: 1.55; }
+    .standard-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .standard-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 9px; border-radius: var(--r-full);
       font-size: 0.72rem; font-weight: 800;
+      background: var(--y3-bg); color: var(--y3); border: 1px solid #9ED9B5;
     }
-    .ev-year.y1 { background: var(--y1-bg); color: var(--y1); }
-    .ev-year.y2 { background: var(--y2-bg); color: var(--y2); }
-    .ev-year.y3 { background: var(--y3-bg); color: var(--y3); }
-    .section-title {
-      font-weight: 800; font-size: 1rem;
-      margin-bottom: 12px; margin-top: 24px;
-      display: flex; align-items: center; gap: 8px;
+    .outcome-card-body { padding: 16px 20px; }
+
+    /* Progression table */
+    .progression-table {
+      width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-bottom: 14px;
     }
-    .section-title:first-child { margin-top: 0; }
-    .assessment-q {
-      border: 2px solid var(--border); border-radius: var(--r-md);
-      padding: 14px; margin-bottom: 10px;
+    .progression-table th {
+      padding: 6px 10px; text-align: left;
+      font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
+      color: var(--text-muted); background: var(--surface-2);
+    }
+    .progression-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.45; }
+    .progression-table tr:last-child td { border-bottom: none; }
+    .prog-badge {
+      display: inline-block; padding: 2px 8px; border-radius: var(--r-sm);
+      font-size: 0.7rem; font-weight: 800; white-space: nowrap;
+    }
+    .prog-badge.beginning  { background: #FDEDEC; color: #C0392B; }
+    .prog-badge.developing { background: #FEF9E7; color: #D68910; }
+    .prog-badge.proficient { background: #EAF4FB; color: #1A6FA8; }
+    .prog-badge.advanced   { background: #E8F8EE; color: #1A5E35; }
+
+    /* Mini distribution bar */
+    .dist-section { padding-top: 12px; border-top: 1px solid var(--border); }
+    .dist-title { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); margin-bottom: 8px; }
+    .dist-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+    .dist-label { font-size: 0.72rem; color: var(--text-2); min-width: 72px; }
+    .dist-track { flex: 1; height: 16px; background: var(--surface-2); border-radius: var(--r-full); overflow: hidden; }
+    .dist-fill {
+      height: 100%; border-radius: var(--r-full);
+      display: flex; align-items: center; justify-content: flex-end; padding-right: 6px;
+      font-size: 0.65rem; font-weight: 800; color: white;
+      transition: width 0.9s ease;
+    }
+
+    /* Standards Alignment Matrix */
+    .matrix-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .matrix-table th {
+      padding: 8px 10px; background: var(--surface-2);
+      font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
+      color: var(--text-muted); border-bottom: 2px solid var(--border);
+      text-align: center;
+    }
+    .matrix-table th:first-child { text-align: left; }
+    .matrix-table td { padding: 9px 10px; border-bottom: 1px solid var(--border); text-align: center; }
+    .matrix-table td:first-child { text-align: left; font-weight: 700; font-size: 0.83rem; }
+    .matrix-table tr:last-child td { border-bottom: none; }
+    .matrix-table tr:hover td { background: var(--surface-2); }
+    .check-yes { color: var(--y3); font-size: 1.1rem; font-weight: 900; }
+    .check-no  { color: var(--border); font-size: 1rem; }
+
+    /* ── Assessment Pipeline (Tab 2) ── */
+    .pipeline {
+      display: flex; gap: 0; margin-bottom: 24px;
+      overflow-x: auto;
+    }
+    .pipeline-stage {
+      flex: 1; min-width: 200px;
       background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 0; padding: 18px 16px;
+      position: relative;
     }
-    .q-label {
-      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.04em; color: var(--text-muted); margin-bottom: 6px;
+    .pipeline-stage:first-child { border-radius: var(--r-md) 0 0 var(--r-md); }
+    .pipeline-stage:last-child  { border-radius: 0 var(--r-md) var(--r-md) 0; }
+    .pipeline-stage + .pipeline-stage { border-left: none; }
+    .pipeline-arrow {
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; color: var(--y3);
+      background: var(--y3-bg); border: 1px solid #9ED9B5;
+      padding: 4px 6px;
+      z-index: 1;
+      align-self: center;
     }
-    .q-text { font-weight: 600; font-size: 0.92rem; margin-bottom: 8px; line-height: 1.5; }
-    .q-standard { display: flex; gap: 6px; flex-wrap: wrap; }
-    .q-answer { font-size: 0.8rem; color: var(--text-2); background: var(--surface-2); border-radius: var(--r-sm); padding: 6px 10px; margin-top: 6px; cursor: pointer; }
-    .q-answer:hover { background: var(--y3-bg); }
-    .q-answer.correct-ans { background: var(--y3-bg); border: 1px solid var(--y3); color: #1A5E35; }
-    .reliability-box {
-      background: var(--surface-2);
-      border-radius: var(--r-md);
-      padding: 14px;
+    .stage-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: var(--r-full);
+      font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
+      margin-bottom: 8px;
+    }
+    .stage-badge.y1 { background: var(--y1-bg); color: var(--y1); }
+    .stage-badge.y2 { background: var(--y2-bg); color: var(--y2); }
+    .stage-badge.y3 { background: var(--y3-bg); color: var(--y3); }
+    .stage-name { font-weight: 800; font-size: 0.95rem; margin-bottom: 4px; }
+    .stage-sub  { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px; }
+    .stage-detail { font-size: 0.78rem; color: var(--text-2); line-height: 1.5; }
+    .stage-detail li { margin-bottom: 3px; margin-left: 14px; }
+
+    /* Mobile pipeline — vertical */
+    @media (max-width: 600px) {
+      .pipeline { flex-direction: column; }
+      .pipeline-stage { min-width: auto; border-left: 1px solid var(--border) !important; }
+      .pipeline-stage:first-child { border-radius: var(--r-md) var(--r-md) 0 0; border-bottom: none; }
+      .pipeline-stage:last-child  { border-radius: 0 0 var(--r-md) var(--r-md); border-top: none; }
+      .pipeline-stage:nth-child(2) { border-top: none; border-bottom: none; }
+      .pipeline-arrow { display: none; }
+    }
+
+    /* Item bank cards */
+    .item-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 18px 20px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow-xs);
+    }
+    .item-meta-row {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
       margin-bottom: 10px;
     }
-    .rb-label { font-size: 0.78rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
-    .rb-value { font-size: 1.3rem; font-weight: 900; }
-    .district-card {
-      background: linear-gradient(135deg, #E8F8EE, #D4F0DF);
-      border: 1px solid #9ED9B5;
-      border-radius: var(--r-xl);
-      padding: 24px;
-      margin-bottom: 16px;
+    .item-type-chip {
+      padding: 3px 9px; border-radius: var(--r-full);
+      font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
     }
-    .school-row {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.06);
+    .item-type-chip.mc       { background: #E8F3FF; color: #1557A0; }
+    .item-type-chip.scenario { background: #FFF3E0; color: #C25E00; }
+    .item-type-chip.open     { background: #F3E5F5; color: #6A1B9A; }
+    .item-outcome-chip {
+      padding: 3px 9px; border-radius: var(--r-full);
+      font-size: 0.7rem; font-weight: 700;
+      background: var(--y3-bg); color: var(--y3);
+    }
+    .item-year-chip {
+      padding: 3px 9px; border-radius: var(--r-full);
+      font-size: 0.7rem; font-weight: 700;
+      background: var(--surface-2); color: var(--text-muted);
+    }
+    .item-question { font-weight: 600; font-size: 0.93rem; line-height: 1.55; margin-bottom: 10px; }
+    .mc-option {
+      display: flex; align-items: flex-start; gap: 9px;
+      padding: 8px 10px; border-radius: var(--r-sm);
+      margin-bottom: 5px; border: 1px solid var(--border);
+      font-size: 0.82rem; background: var(--surface-2);
+    }
+    .mc-option.correct { background: var(--y3-bg); border-color: #9ED9B5; color: #1A5E35; font-weight: 700; }
+    .mc-letter {
+      min-width: 20px; height: 20px; border-radius: 50%;
+      background: var(--border); color: var(--text-2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; font-weight: 800; flex-shrink: 0; margin-top: 1px;
+    }
+    .mc-option.correct .mc-letter { background: var(--y3); color: white; }
+    .item-rubric {
+      background: #FFF9E6; border: 1px solid #F5CBA7;
+      border-radius: var(--r-sm); padding: 10px 12px;
+      font-size: 0.8rem; color: #784212; margin-bottom: 10px;
+      line-height: 1.55;
+    }
+    .item-stats-row {
+      display: flex; flex-wrap: wrap; gap: 12px;
+      padding-top: 10px; border-top: 1px solid var(--border);
+      font-size: 0.78rem; color: var(--text-muted);
+    }
+    .item-stat { display: flex; gap: 4px; }
+    .item-stat strong { color: var(--text-2); }
+
+    /* Validation evidence grid */
+    .evidence-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 480px) {
+      .evidence-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .evidence-stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 16px 14px;
+      text-align: center;
+      box-shadow: var(--shadow-xs);
+    }
+    .evidence-stat .ev-value { font-size: 1.6rem; font-weight: 900; line-height: 1; margin-bottom: 4px; }
+    .evidence-stat .ev-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); line-height: 1.3; }
+    .ev-green  { color: var(--y3); }
+    .ev-blue   { color: var(--y1); }
+    .ev-purple { color: var(--y2); }
+
+    /* Evidence chain timeline */
+    .evidence-chain {
+      display: flex; gap: 0; align-items: stretch; margin-bottom: 8px;
+      overflow-x: auto;
+    }
+    .chain-node {
+      flex: 1; min-width: 150px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 0;
+      padding: 16px 14px;
+    }
+    .chain-node:first-child { border-radius: var(--r-md) 0 0 var(--r-md); }
+    .chain-node:last-child  { border-radius: 0 var(--r-md) var(--r-md) 0; border-right: 1px solid var(--border); }
+    .chain-node + .chain-node { border-left: none; }
+    .chain-arrow {
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 8px; color: var(--y3); font-size: 1.3rem; font-weight: 900;
+      background: var(--y3-bg); border-top: 1px solid #9ED9B5; border-bottom: 1px solid #9ED9B5;
+      align-self: stretch;
+    }
+    .chain-year { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px; }
+    .chain-title { font-weight: 700; font-size: 0.88rem; margin-bottom: 4px; }
+    .chain-detail { font-size: 0.77rem; color: var(--text-2); line-height: 1.45; }
+    @media (max-width: 600px) {
+      .evidence-chain { flex-direction: column; }
+      .chain-node { min-width: auto; border-left: 1px solid var(--border) !important; border-right: 1px solid var(--border) !important; }
+      .chain-node:first-child { border-radius: var(--r-md) var(--r-md) 0 0; border-bottom: none; }
+      .chain-node:last-child  { border-radius: 0 0 var(--r-md) var(--r-md); border-top: none; }
+      .chain-node:nth-child(2) { border-top: none; border-bottom: none; }
+      .chain-arrow { display: none; }
+    }
+
+    /* ── Scalability (Tab 3) ── */
+    .tier-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 640px) {
+      .tier-cards { grid-template-columns: 1fr; }
+      .hero-pillars { grid-template-columns: 1fr; }
+    }
+    .tier-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 20px 18px;
+      box-shadow: var(--shadow-xs);
+      position: relative;
+      overflow: hidden;
+    }
+    .tier-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    }
+    .tier-card.t1::before { background: var(--y1); }
+    .tier-card.t2::before { background: var(--y2); }
+    .tier-card.t3::before { background: var(--y3); }
+    .tier-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; border-radius: 50%;
+      font-weight: 900; font-size: 1rem; margin-bottom: 8px;
+    }
+    .tier-card.t1 .tier-num { background: var(--y1-bg); color: var(--y1); }
+    .tier-card.t2 .tier-num { background: var(--y2-bg); color: var(--y2); }
+    .tier-card.t3 .tier-num { background: var(--y3-bg); color: var(--y3); }
+    .tier-label { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); margin-bottom: 2px; }
+    .tier-name { font-weight: 800; font-size: 1rem; margin-bottom: 8px; }
+    .tier-includes { list-style: none; padding: 0; margin: 0; }
+    .tier-includes li {
+      display: flex; align-items: flex-start; gap: 7px;
+      font-size: 0.81rem; color: var(--text-2); padding: 4px 0;
+      border-bottom: 1px solid var(--border); line-height: 1.4;
+    }
+    .tier-includes li:last-child { border-bottom: none; }
+    .tier-includes li::before { content: '✓'; font-weight: 900; flex-shrink: 0; margin-top: 1px; }
+    .tier-card.t1 .tier-includes li::before { color: var(--y1); }
+    .tier-card.t2 .tier-includes li::before { color: var(--y2); }
+    .tier-card.t3 .tier-includes li::before { color: var(--y3); }
+
+    /* Tech checklist */
+    .tech-checklist { list-style: none; padding: 0; margin: 0; }
+    .tech-checklist li {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 0; border-bottom: 1px solid var(--border);
       font-size: 0.88rem;
     }
-    .school-row:last-child { border-bottom: none; }
-    .school-score {
-      font-weight: 800; font-size: 0.95rem;
-      padding: 3px 10px; border-radius: var(--r-full);
+    .tech-checklist li:last-child { border-bottom: none; }
+    .check-circle {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--y3); color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; font-weight: 900; flex-shrink: 0;
     }
-    .school-score.a { background: var(--y3-bg); color: var(--y3); }
-    .school-score.b { background: var(--y1-bg); color: var(--y1); }
+
+    /* District dashboard mock */
+    .district-header {
+      background: linear-gradient(135deg, #E8F8EE, #D4F0DF);
+      border: 1px solid #9ED9B5;
+      border-radius: var(--r-xl) var(--r-xl) 0 0;
+      padding: 20px 24px 16px;
+    }
+    .district-body {
+      background: var(--surface);
+      border: 1px solid #9ED9B5;
+      border-top: none;
+      border-radius: 0 0 var(--r-xl) var(--r-xl);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .district-stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .district-stat {
+      padding: 16px 12px; text-align: center;
+      border-right: 1px solid var(--border);
+    }
+    .district-stat:last-child { border-right: none; }
+    .district-stat .ds-value { font-size: 1.5rem; font-weight: 900; line-height: 1; }
+    .district-stat .ds-label { font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); margin-top: 3px; }
+    @media (max-width: 480px) {
+      .district-stats-row { grid-template-columns: 1fr 1fr; }
+      .district-stat:nth-child(2) { border-right: none; }
+      .district-stat:nth-child(3) { border-top: 1px solid var(--border); }
+    }
+    .school-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+    .school-table thead th {
+      background: var(--surface-2); padding: 9px 16px; text-align: left;
+      font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
+      color: var(--text-muted);
+    }
+    .school-table td { padding: 11px 16px; border-bottom: 1px solid var(--border); }
+    .school-table tr:last-child td { border-bottom: none; }
+    .school-table tr:hover td { background: var(--surface-2); }
+    .proficiency-pill {
+      display: inline-block; padding: 3px 10px; border-radius: var(--r-full);
+      font-size: 0.75rem; font-weight: 800;
+    }
+    .prof-high { background: var(--y3-bg); color: var(--y3); }
+    .prof-mid  { background: var(--y1-bg); color: var(--y1); }
+    .prof-note { background: var(--y2-bg); color: var(--y2); }
+    .district-reco {
+      background: var(--y3-bg); border: 1px solid #9ED9B5;
+      border-radius: var(--r-md); padding: 12px 16px;
+      font-size: 0.85rem; color: #1A5E35; font-weight: 600;
+      display: flex; align-items: center; gap: 8px;
+      margin: 0 16px 16px;
+    }
+
+    /* Sustainability arc */
+    .sustain-arc {
+      position: relative;
+      padding-left: 36px;
+    }
+    .sustain-arc::before {
+      content: '';
+      position: absolute;
+      left: 14px; top: 16px; bottom: 16px;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--y1), var(--y2), var(--y3), #58D68D);
+    }
+    .sustain-row {
+      position: relative;
+      display: flex; gap: 16px; align-items: flex-start;
+      padding: 0 0 24px;
+    }
+    .sustain-row:last-child { padding-bottom: 0; }
+    .sustain-dot {
+      position: absolute;
+      left: -30px; top: 4px;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: white; border: 3px solid var(--border);
+      flex-shrink: 0;
+    }
+    .sustain-dot.s1 { border-color: var(--y1); }
+    .sustain-dot.s2 { border-color: var(--y2); }
+    .sustain-dot.s3 { border-color: var(--y3); }
+    .sustain-dot.s4 { border-color: #58D68D; }
+    .sustain-year-tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: var(--r-full);
+      font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
+      margin-bottom: 5px; white-space: nowrap;
+    }
+    .sustain-year-tag.y1 { background: var(--y1-bg); color: var(--y1); }
+    .sustain-year-tag.y2 { background: var(--y2-bg); color: var(--y2); }
+    .sustain-year-tag.y3 { background: var(--y3-bg); color: var(--y3); }
+    .sustain-year-tag.post { background: #E8FFF2; color: #0E7A48; }
+    .sustain-title { font-weight: 700; font-size: 0.93rem; margin-bottom: 3px; }
+    .sustain-sub { font-size: 0.8rem; color: var(--text-2); line-height: 1.5; }
+    .sustain-goal {
+      display: inline-block; padding: 2px 8px; border-radius: var(--r-sm);
+      font-size: 0.7rem; font-weight: 800; text-transform: uppercase;
+      background: var(--surface-2); color: var(--text-muted); margin-top: 4px;
+    }
   </style>
 </head>
 <body>
 
-<!-- Navigation -->
+<!-- ── Site Navigation ── -->
 <nav class="site-nav">
   <div class="nav-inner">
     <a href="index.html" class="nav-logo">
@@ -149,385 +544,919 @@
   </div>
 </nav>
 
-<!-- Outcomes Hero -->
-<div class="outcomes-hero">
-  <div class="y3badge-white">Year 3 · Validated Outcomes Framework</div>
-  <h2 style="margin-bottom:4px;">Learning Outcomes Framework</h2>
-  <p>Built on 2 years of formative signals — validated, standards-aligned, and school-system ready.</p>
-
-  <!-- Progress from Years 1 → 3 -->
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:16px;">
-    <div style="background:rgba(255,255,255,0.1);border-radius:var(--r-md);padding:12px;text-align:center;">
-      <div style="font-size:1.1rem;font-weight:900;color:white;">Yr 1</div>
-      <div style="font-size:0.65rem;color:rgba(255,255,255,0.65);font-weight:700;text-transform:uppercase;margin-top:2px;">Lightweight signals</div>
-    </div>
-    <div style="background:rgba(255,255,255,0.1);border-radius:var(--r-md);padding:12px;text-align:center;">
-      <div style="font-size:1.1rem;font-weight:900;color:white;">Yr 2</div>
-      <div style="font-size:0.65rem;color:rgba(255,255,255,0.65);font-weight:700;text-transform:uppercase;margin-top:2px;">Refined measurement</div>
-    </div>
-    <div style="background:rgba(255,255,255,0.2);border-radius:var(--r-md);padding:12px;text-align:center;border:1px solid rgba(255,255,255,0.3);">
-      <div style="font-size:1.1rem;font-weight:900;color:white;">Yr 3 ✓</div>
-      <div style="font-size:0.65rem;color:rgba(255,255,255,0.8);font-weight:700;text-transform:uppercase;margin-top:2px;">Validated outcomes</div>
+<!-- ── Hero ── -->
+<div class="y3-hero">
+  <div class="y3-hero-inner">
+    <div class="y3-badge">✅ Year 3 · Validated Outcomes</div>
+    <h1>How AI Makes Decisions — K–5</h1>
+    <p>Three years of iterative evidence building culminate in a validated, scalable framework ready for district adoption.</p>
+    <div class="hero-pillars">
+      <div class="hero-pillar" onclick="switchTab('outcomes')">
+        <span class="hero-pillar-icon">🎯</span>
+        <span class="hero-pillar-label">Robust Learning Outcomes</span>
+      </div>
+      <div class="hero-pillar" onclick="switchTab('evidence')">
+        <span class="hero-pillar-icon">🔬</span>
+        <span class="hero-pillar-label">Evidence-Backed Models</span>
+      </div>
+      <div class="hero-pillar" onclick="switchTab('scalability')">
+        <span class="hero-pillar-icon">🏛️</span>
+        <span class="hero-pillar-label">Scalability Support</span>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Main Content -->
+<!-- ── Tab Navigation ── -->
+<div class="tab-nav-wrap">
+  <div class="tab-nav" role="tablist">
+    <button class="tab-btn active" role="tab" aria-selected="true"  onclick="switchTab('outcomes')"    data-tab="outcomes">
+      🎯 Outcomes Framework
+    </button>
+    <button class="tab-btn"        role="tab" aria-selected="false" onclick="switchTab('evidence')"    data-tab="evidence">
+      🔬 Evidence-Backed Models
+    </button>
+    <button class="tab-btn"        role="tab" aria-selected="false" onclick="switchTab('scalability')" data-tab="scalability">
+      🏛️ Scalability Support
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     TAB 1: ROBUST LEARNING OUTCOMES FRAMEWORK
+     ════════════════════════════════════════════════════ -->
+<div id="tab-outcomes" class="tab-panel active" role="tabpanel">
 <div class="container-wide" style="padding-top:28px;padding-bottom:64px;">
 
-  <!-- Learning Outcomes -->
-  <div class="section-title">🎯 Learning Outcomes</div>
-  <p class="text-sm text-muted" style="margin-bottom:16px;">5 validated learning outcomes for the "How AI Makes Decisions" module, aligned to national standards.</p>
+  <!-- Intro -->
+  <p class="text-sm text-muted" style="margin-bottom:24px;max-width:600px;">
+    Five validated learning outcomes for the <em>How AI Makes Decisions</em> module, each with standards alignment, 4-level progression rubrics, and observed class distributions from Year 3 field testing (847 students, 12 schools).
+  </p>
 
-  <div class="card" style="margin-bottom:20px;">
-    <div class="outcome-row">
+  <!-- ── Outcome 1 ── -->
+  <div class="outcome-card">
+    <div class="outcome-card-header">
       <div class="outcome-num">1</div>
-      <div>
+      <div style="flex:1;">
         <div class="outcome-title">Pattern-Based Prediction</div>
-        <div class="outcome-desc">Students can explain that AI makes predictions by identifying patterns in training data — not through randomness or magic. They can demonstrate this by correctly sorting items by features.</div>
-        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;">
+        <div class="outcome-desc">Student explains that AI uses patterns in training data to make predictions — not randomness or magic. Student demonstrates this by correctly sorting items by learned features.</div>
+        <div class="standard-chips">
           <span class="standard-chip">AI4K12 BI-3</span>
           <span class="standard-chip">CSTA DA</span>
         </div>
       </div>
     </div>
-    <div class="outcome-row">
+    <div class="outcome-card-body">
+      <table class="progression-table">
+        <thead>
+          <tr>
+            <th style="width:100px;">Level</th>
+            <th>What the student can do</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="prog-badge beginning">Beginning</span></td>
+            <td>Believes AI "guesses" or "thinks for itself." Cannot connect training data to predictions.</td>
+          </tr>
+          <tr>
+            <td><span class="prog-badge developing">Developing</span></td>
+            <td>Knows AI uses data but cannot explain what "patterns" means or how they produce predictions.</td>
+          </tr>
+          <tr>
+            <td><span class="prog-badge proficient">Proficient</span></td>
+            <td>Correctly explains that AI finds patterns in labeled training data and uses them to classify new examples.</td>
+          </tr>
+          <tr>
+            <td><span class="prog-badge advanced">Advanced</span></td>
+            <td>Extends explanation to novel contexts — e.g., explains why two AIs trained on different data give different predictions for the same input.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="dist-section">
+        <div class="dist-title">Class Distribution — End of Module (n = 28)</div>
+        <div class="dist-bar-row">
+          <span class="dist-label">Advanced (21%)</span>
+          <div class="dist-track"><div class="dist-fill" style="width:21%;background:var(--y3);">6</div></div>
+        </div>
+        <div class="dist-bar-row">
+          <span class="dist-label">Proficient (50%)</span>
+          <div class="dist-track"><div class="dist-fill" style="width:50%;background:var(--y1);">14</div></div>
+        </div>
+        <div class="dist-bar-row">
+          <span class="dist-label">Developing (21%)</span>
+          <div class="dist-track"><div class="dist-fill" style="width:21%;background:var(--warning);">6</div></div>
+        </div>
+        <div class="dist-bar-row">
+          <span class="dist-label">Beginning (8%)</span>
+          <div class="dist-track"><div class="dist-fill" style="width:8%;background:var(--danger);">2</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Outcome 2 ── -->
+  <div class="outcome-card">
+    <div class="outcome-card-header">
       <div class="outcome-num">2</div>
-      <div>
+      <div style="flex:1;">
         <div class="outcome-title">Training Data Influence</div>
-        <div class="outcome-desc">Students can explain how the quantity and quality of training data directly impacts the accuracy of AI predictions. They can give examples of scenarios where limited data leads to poor outcomes.</div>
-        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;">
+        <div class="outcome-desc">Student explains how data quantity and quality affect AI accuracy, and gives real-world examples of scenarios where limited or poor data leads to incorrect AI outcomes.</div>
+        <div class="standard-chips">
           <span class="standard-chip">AI4K12 BI-3</span>
           <span class="standard-chip">AI4K12 BI-5</span>
         </div>
       </div>
     </div>
-    <div class="outcome-row">
+    <div class="outcome-card-body">
+      <table class="progression-table">
+        <thead>
+          <tr><th style="width:100px;">Level</th><th>What the student can do</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="prog-badge beginning">Beginning</span></td>
+            <td>Thinks more data always makes AI better, or that data quality does not matter.</td>
+          </tr>
+          <tr>
+            <td><span class="prog-badge developing">Developing</span></td>
+            <td>Recognizes data matters but cannot explain the mechanism or give an original example.</td>
+          </tr>
+          <tr>
+            <td><span class="prog-badge proficient">Proficient</span></td>
+            <td>Correctly explains that both quantity and quality of training data affect accuracy; gives at least one lesson-based example (e.g., the 5-photo dog AI).</td>
+          </tr>
+          <tr>
+            <td><span class="prog-badge advanced">Advanced</span></td>
+            <td>Generates an original, novel example outside the curriculum and articulates trade-offs between quantity and quality.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="dist-section">
+        <div class="dist-title">Class Distribution — End of Module (n = 28)</div>
+        <div class="dist-bar-row">
+          <span class="dist-label">Advanced (18%)</span>
+          <div class="dist-track"><div class="dist-fill" style="width:18%;background:var(--y3);">5</div></div>
+        </div>
+        <div class="dist-bar-row">
+          <span class="dist-label">Proficient (46%)</span>
+          <div class="dist-track"><div class="dist-fill" style="width:46%;background:var(--y1);">13</div></div>
+        </div>
+        <div class="dist-bar-row">
+          <span class="dist-label">Developing (29%)</span>
+          <div class="dist-track"><div class="dist-fill" style="width:29%;background:var(--warning);">8</div></div>
+        </div>
+        <div class="dist-bar-row">
+          <span class="dist-label">Beginning (7%)</span>
+          <div class="dist-track"><div class="dist-fill" style="width:7%;background:var(--danger);">2</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Outcome 3 ── -->
+  <div class="outcome-card">
+    <div class="outcome-card-header">
       <div class="outcome-num">3</div>
-      <div>
+      <div style="flex:1;">
         <div class="outcome-title">AI Bias Awareness</div>
-        <div class="outcome-desc">Students can identify how biased training data leads to unfair AI predictions. They can propose strategies to reduce bias by diversifying training data and including human oversight.</div>
-        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;">
+        <div class="outcome-desc">Student identifies how biased training data leads to unfair AI predictions and proposes mitigation strategies such as diversifying data sources and adding human oversight.</div>
+        <div class="standard-chips">
           <span class="standard-chip">AI4K12 BI-5</span>
         </div>
       </div>
     </div>
-    <div class="outcome-row">
+    <div class="outcome-card-body">
+      <table class="progression-table">
+        <thead>
+          <tr><th style="width:100px;">Level</th><th>What the student can do</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="prog-badge beginning">Beginning</span></td>
+            <td>Believes AI always makes fair decisions because it is "just a computer." Cannot define bias.</td>
+          </tr>
+          <tr>
+            <td><span class="prog-badge developing">Developing</span></td>
+            <td>Recognizes AI can be unfair but confuses bias with technical errors; cannot explain the data-to-outcome link.</td>
+          </tr>
+          <tr>
+            <td><span class="prog-badge proficient">Proficient</span></td>
+            <td>Explains that biased training data leads to biased predictions; gives a lesson example (Attendance Bot, book recommender); understands human oversight helps.</td>
+          </tr>
+          <tr>
+            <td><span class="prog-badge advanced">Advanced</span></td>
+            <td>Identifies multiple bias sources, proposes concrete mitigation (diverse data, audit, human review), and transfers the concept to a new scenario not discussed in class.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="dist-section">
+        <div class="dist-title">Class Distribution — End of Module (n = 28)</div>
+        <div class="dist-bar-row">
+          <span class="dist-label">Advanced (25%)</span>
+          <div class="dist-track"><div class="dist-fill" style="width:25%;background:var(--y3);">7</div></div>
+        </div>
+        <div class="dist-bar-row">
+          <span class="dist-label">Proficient (43%)</span>
+          <div class="dist-track"><div class="dist-fill" style="width:43%;background:var(--y1);">12</div></div>
+        </div>
+        <div class="dist-bar-row">
+          <span class="dist-label">Developing (25%)</span>
+          <div class="dist-track"><div class="dist-fill" style="width:25%;background:var(--warning);">7</div></div>
+        </div>
+        <div class="dist-bar-row">
+          <span class="dist-label">Beginning (7%)</span>
+          <div class="dist-track"><div class="dist-fill" style="width:7%;background:var(--danger);">2</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Outcome 4 ── -->
+  <div class="outcome-card">
+    <div class="outcome-card-header">
       <div class="outcome-num">4</div>
-      <div>
+      <div style="flex:1;">
         <div class="outcome-title">Feature-Based Representation</div>
-        <div class="outcome-desc">Students can build a feature vector by assigning numeric values to object characteristics. They can explain why two students might get different AI recommendations even when using the same tool.</div>
-        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;">
+        <div class="outcome-desc">Student builds a feature vector by assigning numeric values to object characteristics, and explains why AI may produce different results for two students using the same tool.</div>
+        <div class="standard-chips">
           <span class="standard-chip">AI4K12 BI-2</span>
           <span class="standard-chip">AI4K12 BI-3</span>
         </div>
       </div>
     </div>
-    <div class="outcome-row">
+    <div class="outcome-card-body">
+      <table class="progression-table">
+        <thead>
+          <tr><th style="width:100px;">Level</th><th>What the student can do</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="prog-badge beginning">Beginning</span></td>
+            <td>Cannot distinguish features from labels; does not understand why numeric representation is needed for AI.</td>
+          </tr>
+          <tr>
+            <td><span class="prog-badge developing">Developing</span></td>
+            <td>Can list features of an object but cannot encode them numerically or connect them to AI decision-making.</td>
+          </tr>
+          <tr>
+            <td><span class="prog-badge proficient">Proficient</span></td>
+            <td>Constructs a feature vector with at least 3 numeric attributes; explains how AI uses these to make a classification.</td>
+          </tr>
+          <tr>
+            <td><span class="prog-badge advanced">Advanced</span></td>
+            <td>Explains that different feature choices lead to different predictions; designs a feature set for a novel classification task.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="dist-section">
+        <div class="dist-title">Class Distribution — End of Module (n = 28)</div>
+        <div class="dist-bar-row">
+          <span class="dist-label">Advanced (14%)</span>
+          <div class="dist-track"><div class="dist-fill" style="width:14%;background:var(--y3);">4</div></div>
+        </div>
+        <div class="dist-bar-row">
+          <span class="dist-label">Proficient (43%)</span>
+          <div class="dist-track"><div class="dist-fill" style="width:43%;background:var(--y1);">12</div></div>
+        </div>
+        <div class="dist-bar-row">
+          <span class="dist-label">Developing (36%)</span>
+          <div class="dist-track"><div class="dist-fill" style="width:36%;background:var(--warning);">10</div></div>
+        </div>
+        <div class="dist-bar-row">
+          <span class="dist-label">Beginning (7%)</span>
+          <div class="dist-track"><div class="dist-fill" style="width:7%;background:var(--danger);">2</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Outcome 5 ── -->
+  <div class="outcome-card">
+    <div class="outcome-card-header">
       <div class="outcome-num">5</div>
-      <div>
+      <div style="flex:1;">
         <div class="outcome-title">Critical AI Evaluation</div>
-        <div class="outcome-desc">Students can weigh the pros and cons of using AI tools for real-world decisions. They can articulate an evidence-based opinion about when human oversight is necessary and why AI should not operate unchecked.</div>
-        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;">
+        <div class="outcome-desc">Student weighs pros and cons of AI tools for real-world decisions and articulates an evidence-based position on when human oversight is necessary.</div>
+        <div class="standard-chips">
           <span class="standard-chip">AI4K12 BI-5</span>
           <span class="standard-chip">CSTA IC</span>
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- Rubric -->
-  <div class="section-title">📐 4-Level Progression Rubric</div>
-  <p class="text-sm text-muted" style="margin-bottom:12px;">Example rubric for Outcome 3: AI Bias Awareness</p>
-
-  <div class="card" style="margin-bottom:20px;">
-    <div class="rubric-level level-4">
-      <div class="level-badge l4">Level 4<br><span style="font-size:0.65rem;">Advanced</span></div>
-      <div class="level-desc">Student identifies multiple sources of bias in training data AND proposes concrete mitigation strategies (e.g., diverse data sources, human review). Can transfer to novel scenarios not discussed in class.</div>
-    </div>
-    <div class="rubric-level level-3">
-      <div class="level-badge l3">Level 3<br><span style="font-size:0.65rem;">Proficient</span></div>
-      <div class="level-desc">Student correctly explains that biased training data leads to unfair AI predictions and gives at least one example from lessons (e.g., Attendance Bot, fish labeling). Understands human oversight is needed.</div>
-    </div>
-    <div class="rubric-level level-2">
-      <div class="level-badge l2">Level 2<br><span style="font-size:0.65rem;">Developing</span></div>
-      <div class="level-desc">Student recognizes that AI can make unfair decisions but cannot consistently explain why, or confuses bias with technical errors. Needs additional examples and reinforcement.</div>
-    </div>
-    <div class="rubric-level level-1">
-      <div class="level-badge l1">Level 1<br><span style="font-size:0.65rem;">Beginning</span></div>
-      <div class="level-desc">Student cannot yet explain AI bias or believes AI always makes fair decisions because it is "just a computer." Requires re-teaching with concrete, relatable scenarios.</div>
-    </div>
-
-    <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);">
-      <div class="text-xs text-muted" style="margin-bottom:8px;font-weight:700;">CLASS DISTRIBUTION (End of Module)</div>
-      <div class="chart-bar">
-        <div class="chart-label" style="min-width:80px;">Level 4 (25%)</div>
-        <div class="chart-track"><div class="chart-fill" style="width:25%;background:var(--y3);">7 students</div></div>
-      </div>
-      <div class="chart-bar">
-        <div class="chart-label" style="min-width:80px;">Level 3 (43%)</div>
-        <div class="chart-track"><div class="chart-fill" style="width:43%;background:var(--y1);">12 students</div></div>
-      </div>
-      <div class="chart-bar">
-        <div class="chart-label" style="min-width:80px;">Level 2 (25%)</div>
-        <div class="chart-track"><div class="chart-fill" style="width:25%;background:var(--warning);">7 students</div></div>
-      </div>
-      <div class="chart-bar">
-        <div class="chart-label" style="min-width:80px;">Level 1 (7%)</div>
-        <div class="chart-track"><div class="chart-fill" style="width:7%;background:var(--danger);">2</div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Pre/Post Assessment -->
-  <div class="section-title">📝 Pre/Post Assessment Design</div>
-  <p class="text-sm text-muted" style="margin-bottom:12px;">Validated assessment items for the module. Designed for K–5 readability (Flesch-Kincaid Grade 4.2).</p>
-
-  <div class="assessment-q">
-    <div class="q-label">PRE/POST · Outcome 1 · Multiple Choice</div>
-    <div class="q-text">When an AI system makes a prediction, what is it using to figure out the answer?</div>
-    <div>
-      <div class="q-answer">A) Its own feelings and ideas</div>
-      <div class="q-answer">B) Random guessing from a list</div>
-      <div class="q-answer correct-ans">C) ✅ Patterns it learned from sorted data</div>
-      <div class="q-answer">D) Instructions typed by its programmer for every question</div>
-    </div>
-    <div class="q-standard">
-      <span class="standard-chip">AI4K12 BI-3</span>
-      <span style="font-size:0.72rem;color:var(--text-muted);">Difficulty: Low · Discrimination index: 0.42</span>
-    </div>
-  </div>
-
-  <div class="assessment-q">
-    <div class="q-label">PRE/POST · Outcome 3 · Scenario-Based</div>
-    <div class="q-text">A school uses an AI tool to recommend books to students. The AI was only trained on books enjoyed by students who speak English at home. Which problem would most likely happen?</div>
-    <div>
-      <div class="q-answer">A) The AI would recommend too many books</div>
-      <div class="q-answer correct-ans">B) ✅ The AI would not recommend books well for students who speak other languages at home</div>
-      <div class="q-answer">C) The AI would become slower over time</div>
-      <div class="q-answer">D) The AI would only recommend books published this year</div>
-    </div>
-    <div class="q-standard">
-      <span class="standard-chip">AI4K12 BI-5</span>
-      <span style="font-size:0.72rem;color:var(--text-muted);">Difficulty: Medium · Discrimination index: 0.58</span>
-    </div>
-  </div>
-
-  <div class="assessment-q">
-    <div class="q-label">PRE/POST · Outcome 5 · Open Response</div>
-    <div class="q-text">Your school wants to use an AI tool to decide who gets Student of the Month. Do you think this is a good idea? Explain your answer using at least two reasons.</div>
-    <div class="q-standard" style="margin-top:8px;">
-      <span class="standard-chip">AI4K12 BI-5</span>
-      <span class="standard-chip">CSTA IC</span>
-      <span style="font-size:0.72rem;color:var(--text-muted);">Auto-scored rubric: claim (1pt) + evidence (2pt) + AI vocabulary (1pt)</span>
-    </div>
-    <div style="margin-top:8px;padding:8px 10px;background:var(--y3-bg);border-radius:var(--r-sm);font-size:0.78rem;color:#1A5E35;">
-      📊 <strong>Scoring note:</strong> 4-point auto-rubric (claim present, ≥2 reasons, uses AI vocabulary, correct AI claim). 87% inter-rater agreement across 120 hand-scored test items.
-    </div>
-  </div>
-
-  <!-- Reliability / Validity -->
-  <div class="section-title">🔬 Validity & Reliability Data</div>
-  <p class="text-sm text-muted" style="margin-bottom:12px;">Psychometric data from Year 3 field testing with 847 students across 12 schools.</p>
-
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
-    <div class="reliability-box">
-      <div class="rb-label">Cronbach's Alpha (Internal Consistency)</div>
-      <div class="rb-value" style="color:var(--y3);">α = 0.81</div>
-      <div style="font-size:0.72rem;color:var(--text-muted);margin-top:4px;">Good reliability for a K–5 tool</div>
-    </div>
-    <div class="reliability-box">
-      <div class="rb-label">Pre-Post Effect Size (Cohen's d)</div>
-      <div class="rb-value" style="color:var(--y1);">d = 0.74</div>
-      <div style="font-size:0.72rem;color:var(--text-muted);margin-top:4px;">Medium-large learning gain</div>
-    </div>
-    <div class="reliability-box">
-      <div class="rb-label">Test-Retest Reliability (2-week)</div>
-      <div class="rb-value" style="color:var(--y3);">r = 0.78</div>
-      <div style="font-size:0.72rem;color:var(--text-muted);margin-top:4px;">Acceptable stability over time</div>
-    </div>
-    <div class="reliability-box">
-      <div class="rb-label">Item Discrimination Range</div>
-      <div class="rb-value" style="color:var(--y2);">0.35–0.68</div>
-      <div style="font-size:0.72rem;color:var(--text-muted);margin-top:4px;">All items above minimum threshold</div>
-    </div>
-  </div>
-
-  <!-- Evidence Chain -->
-  <div class="section-title">🔗 The Evidence Chain: Year 1 → Year 3</div>
-  <p class="text-sm text-muted" style="margin-bottom:12px;">Every Year 3 outcome is grounded in two years of iterative measurement.</p>
-
-  <div class="card" style="margin-bottom:20px;">
-    <div class="evidence-item">
-      <span class="ev-year y1">Year 1</span>
-      <div>
-        <div style="font-size:0.88rem;font-weight:700;">Concept check responses + reflection themes</div>
-        <div style="font-size:0.8rem;color:var(--text-2);">Revealed that "AI bias" was consistently the hardest concept across all classes. Item bank was refined based on wrong-answer analysis.</div>
-      </div>
-    </div>
-    <div class="evidence-item">
-      <span class="ev-year y2">Year 2</span>
-      <div>
-        <div style="font-size:0.88rem;font-weight:700;">Teacher dashboard + misconception patterns</div>
-        <div style="font-size:0.8rem;color:var(--text-2);">Systematic teacher interventions (prompted by Year 2 dashboard) improved bias concept mastery by 18 percentage points. Teacher facilitation guide was developed.</div>
-      </div>
-    </div>
-    <div class="evidence-item">
-      <span class="ev-year y3">Year 3</span>
-      <div>
-        <div style="font-size:0.88rem;font-weight:700;">Validated pre/post items + rubric scoring</div>
-        <div style="font-size:0.8rem;color:var(--text-2);">Full assessment battery validated with 847 students. Bias outcome shows d=0.84 pre/post effect size — the strongest gain of all 5 outcomes.</div>
+    <div class="outcome-card-body">
+      <table class="progression-table">
+        <thead>
+          <tr><th style="width:100px;">Level</th><th>What the student can do</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="prog-badge beginning">Beginning</span></td>
+            <td>Either fully trusts AI ("it's always right") or fully rejects it ("AI is bad"). Cannot reason from evidence.</td>
+          </tr>
+          <tr>
+            <td><span class="prog-badge developing">Developing</span></td>
+            <td>Offers one-sided evaluation (only pros or only cons); does not use AI vocabulary or cite lessons as evidence.</td>
+          </tr>
+          <tr>
+            <td><span class="prog-badge proficient">Proficient</span></td>
+            <td>Gives at least two reasons (pro and con), uses at least one AI vocabulary term correctly, and identifies one situation requiring human oversight.</td>
+          </tr>
+          <tr>
+            <td><span class="prog-badge advanced">Advanced</span></td>
+            <td>Constructs a nuanced, evidence-based argument; uses multiple AI vocabulary terms; proposes specific safeguards rather than blanket rejection.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="dist-section">
+        <div class="dist-title">Class Distribution — End of Module (n = 28)</div>
+        <div class="dist-bar-row">
+          <span class="dist-label">Advanced (18%)</span>
+          <div class="dist-track"><div class="dist-fill" style="width:18%;background:var(--y3);">5</div></div>
+        </div>
+        <div class="dist-bar-row">
+          <span class="dist-label">Proficient (46%)</span>
+          <div class="dist-track"><div class="dist-fill" style="width:46%;background:var(--y1);">13</div></div>
+        </div>
+        <div class="dist-bar-row">
+          <span class="dist-label">Developing (29%)</span>
+          <div class="dist-track"><div class="dist-fill" style="width:29%;background:var(--warning);">8</div></div>
+        </div>
+        <div class="dist-bar-row">
+          <span class="dist-label">Beginning (7%)</span>
+          <div class="dist-track"><div class="dist-fill" style="width:7%;background:var(--danger);">2</div></div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- School-System Reporting -->
-  <div class="section-title">🏛️ School-System Reporting</div>
-  <p class="text-sm text-muted" style="margin-bottom:12px;">Shareable district-level evidence summary — designed for administrators and school boards.</p>
-
-  <div class="district-card">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-      <span style="font-size:1.5rem;">🏫</span>
-      <div>
-        <div style="font-size:0.75rem;font-weight:700;color:var(--y3);text-transform:uppercase;letter-spacing:0.04em;">District Evidence Summary · Spring 2026</div>
-        <div style="font-size:1rem;font-weight:800;">How AI Makes Decisions · K–5 Module</div>
-      </div>
-    </div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;">
-      <div style="background:white;border-radius:var(--r-md);padding:12px;text-align:center;box-shadow:var(--shadow-xs);">
-        <div style="font-size:1.6rem;font-weight:900;color:var(--y3);">847</div>
-        <div style="font-size:0.68rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;">Students</div>
-      </div>
-      <div style="background:white;border-radius:var(--r-md);padding:12px;text-align:center;box-shadow:var(--shadow-xs);">
-        <div style="font-size:1.6rem;font-weight:900;color:var(--y1);">12</div>
-        <div style="font-size:0.68rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;">Schools</div>
-      </div>
-      <div style="background:white;border-radius:var(--r-md);padding:12px;text-align:center;box-shadow:var(--shadow-xs);">
-        <div style="font-size:1.6rem;font-weight:900;color:var(--y2);">+0.74d</div>
-        <div style="font-size:0.68rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;">Learning gain</div>
-      </div>
-    </div>
-
-    <div style="background:white;border-radius:var(--r-md);padding:14px;box-shadow:var(--shadow-xs);">
-      <div style="font-size:0.78rem;font-weight:700;color:var(--text-muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.04em;">School-Level Results</div>
-      <div class="school-row">
-        <span>Lincoln Elementary</span>
-        <span class="school-score a">83% proficient</span>
-      </div>
-      <div class="school-row">
-        <span>Jefferson K–5</span>
-        <span class="school-score a">79% proficient</span>
-      </div>
-      <div class="school-row">
-        <span>Roosevelt Academy</span>
-        <span class="school-score b">71% proficient</span>
-      </div>
-      <div class="school-row">
-        <span>King Elementary</span>
-        <span class="school-score b">68% proficient</span>
-      </div>
-      <div class="school-row" style="color:var(--text-muted);font-style:italic;">
-        <span>+ 8 more schools</span>
-        <span>Avg: 75% proficient</span>
-      </div>
-    </div>
+  <!-- ── Standards Alignment Matrix ── -->
+  <div class="pillar-section-title">
+    <div class="icon-circle">📋</div>
+    Standards Alignment Matrix
   </div>
-
-  <!-- Standards Alignment Table -->
-  <div class="section-title">📋 Standards Alignment</div>
-  <div class="card" style="overflow-x:auto;margin-bottom:20px;">
-    <table class="rubric-table">
+  <div class="card" style="overflow-x:auto;margin-bottom:32px;">
+    <table class="matrix-table">
       <thead>
         <tr>
-          <th>Standard</th>
-          <th>Description</th>
-          <th>Lessons</th>
-          <th>Outcomes</th>
+          <th style="text-align:left;min-width:160px;">Outcome</th>
+          <th>AI4K12<br>BI-2</th>
+          <th>AI4K12<br>BI-3</th>
+          <th>AI4K12<br>BI-5</th>
+          <th>CSTA<br>DA</th>
+          <th>CSTA<br>IC</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td><span class="standard-chip">AI4K12 BI-2</span></td>
-          <td style="font-size:0.82rem;">Agents maintain representations of the world and use them for reasoning</td>
-          <td style="font-size:0.82rem;">L3</td>
-          <td style="font-size:0.82rem;">Outcome 4</td>
+          <td>1 · Pattern-Based Prediction</td>
+          <td><span class="check-no">—</span></td>
+          <td><span class="check-yes">✓</span></td>
+          <td><span class="check-no">—</span></td>
+          <td><span class="check-yes">✓</span></td>
+          <td><span class="check-no">—</span></td>
         </tr>
         <tr>
-          <td><span class="standard-chip">AI4K12 BI-3</span></td>
-          <td style="font-size:0.82rem;">Computers can learn from data</td>
-          <td style="font-size:0.82rem;">L1, L2, L3, L4</td>
-          <td style="font-size:0.82rem;">Outcomes 1, 2, 4</td>
+          <td>2 · Training Data Influence</td>
+          <td><span class="check-no">—</span></td>
+          <td><span class="check-yes">✓</span></td>
+          <td><span class="check-yes">✓</span></td>
+          <td><span class="check-no">—</span></td>
+          <td><span class="check-no">—</span></td>
         </tr>
         <tr>
-          <td><span class="standard-chip">AI4K12 BI-5</span></td>
-          <td style="font-size:0.82rem;">AI can impact society in both positive and negative ways</td>
-          <td style="font-size:0.82rem;">L2, L3, L4, L5</td>
-          <td style="font-size:0.82rem;">Outcomes 3, 5</td>
+          <td>3 · AI Bias Awareness</td>
+          <td><span class="check-no">—</span></td>
+          <td><span class="check-no">—</span></td>
+          <td><span class="check-yes">✓</span></td>
+          <td><span class="check-no">—</span></td>
+          <td><span class="check-no">—</span></td>
         </tr>
         <tr>
-          <td><span class="standard-chip">CSTA DA</span></td>
-          <td style="font-size:0.82rem;">Data & Analysis</td>
-          <td style="font-size:0.82rem;">L1, L2, L4</td>
-          <td style="font-size:0.82rem;">Outcomes 1, 2</td>
+          <td>4 · Feature-Based Representation</td>
+          <td><span class="check-yes">✓</span></td>
+          <td><span class="check-yes">✓</span></td>
+          <td><span class="check-no">—</span></td>
+          <td><span class="check-no">—</span></td>
+          <td><span class="check-no">—</span></td>
         </tr>
         <tr>
-          <td><span class="standard-chip">CSTA IC</span></td>
-          <td style="font-size:0.82rem;">Impacts of Computing</td>
-          <td style="font-size:0.82rem;">L4, L5</td>
-          <td style="font-size:0.82rem;">Outcome 5</td>
+          <td>5 · Critical AI Evaluation</td>
+          <td><span class="check-no">—</span></td>
+          <td><span class="check-no">—</span></td>
+          <td><span class="check-yes">✓</span></td>
+          <td><span class="check-no">—</span></td>
+          <td><span class="check-yes">✓</span></td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <!-- The Full Journey -->
-  <div class="section-title">🗺️ The Full 3-Year Journey</div>
-  <div class="card" style="margin-bottom:20px;">
-    <div class="timeline">
-      <div class="timeline-item">
-        <div class="timeline-dot" style="border-color:var(--y1);"></div>
+  <div style="text-align:center;">
+    <button class="btn btn-y3" onclick="switchTab('evidence')">See How Assessments Were Built →</button>
+  </div>
+
+</div>
+</div><!-- end tab-outcomes -->
+
+
+<!-- ════════════════════════════════════════════════════
+     TAB 2: EVIDENCE-BACKED ASSESSMENT MODELS
+     ════════════════════════════════════════════════════ -->
+<div id="tab-evidence" class="tab-panel" role="tabpanel">
+<div class="container-wide" style="padding-top:28px;padding-bottom:64px;">
+
+  <p class="text-sm text-muted" style="margin-bottom:24px;max-width:600px;">
+    Every assessment item in the Year 3 bank was built, tested, and validated through a structured 3-stage pipeline. Items are backed by psychometric data from 847 students across 12 schools over 3 years.
+  </p>
+
+  <!-- ── 3-Stage Pipeline ── -->
+  <div class="pillar-section-title">
+    <div class="icon-circle">🔄</div>
+    3-Stage Item Development Pipeline
+  </div>
+
+  <div class="pipeline" style="margin-bottom:28px;">
+    <div class="pipeline-stage">
+      <div class="stage-badge y1">Stage 1 — Year 1</div>
+      <div class="stage-name">Draft</div>
+      <div class="stage-sub">Expert-reviewed item drafts</div>
+      <ul class="stage-detail">
+        <li>Items drafted from Year 1 formative signal patterns</li>
+        <li>Expert review by 3 AI educators</li>
+        <li>Cognitive interviews with 12 students (grades 3–5)</li>
+        <li>Readability target: Flesch-Kincaid Grade 4.2</li>
+      </ul>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-stage">
+      <div class="stage-badge y2">Stage 2 — Year 2</div>
+      <div class="stage-name">Pilot</div>
+      <div class="stage-sub">Field test + item analysis</div>
+      <ul class="stage-detail">
+        <li>Field tested: 240 students, 8 schools</li>
+        <li>Item analysis: difficulty and discrimination</li>
+        <li>Items with discrimination &lt; 0.25 revised</li>
+        <li>Misconception data from Year 2 dashboard informed distractors</li>
+      </ul>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-stage">
+      <div class="stage-badge y3">Stage 3 — Year 3</div>
+      <div class="stage-name">Validate</div>
+      <div class="stage-sub">Full validation + publication</div>
+      <ul class="stage-detail">
+        <li>Full validation: 847 students, 12 schools</li>
+        <li>Reliability analysis (Cronbach's α, test-retest)</li>
+        <li>Pre-post effect size computed</li>
+        <li>Final item bank published with psychometric data</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── Sample Item Bank ── -->
+  <div class="pillar-section-title">
+    <div class="icon-circle">📝</div>
+    Sample Item Bank
+  </div>
+
+  <!-- Item 1 -->
+  <div class="item-card">
+    <div class="item-meta-row">
+      <span class="item-type-chip mc">Multiple Choice</span>
+      <span class="item-outcome-chip">Outcome 1</span>
+      <span class="item-year-chip">Introduced: Year 1</span>
+      <span class="standard-chip">AI4K12 BI-3</span>
+    </div>
+    <div class="item-question">When an AI makes a prediction, what does it use?</div>
+    <div>
+      <div class="mc-option"><span class="mc-letter">A</span> Its own feelings</div>
+      <div class="mc-option"><span class="mc-letter">B</span> Random guessing</div>
+      <div class="mc-option correct"><span class="mc-letter">C</span> ✓ Patterns from training data</div>
+      <div class="mc-option"><span class="mc-letter">D</span> Hand-coded rules for every question</div>
+    </div>
+    <div class="item-stats-row">
+      <span class="item-stat">Difficulty: <strong>0.78 (Easy)</strong></span>
+      <span class="item-stat">Discrimination: <strong>0.42</strong></span>
+    </div>
+  </div>
+
+  <!-- Item 2 -->
+  <div class="item-card">
+    <div class="item-meta-row">
+      <span class="item-type-chip mc">Multiple Choice</span>
+      <span class="item-outcome-chip">Outcome 3</span>
+      <span class="item-year-chip">Introduced: Year 2</span>
+      <span class="standard-chip">AI4K12 BI-5</span>
+    </div>
+    <div class="item-question">A school's AI book recommender was only trained on books enjoyed by English-speaking students. What problem would most likely occur?</div>
+    <div>
+      <div class="mc-option"><span class="mc-letter">A</span> Too many recommendations</div>
+      <div class="mc-option correct"><span class="mc-letter">B</span> ✓ Poor recommendations for multilingual students</div>
+      <div class="mc-option"><span class="mc-letter">C</span> The AI would become slower</div>
+      <div class="mc-option"><span class="mc-letter">D</span> Only new books get recommended</div>
+    </div>
+    <div class="item-stats-row">
+      <span class="item-stat">Difficulty: <strong>0.61 (Medium)</strong></span>
+      <span class="item-stat">Discrimination: <strong>0.58</strong></span>
+    </div>
+  </div>
+
+  <!-- Item 3 -->
+  <div class="item-card">
+    <div class="item-meta-row">
+      <span class="item-type-chip scenario">Scenario</span>
+      <span class="item-outcome-chip">Outcome 2</span>
+      <span class="item-year-chip">Introduced: Year 2</span>
+      <span class="standard-chip">AI4K12 BI-3</span>
+    </div>
+    <div class="item-question">An AI trained on 5 photos of dogs keeps mistaking cats for dogs. If you give it 500 more dog photos, will it improve? Explain why.</div>
+    <div class="item-rubric">
+      <strong>Scoring Rubric (3 pts):</strong><br>
+      1 pt — Mentions that more data (quantity) was added<br>
+      1 pt — Explains the mechanism of improvement (more patterns to learn from)<br>
+      1 pt — Acknowledges limitations (it might still make mistakes; needs diverse data)
+    </div>
+    <div class="item-stats-row">
+      <span class="item-stat">Difficulty: <strong>0.64 (Medium)</strong></span>
+      <span class="item-stat">Discrimination: <strong>0.61</strong></span>
+    </div>
+  </div>
+
+  <!-- Item 4 -->
+  <div class="item-card">
+    <div class="item-meta-row">
+      <span class="item-type-chip open">Open Response</span>
+      <span class="item-outcome-chip">Outcome 5</span>
+      <span class="item-year-chip">Introduced: Year 3</span>
+      <span class="standard-chip">AI4K12 BI-5</span>
+      <span class="standard-chip">CSTA IC</span>
+    </div>
+    <div class="item-question">Your school wants an AI to choose Student of the Month. Do you think this is a good idea? Use at least 2 reasons and at least 1 AI vocabulary word.</div>
+    <div class="item-rubric">
+      <strong>Scoring Rubric (5 pts):</strong><br>
+      1 pt — Clear claim (yes or no with a position)<br>
+      2 pts — At least 2 distinct reasons (1 pt each)<br>
+      1 pt — Correct use of at least 1 AI vocabulary term (e.g., "bias," "training data," "prediction")<br>
+      1 pt — Quality of reasoning (reasons are connected to how AI works, not just opinions)
+    </div>
+    <div style="background:var(--y3-bg);border:1px solid #9ED9B5;border-radius:var(--r-sm);padding:9px 12px;font-size:0.78rem;color:#1A5E35;margin-top:8px;">
+      <strong>Inter-rater reliability:</strong> 87% exact agreement across 120 hand-scored responses (Year 3 calibration session).
+    </div>
+    <div class="item-stats-row">
+      <span class="item-stat">Difficulty: <strong>0.52 (Hard)</strong></span>
+      <span class="item-stat">Discrimination: <strong>0.68</strong></span>
+    </div>
+  </div>
+
+  <!-- ── Validation Evidence ── -->
+  <div class="pillar-section-title">
+    <div class="icon-circle">📊</div>
+    Validation Evidence
+  </div>
+
+  <div class="evidence-grid">
+    <div class="evidence-stat">
+      <div class="ev-value ev-green">α = 0.81</div>
+      <div class="ev-label">Cronbach's α<br>Internal Consistency</div>
+    </div>
+    <div class="evidence-stat">
+      <div class="ev-value ev-blue">d = 0.74</div>
+      <div class="ev-label">Cohen's d<br>Pre-Post Effect Size</div>
+    </div>
+    <div class="evidence-stat">
+      <div class="ev-value ev-green">r = 0.78</div>
+      <div class="ev-label">Test-Retest r<br>2-Week Stability</div>
+    </div>
+    <div class="evidence-stat">
+      <div class="ev-value ev-green">847</div>
+      <div class="ev-label">Students<br>Year 3 Sample</div>
+    </div>
+    <div class="evidence-stat">
+      <div class="ev-value ev-blue">12</div>
+      <div class="ev-label">Schools<br>Spring 2026</div>
+    </div>
+    <div class="evidence-stat">
+      <div class="ev-value ev-purple">87%</div>
+      <div class="ev-label">Inter-Rater Agreement<br>Open Response Items</div>
+    </div>
+  </div>
+
+  <!-- ── Evidence Chain ── -->
+  <div class="pillar-section-title">
+    <div class="icon-circle">🔗</div>
+    The Evidence Chain
+  </div>
+
+  <div class="evidence-chain" style="margin-bottom:32px;">
+    <div class="chain-node">
+      <div class="chain-year" style="color:var(--y1);">Year 1</div>
+      <div class="chain-title">Formative Signals</div>
+      <div class="chain-detail">Concept check patterns and wrong-answer analysis revealed AI bias as the hardest concept. Item bank seeded from signal data.</div>
+    </div>
+    <div class="chain-arrow">→</div>
+    <div class="chain-node">
+      <div class="chain-year" style="color:var(--y2);">Year 2</div>
+      <div class="chain-title">Misconception Data</div>
+      <div class="chain-detail">Dashboard-flagged misconceptions drove distractor revision. Teacher interventions improved bias mastery by 18 percentage points.</div>
+    </div>
+    <div class="chain-arrow">→</div>
+    <div class="chain-node">
+      <div class="chain-year" style="color:var(--y3);">Year 3</div>
+      <div class="chain-title">Validated Items</div>
+      <div class="chain-detail">Full item bank validated with 847 students. Bias outcome shows d = 0.84 — the strongest pre-post gain of all 5 outcomes.</div>
+    </div>
+  </div>
+
+  <div style="text-align:center;">
+    <button class="btn btn-y3" onclick="switchTab('scalability')">See District Scalability Support →</button>
+  </div>
+
+</div>
+</div><!-- end tab-evidence -->
+
+
+<!-- ════════════════════════════════════════════════════
+     TAB 3: SCHOOL-SYSTEM SCALABILITY SUPPORT
+     ════════════════════════════════════════════════════ -->
+<div id="tab-scalability" class="tab-panel" role="tabpanel">
+<div class="container-wide" style="padding-top:28px;padding-bottom:64px;">
+
+  <p class="text-sm text-muted" style="margin-bottom:24px;max-width:600px;">
+    The Year 3 framework is designed to scale from a single classroom to a full district system — with tiered adoption paths, minimal technical requirements, and a sustainability model that outlasts the grant period.
+  </p>
+
+  <!-- ── Implementation Tiers ── -->
+  <div class="pillar-section-title">
+    <div class="icon-circle">🏗️</div>
+    Implementation Tiers
+  </div>
+
+  <div class="tier-cards">
+    <div class="tier-card t1">
+      <div class="tier-num">1</div>
+      <div class="tier-label">Adoption Level</div>
+      <div class="tier-name">Classroom</div>
+      <ul class="tier-includes">
+        <li>Single teacher, any K–5 grade</li>
+        <li>Minimal tech — 1 device per 2–3 students</li>
+        <li>Uses Year 1 signal instruments only</li>
+        <li>Pre/post concept checks, mood ratings</li>
+        <li>PDF summary report at module end</li>
+        <li>~2 hrs setup; zero recurring IT work</li>
+      </ul>
+    </div>
+    <div class="tier-card t2">
+      <div class="tier-num">2</div>
+      <div class="tier-label">Adoption Level</div>
+      <div class="tier-name">School-Wide</div>
+      <ul class="tier-includes">
+        <li>School-wide dashboard for instructional coach</li>
+        <li>Facilitator training (4 hrs, asynchronous)</li>
+        <li>Year 1 + Year 2 measures combined</li>
+        <li>Misconception detection and class alerts</li>
+        <li>School-level proficiency summary</li>
+        <li>Connects to school LMS (Google Classroom, Canvas)</li>
+      </ul>
+    </div>
+    <div class="tier-card t3">
+      <div class="tier-num">3</div>
+      <div class="tier-label">Adoption Level</div>
+      <div class="tier-name">District</div>
+      <ul class="tier-includes">
+        <li>Full district reporting dashboard</li>
+        <li>All Year 1 + 2 + 3 instruments active</li>
+        <li>Outcomes aligned to district CS goals</li>
+        <li>School-vs-school equity view</li>
+        <li>Board-ready PDF export on demand</li>
+        <li>Annual calibration session included</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── Technical Requirements ── -->
+  <div class="pillar-section-title">
+    <div class="icon-circle">💻</div>
+    Technical Requirements
+  </div>
+
+  <div class="card" style="margin-bottom:28px;">
+    <ul class="tech-checklist">
+      <li>
+        <span class="check-circle">✓</span>
+        <span><strong>Student devices</strong> — 1:1 or shared (1 device per 2–3 students is sufficient)</span>
+      </li>
+      <li>
+        <span class="check-circle">✓</span>
+        <span><strong>Internet access</strong> — Standard school WiFi is sufficient</span>
+      </li>
+      <li>
+        <span class="check-circle">✓</span>
+        <span><strong>No additional software</strong> — Runs entirely in a web browser; no app install required</span>
+      </li>
+      <li>
+        <span class="check-circle">✓</span>
+        <span><strong>LMS compatible</strong> — Works with Google Classroom, Canvas, and Clever SSO</span>
+      </li>
+      <li>
+        <span class="check-circle">✓</span>
+        <span><strong>FERPA / COPPA compliant</strong> — No student PII leaves the district's existing systems</span>
+      </li>
+      <li>
+        <span class="check-circle">✓</span>
+        <span><strong>Data stored in school's LMS</strong> — District retains full data ownership and control</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ── District Dashboard Preview ── -->
+  <div class="pillar-section-title">
+    <div class="icon-circle">📈</div>
+    District Reporting Dashboard Preview
+  </div>
+
+  <div class="district-header">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+      <span style="font-size:1.4rem;">🏫</span>
+      <div>
+        <div style="font-size:0.72rem;font-weight:800;color:var(--y3);text-transform:uppercase;letter-spacing:0.04em;">District Evidence Summary · Spring 2026</div>
+        <div style="font-size:1rem;font-weight:800;color:var(--text);">How AI Makes Decisions · K–5 Module</div>
+      </div>
+    </div>
+    <div style="font-size:0.8rem;color:var(--text-2);">Overall: <strong style="color:var(--y3);">75% proficient</strong> &nbsp;·&nbsp; Year-over-year growth: <strong style="color:var(--y3);">+18%</strong> from Year 1 baseline</div>
+  </div>
+  <div class="district-body">
+    <div class="district-stats-row">
+      <div class="district-stat">
+        <div class="ds-value" style="color:var(--y3);">847</div>
+        <div class="ds-label">Students</div>
+      </div>
+      <div class="district-stat">
+        <div class="ds-value" style="color:var(--y1);">12</div>
+        <div class="ds-label">Schools</div>
+      </div>
+      <div class="district-stat">
+        <div class="ds-value" style="color:var(--y3);">75%</div>
+        <div class="ds-label">Avg Proficient</div>
+      </div>
+      <div class="district-stat">
+        <div class="ds-value" style="color:var(--y2);">+18%</div>
+        <div class="ds-label">YoY Growth</div>
+      </div>
+    </div>
+    <table class="school-table">
+      <thead>
+        <tr>
+          <th>School</th>
+          <th>Students</th>
+          <th>% Proficient+</th>
+          <th>YoY Change</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Lincoln Elementary</td>
+          <td>98</td>
+          <td><span class="proficiency-pill prof-high">83%</span></td>
+          <td style="color:var(--y3);font-weight:700;">+22%</td>
+        </tr>
+        <tr>
+          <td>Jefferson K–5</td>
+          <td>114</td>
+          <td><span class="proficiency-pill prof-high">79%</span></td>
+          <td style="color:var(--y3);font-weight:700;">+19%</td>
+        </tr>
+        <tr>
+          <td>Roosevelt Academy</td>
+          <td>87</td>
+          <td><span class="proficiency-pill prof-mid">71%</span></td>
+          <td style="color:var(--y1);font-weight:700;">+14%</td>
+        </tr>
+        <tr>
+          <td>King Elementary</td>
+          <td>76</td>
+          <td><span class="proficiency-pill prof-mid">68%</span></td>
+          <td style="color:var(--y1);font-weight:700;">+12%</td>
+        </tr>
+        <tr>
+          <td style="color:var(--text-muted);font-style:italic;">+ 8 more schools</td>
+          <td style="color:var(--text-muted);">472</td>
+          <td style="color:var(--text-muted);">Avg 74%</td>
+          <td style="color:var(--text-muted);">Avg +18%</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="district-reco">
+      <span style="font-size:1.1rem;">✅</span>
+      <span><strong>District Recommendation:</strong> Framework is ready for scaling to all 24 elementary schools beginning Fall 2026.</span>
+    </div>
+  </div>
+
+  <!-- ── Sustainability Model ── -->
+  <div class="pillar-section-title">
+    <div class="icon-circle">♻️</div>
+    3-Year Investment Arc &amp; Sustainability Model
+  </div>
+
+  <div class="card" style="margin-bottom:32px;">
+    <div class="sustain-arc">
+      <div class="sustain-row">
+        <div class="sustain-dot s1"></div>
         <div>
-          <div class="badge badge-y1" style="margin-bottom:6px;">Year 1</div>
-          <div style="font-weight:700;font-size:0.95rem;">Build engagement & collect early signals</div>
-          <div style="font-size:0.82rem;color:var(--text-2);margin-top:4px;">5 formative signal types per lesson · 2 concept checks per lesson · End-of-lesson mood rating · Pre/post confidence · Micro-reflections</div>
+          <div class="sustain-year-tag y1">Year 1</div>
+          <div class="sustain-title">Curriculum + Lightweight Analytics</div>
+          <div class="sustain-sub">5-lesson module delivered to first cohort. Formative signals collected from concept checks, sort activities, and mood ratings. No dashboard required — teachers use PDF summary sheets.</div>
+          <div class="sustain-goal">Goal: Establish Baseline</div>
         </div>
       </div>
-      <div class="timeline-item">
-        <div class="timeline-dot y2"></div>
+      <div class="sustain-row">
+        <div class="sustain-dot s2"></div>
         <div>
-          <div class="badge badge-y2" style="margin-bottom:6px;">Year 2</div>
-          <div style="font-weight:700;font-size:0.95rem;">Refine measurement & support teachers</div>
-          <div style="font-size:0.82rem;color:var(--text-2);margin-top:4px;">Teacher dashboard · Misconception detection · Confidence trend tracking · Richer formative items · Facilitation guide</div>
+          <div class="sustain-year-tag y2">Year 2</div>
+          <div class="sustain-title">Dashboard + Refined Assessment</div>
+          <div class="sustain-sub">Teacher-facing dashboard launched. Misconception detection alerts prompt targeted re-teaching. Item bank revised based on Year 1 wrong-answer analysis. Facilitator training guide published.</div>
+          <div class="sustain-goal">Goal: Build Teacher Capacity</div>
         </div>
       </div>
-      <div class="timeline-item">
-        <div class="timeline-dot y3"></div>
+      <div class="sustain-row">
+        <div class="sustain-dot s3"></div>
         <div>
-          <div class="badge badge-y3" style="margin-bottom:6px;">Year 3</div>
-          <div style="font-weight:700;font-size:0.95rem;">Validate outcomes & scale to school systems</div>
-          <div style="font-size:0.82rem;color:var(--text-2);margin-top:4px;">Validated pre/post assessment · 4-level rubrics · Reliability data · District-level reporting · Evidence for continued investment</div>
+          <div class="sustain-year-tag y3">Year 3</div>
+          <div class="sustain-title">Validated Framework + District Tools</div>
+          <div class="sustain-sub">Full assessment battery validated (n = 847). District reporting dashboard launched. Board-ready evidence packet produced. Outcomes aligned to district CS standards map. Ready for unsupported replication.</div>
+          <div class="sustain-goal">Goal: System-Level Evidence</div>
+        </div>
+      </div>
+      <div class="sustain-row">
+        <div class="sustain-dot s4"></div>
+        <div>
+          <div class="sustain-year-tag post">Post-Year 3</div>
+          <div class="sustain-title">Annual Calibration + Self-Sustaining Growth</div>
+          <div class="sustain-sub">Annual 2-hr calibration session keeps inter-rater reliability high. New teachers onboard via asynchronous training. District CS coordinator owns the reporting cycle. No ongoing grant support required.</div>
+          <div class="sustain-goal">Goal: Self-Sustaining</div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Back to Top -->
   <div style="text-align:center;">
-    <a href="index.html" class="btn btn-outline">← Back to Roadmap Overview</a>
+    <a href="index.html" class="btn btn-outline" style="margin-right:8px;">← Back to Roadmap</a>
+    <button class="btn btn-y3" onclick="switchTab('outcomes')">Review Outcomes Framework</button>
   </div>
 
-</div><!-- end container-wide -->
+</div>
+</div><!-- end tab-scalability -->
+
 
 <script>
-  // Animate bars on load
-  window.addEventListener('load', () => {
-    const fills = document.querySelectorAll('.chart-fill');
-    fills.forEach(el => {
-      const w = el.style.width;
-      el.style.width = '0';
-      setTimeout(() => { el.style.width = w; }, 400);
+  /* ── Tab switching ── */
+  function switchTab(name) {
+    // Update buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.tab === name);
+      btn.setAttribute('aria-selected', btn.dataset.tab === name ? 'true' : 'false');
     });
+    // Update panels
+    document.querySelectorAll('.tab-panel').forEach(panel => {
+      const isActive = panel.id === 'tab-' + name;
+      panel.classList.toggle('active', isActive);
+    });
+    // Scroll to top of tab nav
+    const tabNav = document.querySelector('.tab-nav-wrap');
+    if (tabNav) {
+      const offset = tabNav.getBoundingClientRect().top + window.scrollY - 4;
+      window.scrollTo({ top: offset, behavior: 'smooth' });
+    }
+    // Re-animate dist bars in the newly active tab
+    setTimeout(animateBars, 80);
+  }
+
+  /* ── Animate distribution bars on load and tab switch ── */
+  function animateBars() {
+    const fills = document.querySelectorAll('.tab-panel.active .dist-fill');
+    fills.forEach(el => {
+      const target = el.style.width;
+      el.style.transition = 'none';
+      el.style.width = '0';
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          el.style.transition = 'width 0.8s ease';
+          el.style.width = target;
+        });
+      });
+    });
+  }
+
+  window.addEventListener('load', animateBars);
+
+  /* ── Keyboard navigation for tabs ── */
+  document.querySelector('.tab-nav').addEventListener('keydown', (e) => {
+    const tabs = Array.from(document.querySelectorAll('.tab-btn'));
+    const idx = tabs.indexOf(document.activeElement);
+    if (idx === -1) return;
+    if (e.key === 'ArrowRight') { tabs[(idx + 1) % tabs.length].focus(); e.preventDefault(); }
+    if (e.key === 'ArrowLeft')  { tabs[(idx - 1 + tabs.length) % tabs.length].focus(); e.preventDefault(); }
+    if (e.key === 'Enter' || e.key === ' ') { document.activeElement.click(); e.preventDefault(); }
   });
 </script>
 </body>
